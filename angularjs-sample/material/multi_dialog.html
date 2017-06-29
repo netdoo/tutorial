@@ -1,92 +1,161 @@
 <!DOCTYPE html>
 <html lang="en" >
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta charset="utf-8">
-  <!-- Angular Material style sheet -->
-  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
-  
-  
-  <!-- Angular Material requires Angular.js Libraries -->
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-animate.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-aria.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-messages.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdn.gitcdn.link/cdn/angular/bower-material/v1.1.1/angular-material.css">
+    <link rel="stylesheet" href="https://material.angularjs.org/1.1.1/docs.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
 
-  <!-- Angular Material Library -->
-  <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
-  
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-route.min.js"></script>
 
-  <style>
-      .md-dialog-backdrop:nth-of-type(even) {
-    z-index: 81;
-}
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-114/svg-assets-cache.js"></script>
+    <script src="https://cdn.gitcdn.link/cdn/angular/bower-material/master/angular-material.js"></script>
 
-.md-dialog-backdrop:nth-of-type(odd) {
-    z-index: 79;
-}
+    <script type="text/javascript">
 
-.md-dialog-container:nth-of-type(even) {
-    z-index: 80;
-}
+        var myApp = angular.module('MyApp',['ngMaterial', 'ngMessages', 'material.svgAssetsCache']);
+        myApp.controller('AppCtrl',  ['$scope', '$mdDialog', function($scope, $mdDialog) {
+            $scope.status = ' ';
+            $scope.customFullscreen = false;
 
-.md-dialog-container:nth-of-type(odd) {
-    z-index: 82;
-}
+            $scope.show1 = function(ev) {
+                $mdDialog.show({
+                    multiple: true,
+                    controller: DialogController,
+                    templateUrl: 'dialog1.tmpl.html',
+                    parent: angular.element(document.body),
+                    targetEvent: ev,
+                    clickOutsideToClose:true,
+                    fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
+                });
+            };
+        }]);
 
-.stickyDialog {
-    min-height: 200px;
-}
-      </style>
-</head>
-<body ng-app="myApp" ng-cloak>
-    <div ng-controller="MainCtrl" class="md-padding" id="popupContainer" ng-cloak>
-        <md-content layout="column">
-            <md-button ng-click="moreInfo(1)">
-            Open Dialog
-            </md-button>
-        </md-content>
-    </div>
 
-      <!-- Your application bootstrap  -->
-  <script type="text/javascript">
+        function DialogController($scope, $mdDialog) {
+            $scope.hide = function() {
+                $mdDialog.hide();
+            };
 
-    var myApp = angular.module('myApp', ['ngMaterial']);
-    myApp.controller('MainCtrl', ['$scope', '$mdDialog', function ($scope, $mdDialog) {
+            $scope.cancel = function() {
+                $mdDialog.cancel();
+            };
 
-        $scope.moreInfo =function(thing) {
-             $mdDialog.show({
-                controllerAs: 'dialogCtrl',
-                clickOutsideToClose: true,
-                bindToController: true,
-                controller: function($mdDialog) {
-                    this.click = function() {
-                        console.log('click parent');
-                        
-                        $mdDialog.show({
-                            controllerAs: 'dialogCtrl2',
-                            controller: function($mdDialog) {
-                                this.click = function() {
-                                    console.log('click child');
-                                    $mdDialog.hide();
-                                };
-                            },
-                            preserveScope: true,
-                            autoWrap: true,
-                            skipHide: true, // this line does the trick
-                            template: '<md-dialog class="confirm"><md-conent><md-button ng-click="dialogCtrl2.click()">I am in a 2nd dialog!</md-button></md-conent></md-dialog>'
-                        });
-                    };
-                },
-                autoWrap: false,
-                template: '<md-dialog class="stickyDialog" data-type="{{::dialogCtrl.thing.title}}"><md-conent><md-button ng-click="dialogCtrl.click()">I am in a dialog!</md-button></md-conent></md-dialog>',
-                locals: {
-                    thing: thing
-                }
-            });
+            $scope.answer = function(answer) {
+                console.log('DialogController ' + answer);
+                $mdDialog.hide(answer);
+            };
+
+            $scope.show2 = function(ev) {
+                $mdDialog.show({
+                    multiple: true,
+                    controller: DialogController2,
+                    templateUrl: 'dialog2.tmpl.html',
+                    parent: angular.element(document.body),
+                    targetEvent: ev,
+                    clickOutsideToClose:true,
+                    fullscreen: false//$scope.customFullscreen // Only for -xs, -sm breakpoints.
+                });
+            };
         }
-     }]);
-  </script>
+
+        function DialogController2($scope, $mdDialog) {
+            $scope.hide = function() {
+                $mdDialog.hide();
+            };
+
+            $scope.cancel = function() {
+                $mdDialog.cancel();
+            };
+
+            $scope.answer = function(answer) {
+                console.log('DialogController2 : ' + answer);
+                $mdDialog.hide(answer);
+            };
+        }
+    </script>
+
+    <style>
+        .md-dialog-backdrop:nth-of-type(even) {
+            z-index: 81;
+        }
+
+        .md-dialog-backdrop:nth-of-type(odd) {
+            z-index: 79;
+        }
+
+        .md-dialog-container:nth-of-type(even) {
+            z-index: 82;
+        }
+
+        .md-dialog-container:nth-of-type(odd) {
+            z-index: 80;
+        }
+    </style>
+</head>
+
+<body ng-app="MyApp">
+    <div ng-controller="AppCtrl" class="md-padding dialogdemoBasicUsage" id="popupContainer" ng-cloak="">
+        <md-button class="md-primary md-raised" ng-click="show1($event)">Show Dialog1</md-button>
+
+        <script type="text/ng-template" id="dialog1.tmpl.html">
+            <md-dialog aria-label="Dialog1" flex="80">
+                <form ng-cloak>
+                    <md-toolbar>
+                        <div class="md-toolbar-tools">
+                            <h2>Dialog1</h2>
+                            <span flex></span>
+                            <md-button class="md-icon-button" ng-click="cancel()"><md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon></md-button>
+                        </div>
+                    </md-toolbar>
+
+                    <md-dialog-content>
+                        <div class="md-dialog-content">
+                            <h1>Dialog1</h1>
+                        </div>
+                    </md-dialog-content>
+
+                    <md-dialog-actions layout="row">
+                        <md-button class="md-primary md-raised" ng-click="show2($event)">Show Dialog2</md-button>
+                        <span flex></span>
+                        <md-button ng-click="answer('close')">close</md-button>
+                    </md-dialog-actions>
+                </form>
+            </md-dialog>
+        </script>
+
+        <script type="text/ng-template" id="dialog2.tmpl.html">
+            <md-dialog aria-label="Dialog2">
+                <form ng-cloak>
+                    <md-toolbar>
+                        <div class="md-toolbar-tools">
+                            <h2>Dialog2</h2>
+                            <span flex></span>
+                            <md-button class="md-icon-button" ng-click="cancel()"><md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon></md-button>
+                        </div>
+                    </md-toolbar>
+
+                    <md-dialog-content>
+                        <div class="md-dialog-content">
+                            <md-input-container>
+                                <h1>Dialog2</h1>
+                            </md-input-container>
+                        </div>
+                    </md-dialog-content>
+
+                    <md-dialog-actions layout="row">
+                        <span flex></span>
+                        <md-button ng-click="answer('close')" md-autofocus>Close</md-button>
+                    </md-dialog-actions>
+                </form>
+            </md-dialog>
+        </script>
+    </div>
 </body>
-  
+</html>  
   
