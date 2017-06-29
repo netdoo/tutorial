@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <!-- Angular Material style sheet -->
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+  
+  
+  <!-- Angular Material requires Angular.js Libraries -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-animate.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-aria.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-messages.min.js"></script>
+
+  <!-- Angular Material Library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+  
+
+  <style>
+      .md-dialog-backdrop:nth-of-type(even) {
+    z-index: 81;
+}
+
+.md-dialog-backdrop:nth-of-type(odd) {
+    z-index: 79;
+}
+
+.md-dialog-container:nth-of-type(even) {
+    z-index: 80;
+}
+
+.md-dialog-container:nth-of-type(odd) {
+    z-index: 82;
+}
+
+.stickyDialog {
+    min-height: 200px;
+}
+      </style>
+</head>
+<body ng-app="myApp" ng-cloak>
+    <div ng-controller="MainCtrl" class="md-padding" id="popupContainer" ng-cloak>
+        <md-content layout="column">
+            <md-button ng-click="moreInfo(1)">
+            Open Dialog
+            </md-button>
+        </md-content>
+    </div>
+
+      <!-- Your application bootstrap  -->
+  <script type="text/javascript">
+
+    var myApp = angular.module('myApp', ['ngMaterial']);
+    myApp.controller('MainCtrl', ['$scope', '$mdDialog', function ($scope, $mdDialog) {
+
+        $scope.moreInfo =function(thing) {
+             $mdDialog.show({
+                controllerAs: 'dialogCtrl',
+                clickOutsideToClose: true,
+                bindToController: true,
+                controller: function($mdDialog) {
+                    this.click = function() {
+                        console.log('click parent');
+                        
+                        $mdDialog.show({
+                            controllerAs: 'dialogCtrl2',
+                            controller: function($mdDialog) {
+                                this.click = function() {
+                                    console.log('click child');
+                                    $mdDialog.hide();
+                                };
+                            },
+                            preserveScope: true,
+                            autoWrap: true,
+                            skipHide: true, // this line does the trick
+                            template: '<md-dialog class="confirm"><md-conent><md-button ng-click="dialogCtrl2.click()">I am in a 2nd dialog!</md-button></md-conent></md-dialog>'
+                        });
+                    };
+                },
+                autoWrap: false,
+                template: '<md-dialog class="stickyDialog" data-type="{{::dialogCtrl.thing.title}}"><md-conent><md-button ng-click="dialogCtrl.click()">I am in a dialog!</md-button></md-conent></md-dialog>',
+                locals: {
+                    thing: thing
+                }
+            });
+        }
+     }]);
+  </script>
+</body>
+  
+  
