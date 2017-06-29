@@ -1,0 +1,101 @@
+2017-06-08 15:03:59 INFO  AnnotationConfigApplicationContext:582 - Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@5f9d02cb: startup date [Thu Jun 08 15:03:59 KST 2017]; root of context hierarchy
+2017-06-08 15:03:59 INFO  XmlBeanDefinitionReader:317 - Loading XML bean definitions from class path resource [bean-config.xml]
+2017-06-08 15:03:59 WARN  AnnotationConfigApplicationContext:550 - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.xml.XmlBeanDefinitionStoreException: Line 2 in XML document from class path resource [bean-config.xml] is invalid; nested exception is org.xml.sax.SAXParseException; lineNumber: 2; columnNumber: 30; cvc-elt.1: 'bean' 요소의 선언을 찾을 수 없습니다.
+2017-06-08 15:04:37 INFO  AnnotationConfigApplicationContext:582 - Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@5f9d02cb: startup date [Thu Jun 08 15:04:37 KST 2017]; root of context hierarchy
+2017-06-08 15:04:38 INFO  XmlBeanDefinitionReader:317 - Loading XML bean definitions from class path resource [bean-config.xml]
+2017-06-08 15:04:39 INFO  SomeObject:11 - SomeObject => do something
+2017-06-08 15:05:25 INFO  AnnotationConfigApplicationContext:582 - Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@5f9d02cb: startup date [Thu Jun 08 15:05:25 KST 2017]; root of context hierarchy
+2017-06-08 15:05:25 INFO  XmlBeanDefinitionReader:317 - Loading XML bean definitions from class path resource [bean-config.xml]
+2017-06-08 15:05:26 INFO  SomeObject:11 - SomeObject => do something
+2017-06-08 15:05:26 INFO  DummyObject:21 - DummyObject => name james
+2017-06-08 15:07:24 INFO  AnnotationConfigApplicationContext:582 - Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@5f9d02cb: startup date [Thu Jun 08 15:07:24 KST 2017]; root of context hierarchy
+2017-06-08 15:07:24 INFO  XmlBeanDefinitionReader:317 - Loading XML bean definitions from class path resource [bean-config.xml]
+2017-06-08 15:07:25 INFO  SomeObject:11 - SomeObject => do something
+2017-06-08 15:07:25 INFO  DummyObject:21 - DummyObject => name james
+2017-06-08 15:08:02 INFO  AnnotationConfigApplicationContext:582 - Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@5f9d02cb: startup date [Thu Jun 08 15:08:02 KST 2017]; root of context hierarchy
+2017-06-08 15:08:03 INFO  XmlBeanDefinitionReader:317 - Loading XML bean definitions from class path resource [bean-config.xml]
+2017-06-08 15:08:05 INFO  SomeObject:11 - SomeObject => do something
+2017-06-08 15:08:05 INFO  DummyObject:21 - DummyObject => name james
+2017-06-08 15:08:43 INFO  AnnotationConfigApplicationContext:582 - Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@5f9d02cb: startup date [Thu Jun 08 15:08:43 KST 2017]; root of context hierarchy
+2017-06-08 15:08:44 INFO  XmlBeanDefinitionReader:317 - Loading XML bean definitions from class path resource [bean-config.xml]
+2017-06-08 15:08:45 INFO  AspectObject:17 - Create AspectObject
+2017-06-08 15:08:45 INFO  SomeObject:11 - SomeObject => do something
+2017-06-08 15:08:45 INFO  DummyObject:21 - DummyObject => name james
+2017-06-08 15:09:05 INFO  AnnotationConfigApplicationContext:582 - Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@5f9d02cb: startup date [Thu Jun 08 15:09:05 KST 2017]; root of context hierarchy
+2017-06-08 15:09:05 INFO  XmlBeanDefinitionReader:317 - Loading XML bean definitions from class path resource [bean-config.xml]
+2017-06-08 15:09:07 INFO  AspectObject:17 - Create AspectObject
+2017-06-08 15:09:07 INFO  AspectObject:28 - onAroundReturningLogServiceAccess Before : execution(void com.exaop.SomeObject.doSomething())
+2017-06-08 15:09:07 INFO  SomeObject:11 - SomeObject => do something
+2017-06-08 15:09:07 INFO  AspectObject:30 - onAroundReturningLogServiceAccess After  : execution(void com.exaop.SomeObject.doSomething())
+2017-06-08 15:09:07 INFO  DummyObject:21 - DummyObject => name james
+2017-06-08 15:10:23 INFO  AnnotationConfigApplicationContext:582 - Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@5f9d02cb: startup date [Thu Jun 08 15:10:23 KST 2017]; root of context hierarchy
+2017-06-08 15:10:24 INFO  XmlBeanDefinitionReader:317 - Loading XML bean definitions from class path resource [bean-config.xml]
+2017-06-08 15:10:26 INFO  AspectObject:17 - Create AspectObject
+2017-06-08 15:10:26 INFO  AspectObject:28 - onAroundReturningLogServiceAccess Before : doSomething
+2017-06-08 15:10:26 INFO  SomeObject:11 - SomeObject => do something
+2017-06-08 15:10:26 INFO  AspectObject:30 - onAroundReturningLogServiceAccess After  : doSomething
+2017-06-08 15:10:26 INFO  DummyObject:21 - DummyObject => name james
+2017-06-08 15:12:48 INFO  AnnotationConfigApplicationContext:582 - Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@5f9d02cb: startup date [Thu Jun 08 15:12:48 KST 2017]; root of context hierarchy
+2017-06-08 15:12:48 INFO  XmlBeanDefinitionReader:317 - Loading XML bean definitions from class path resource [bean-config.xml]
+2017-06-08 15:12:50 INFO  AspectObject:17 - Create AspectObject
+2017-06-08 15:12:50 INFO  AspectObject:26 - 대상 메소드 doSomething 실행 전 
+2017-06-08 15:12:50 INFO  SomeObject:11 - SomeObject => do something
+2017-06-08 15:12:50 INFO  AspectObject:28 - 대상 메소드 doSomething 실행 후 
+2017-06-08 15:12:50 INFO  DummyObject:21 - DummyObject => name james
+2017-06-08 15:15:30 INFO  AnnotationConfigApplicationContext:582 - Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@5f9d02cb: startup date [Thu Jun 08 15:15:30 KST 2017]; root of context hierarchy
+2017-06-08 15:15:30 INFO  XmlBeanDefinitionReader:317 - Loading XML bean definitions from class path resource [bean-config.xml]
+2017-06-08 15:15:32 INFO  AspectObject:17 - Create AspectObject
+2017-06-08 15:15:32 INFO  AspectObject:44 - doSomething 실행 전 
+2017-06-08 15:15:32 INFO  AspectObject:27 - doSomething 실행 전 
+2017-06-08 15:15:32 INFO  SomeObject:11 - SomeObject => do something
+2017-06-08 15:15:32 INFO  AspectObject:29 - doSomething 실행 후 
+2017-06-08 15:15:32 INFO  AspectObject:46 - doSomething 실행 후 
+2017-06-08 15:15:32 INFO  DummyObject:21 - DummyObject => name james
+2017-06-08 15:17:57 INFO  AnnotationConfigApplicationContext:582 - Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@5f9d02cb: startup date [Thu Jun 08 15:17:57 KST 2017]; root of context hierarchy
+2017-06-08 15:17:58 INFO  XmlBeanDefinitionReader:317 - Loading XML bean definitions from class path resource [bean-config.xml]
+2017-06-08 15:17:59 INFO  AspectObject:17 - Create AspectObject
+2017-06-08 15:17:59 INFO  AspectObject:44 - doSomething 실행 전 
+2017-06-08 15:17:59 INFO  AspectObject:27 - doSomething 실행 전 
+2017-06-08 15:17:59 INFO  SomeObject:11 - SomeObject => do something
+2017-06-08 15:17:59 INFO  AspectObject:29 - doSomething 실행 후 
+2017-06-08 15:17:59 INFO  AspectObject:46 - doSomething 실행 후 
+2017-06-08 15:17:59 INFO  AspectObject:60 - printName 실행 전 
+2017-06-08 15:17:59 INFO  DummyObject:21 - DummyObject => name james
+2017-06-08 15:17:59 INFO  AspectObject:62 - printName 실행 후 
+2017-06-08 15:18:37 INFO  AnnotationConfigApplicationContext:582 - Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@5f9d02cb: startup date [Thu Jun 08 15:18:37 KST 2017]; root of context hierarchy
+2017-06-08 15:18:38 INFO  XmlBeanDefinitionReader:317 - Loading XML bean definitions from class path resource [bean-config.xml]
+2017-06-08 15:18:40 INFO  AspectObject:17 - Create AspectObject
+2017-06-08 15:18:40 INFO  AspectObject:44 - doSomething 실행 전 
+2017-06-08 15:18:40 INFO  AspectObject:27 - doSomething 실행 전 
+2017-06-08 15:18:40 INFO  SomeObject:11 - SomeObject => do something
+2017-06-08 15:18:40 INFO  AspectObject:29 - doSomething 실행 후 
+2017-06-08 15:18:40 INFO  AspectObject:46 - doSomething 실행 후 
+2017-06-08 15:18:40 INFO  AspectObject:76 - printName 실행 전 
+2017-06-08 15:18:40 INFO  AspectObject:60 - printName 실행 전 
+2017-06-08 15:18:40 INFO  DummyObject:21 - DummyObject => name james
+2017-06-08 15:18:40 INFO  AspectObject:62 - printName 실행 후 
+2017-06-08 15:18:40 INFO  AspectObject:78 - printName 실행 후 
+2017-06-08 15:22:57 INFO  AnnotationConfigApplicationContext:582 - Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@5f9d02cb: startup date [Thu Jun 08 15:22:57 KST 2017]; root of context hierarchy
+2017-06-08 15:22:57 INFO  XmlBeanDefinitionReader:317 - Loading XML bean definitions from class path resource [bean-config.xml]
+2017-06-08 15:22:59 INFO  AspectObject:17 - Create AspectObject
+2017-06-08 15:22:59 INFO  AspectObject:44 - onAroundDoSomeMethod doSomething 실행 전 
+2017-06-08 15:22:59 INFO  AspectObject:27 - onAroundDoSomeMethod doSomething 실행 전 
+2017-06-08 15:22:59 INFO  SomeObject:11 - SomeObject => do something
+2017-06-08 15:22:59 INFO  AspectObject:29 - onAroundDoSomeMethod doSomething 실행 후 
+2017-06-08 15:22:59 INFO  AspectObject:46 - onAroundDoSomeMethod doSomething 실행 후 
+2017-06-08 15:22:59 INFO  AspectObject:78 - onDummyObjectAllMethod printName 실행 전 
+2017-06-08 15:22:59 INFO  AspectObject:61 - onDummyObjectPrintNameMethod printName 실행 전 
+2017-06-08 15:22:59 INFO  DummyObject:21 - DummyObject => name james
+2017-06-08 15:22:59 INFO  AspectObject:63 - onDummyObjectPrintNameMethod printName 실행 후 
+2017-06-08 15:22:59 INFO  AspectObject:80 - onDummyObjectAllMethod printName 실행 후 
+2017-06-08 15:23:59 INFO  AnnotationConfigApplicationContext:582 - Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@5f9d02cb: startup date [Thu Jun 08 15:23:59 KST 2017]; root of context hierarchy
+2017-06-08 15:23:59 INFO  XmlBeanDefinitionReader:317 - Loading XML bean definitions from class path resource [bean-config.xml]
+2017-06-08 15:24:01 INFO  AspectObject:17 - Create AspectObject
+2017-06-08 15:24:01 INFO  AspectObject:96 - onAllClassAllMethod someObject 실행 전 
+2017-06-08 15:24:01 INFO  AspectObject:98 - onAllClassAllMethod someObject 실행 후 
+2017-06-08 15:24:01 INFO  AspectObject:96 - onAllClassAllMethod doSomething 실행 전 
+2017-06-08 15:24:01 INFO  SomeObject:11 - SomeObject => do something
+2017-06-08 15:24:01 INFO  AspectObject:98 - onAllClassAllMethod doSomething 실행 후 
+2017-06-08 15:24:01 INFO  AspectObject:96 - onAllClassAllMethod printName 실행 전 
+2017-06-08 15:24:01 INFO  DummyObject:21 - DummyObject => name james
+2017-06-08 15:24:01 INFO  AspectObject:98 - onAllClassAllMethod printName 실행 후 

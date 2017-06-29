@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="db">
+    <select id="getSuperAdmin" resultType="String" parameterType="String">
+        SELECT user_name
+        FROM users
+        WHERE user_type=#{user_type}
+        LIMIT 1
+    </select>
+
+    <select id="getAdminUserNameList" resultType="String" parameterType="String">
+        SELECT user_name
+        FROM users
+        WHERE user_type IN (#{one}, #{two})
+    </select>
+
+    <select id="getAllUserNameList" resultType="String">
+        SELECT user_name
+        FROM users
+    </select>
+
+    <resultMap id="user_result" type="com.exmybatis.domain.User">
+        <result property="no" column="user_no"/>
+        <result property="id" column="user_id"/>
+        <result property="name" column="user_name"/>
+        <result property="email" column="user_email"/>
+        <result property="type" column="user_type"/>
+    </resultMap>
+
+    <select id="getAllUser" resultMap="user_result">
+        SELECT *
+        FROM users
+    </select>
+
+    <select id="getPagingUserList" parameterType="hashMap" resultMap="user_result">
+        SELECT *
+        FROM users
+        <where>
+            <if test='user_id != null or user_id.equals("")'>
+            user_id like #{user_id}
+            </if>
+
+            <if test='user_no != null and !user_no.equals("")'>
+            AND user_no > #{user_no}
+            </if>
+        </where>
+        ORDER BY user_no ASC
+        LIMIT #{offset}, #{noOfRecords}
+    </select>
+
+
+
+    <select id="getPagingUserListCount" parameterType="hashMap"  resultType="int">
+        SELECT count(*)
+        FROM users
+        <where>
+            <if test='user_id != null or user_id.equals("")'>
+             user_id like #{user_id}
+            </if>
+
+            <if test='user_no != null and !user_no.equals("")'>
+            AND user_no > #{user_no}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectBool" parameterType="hashMap" resultType="int">
+        <if test="value == true">
+            select 1000
+        </if>
+
+        <if test="value == false">
+            select 100
+        </if>
+    </select>
+
+    <select id="updateAdminName" parameterType="String">
+        UPDATE users
+        SET user_name = #{newAdminName}
+        WHERE user_name = #{findAdminName}
+    </select>
+
+    <select id="findAdminEMail" parameterType="com.exmybatis.domain.User" resultType="String">
+        SELECT user_email
+        FROM users
+        WHERE user_id = #{id}
+        <if test='type != null and !type.equals("")'>
+           AND user_type = #{type}
+        </if>
+    </select>
+
+    <insert id="insertAdmin" parameterType="String">
+        INSERT INTO users (user_id, user_name, user_email, user_type)
+        VALUES (#{user_id}, #{user_name}, #{user_email}, #{user_type})
+    </insert>
+
+    <select id="selectAllUserCount" resultType="int">
+        SELECT count(*)
+        FROM users;
+    </select>
+
+    <select id="selectLists" parameterType="Map" resultType="String">
+        <if test="value == true">
+            SELECT user_email
+            FROM users
+            WHERE user_id IN
+            <foreach collection="saList" item="item" index="index" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="value == false">
+            SELECT user_email
+            FROM users
+            WHERE user_id IN
+            <foreach collection="adminList" item="item" index="index" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        </if>
+
+    </select>
+</mapper>
+

@@ -1,0 +1,19 @@
+2017-06-08 15:29:51 INFO  AnnotationConfigApplicationContext:582 - Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@5f9d02cb: startup date [Thu Jun 08 15:29:51 KST 2017]; root of context hierarchy
+2017-06-08 15:29:51 INFO  XmlBeanDefinitionReader:317 - Loading XML bean definitions from class path resource [app-config.xml]
+2017-06-08 15:29:52 INFO  AspectObject:17 - Create AspectObject
+2017-06-08 15:29:52 INFO  AspectObject:95 - onAllClassAllMethod someObject 실행 전 
+2017-06-08 15:29:52 INFO  AspectObject:97 - onAllClassAllMethod someObject 실행 후 
+2017-06-08 15:29:53 INFO  AspectObject:95 - onAllClassAllMethod doSomething 실행 전 
+2017-06-08 15:29:53 INFO  AspectObject:44 - onAroundDoSomeMethod doSomething 실행 전 
+2017-06-08 15:29:53 INFO  AspectObject:27 - onAroundDoSomeMethod doSomething 실행 전 
+2017-06-08 15:29:53 INFO  SomeObject:11 - SomeObject => do something
+2017-06-08 15:29:53 INFO  AspectObject:29 - onAroundDoSomeMethod doSomething 실행 후 
+2017-06-08 15:29:53 INFO  AspectObject:46 - onAroundDoSomeMethod doSomething 실행 후 
+2017-06-08 15:29:53 INFO  AspectObject:97 - onAllClassAllMethod doSomething 실행 후 
+2017-06-08 15:29:53 INFO  AspectObject:95 - onAllClassAllMethod printName 실행 전 
+2017-06-08 15:29:53 INFO  AspectObject:78 - onDummyObjectAllMethod printName 실행 전 
+2017-06-08 15:29:53 INFO  AspectObject:61 - onDummyObjectPrintNameMethod printName 실행 전 
+2017-06-08 15:29:53 INFO  DummyObject:21 - DummyObject => name james
+2017-06-08 15:29:53 INFO  AspectObject:63 - onDummyObjectPrintNameMethod printName 실행 후 
+2017-06-08 15:29:53 INFO  AspectObject:80 - onDummyObjectAllMethod printName 실행 후 
+2017-06-08 15:29:53 INFO  AspectObject:97 - onAllClassAllMethod printName 실행 후 

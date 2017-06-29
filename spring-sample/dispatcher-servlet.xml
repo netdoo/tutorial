@@ -1,0 +1,49 @@
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns="http://www.springframework.org/schema/mvc"
+             xmlns:context="http://www.springframework.org/schema/context"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:p="http://www.springframework.org/schema/p"
+             xmlns:mvc="http://www.springframework.org/schema/mvc"
+
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+             http://www.springframework.org/schema/beans/spring-beans.xsd
+             http://www.springframework.org/schema/mvc
+             http://www.springframework.org/schema/mvc/spring-mvc.xsd
+             http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd
+             http://www.springframework.org/schema/context
+             http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+    <!--<context:component-scan base-package="com.helloworld" />-->
+
+
+    <!--servlet-ApplicationContext에서는 context:exclude-filter를 통해 @Controller만 스캔 
+    http://52.79.131.200/index.php/2016/03/24/root-context-and-servlet-context/
+    -->
+    <context:component-scan base-package="com.helloworld" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+    </context:component-scan>
+
+    <mvc:annotation-driven />
+
+
+
+    <annotation-driven />
+
+    <beans:bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <beans:property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+        <beans:property name="prefix" value="/jsp/" />
+        <beans:property name="suffix" value=".jsp" />
+    </beans:bean>
+
+
+    <mvc:resources mapping="/pages/**" location="/WEB-INF/pages/" />
+
+
+</beans:beans>
+
+

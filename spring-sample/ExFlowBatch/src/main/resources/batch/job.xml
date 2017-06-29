@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:batch="http://www.springframework.org/schema/batch"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+      http://www.springframework.org/schema/context
+      http://www.springframework.org/schema/context/spring-context-3.2.xsd
+      http://www.springframework.org/schema/batch
+      http://www.springframework.org/schema/batch/spring-batch.xsd">
+
+    <import resource="../applicationContext.xml"/>
+
+    <bean id="stepTask" class="com.exflowbatch.batch.PrintTasklet">
+        <property name="message" value="step task"/>
+    </bean>
+
+
+    <bean id="step1Task" class="com.exflowbatch.batch.PrintTasklet">
+        <property name="message" value="step1 task"/>
+    </bean>
+
+    <bean id="step2Task" class="com.exflowbatch.batch.PrintTasklet">
+        <property name="message" value="step2 task"/>
+    </bean>
+
+    <bean id="step3Task" class="com.exflowbatch.batch.PrintTasklet">
+        <property name="message" value="step3 task"/>
+    </bean>
+
+    <bean id="step4Task" class="com.exflowbatch.batch.PrintTasklet">
+        <property name="message" value="step4 task"/>
+    </bean>
+
+    <batch:job id="myBatchJob" job-repository="jobRepository" parent="simpleJob">
+        <batch:step id="stepOnly">
+            <batch:tasklet ref="stepTask" transaction-manager="transactionManager">
+
+            </batch:tasklet>
+        </batch:step>
+    </batch:job>
+
+
+    <!--
+        병행처리가 필요한 응용프로그램 로직은 서로 다른 책임으로 분할될 뿐만 아니라,
+        각 단계에서 할당되면 그것이 한 프로세스에서 병행처리가 될 수 있다. Parallel Step 수행은 사용하고 구성하기 쉽다.
+        예를 들어, step3 와 병행처리할 스텝들(step1, step2)은 다음처럼 흐름을 설정하면 된다.
+    -->
+    <batch:job id="myFlowBatchJob" job-repository="jobRepository" parent="simpleJob">
+        <batch:split id="split1" task-executor="taskExecutor" next="step4">
+            <batch:flow>
+                <batch:step id="step1" next="step2">
+                    <batch:tasklet ref="step1Task"/>
+                </batch:step>
+                <batch:step id="step2">
+                    <batch:tasklet ref="step2Task"/>
+                </batch:step>
+            </batch:flow>
+            <batch:flow>
+                <batch:step id="step3">
+                    <batch:tasklet ref="step3Task"/>
+                </batch:step>
+            </batch:flow>
+        </batch:split>
+        <batch:step id="step4">
+            <batch:tasklet ref="step4Task"/>
+        </batch:step>
+    </batch:job>
+
+    <bean id="taskExecutor" class="org.springframework.core.task.SimpleAsyncTaskExecutor"/>
+
+</beans>

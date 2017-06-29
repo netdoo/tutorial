@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns="http://www.springframework.org/schema/mvc"
+             xmlns:context="http://www.springframework.org/schema/context"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:mvc="http://www.springframework.org/schema/mvc"
+             xmlns:aop="http://www.springframework.org/schema/aop"
+             xmlns:tx="http://www.springframework.org/schema/tx"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+             http://www.springframework.org/schema/beans/spring-beans.xsd
+             http://www.springframework.org/schema/mvc
+             http://www.springframework.org/schema/mvc/spring-mvc.xsd
+             http://www.springframework.org/schema/context
+             http://www.springframework.org/schema/context/spring-context.xsd
+             http://www.springframework.org/schema/aop
+             http://www.springframework.org/schema/aop/spring-aop.xsd
+             http://www.springframework.org/schema/tx
+             http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+   <!--
+       servlet-ApplicationContext에서는 context:exclude-filter를 통해 @Controller만 스캔
+       http://52.79.131.200/index.php/2016/03/24/root-context-and-servlet-context/
+
+       root-ApplicationContext에서는 component-scan을 하는데 context:exclude-filter를 통해 @Controller 만 제거하고 스캔하고 있고,
+       servlet-ApplicationContext에서는 context:exclude-filter를 통해 @Controller만 스캔하는 것을 알 수 있다. 
+
+       parent(=root)/child 구조로 bean을 스캔하는 이유는 bean의 의존관계에 영향을 미친다.
+       특히 AOP등의 transaction 은 bean설정을 통해 point-cut이 결정되는데 
+       parent/child 두군데 bean이 등록되어있다면 transaction을 처리못하는 경우가 종종 발생한다. (이 부분이 중요)
+
+       따라서 명시적으로 child는 웹애플리케이션 컨텍스트를 담당하므로 
+       웹요청에 응답해주는 Controller가 위치하는 것이 맞고,  
+       parent의 경우 Service 레이어와 Repository, DB 관련 bean 설정을 담고있어야 하는 것이 올바른 설정이라고 할 수 있겠다. 
+    -->
+    <context:component-scan base-package="com.exmybatis" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+        <context:include-filter type="regex" expression="com\.exmybatis.util.Paging" />
+    </context:component-scan>
+
+
+    <annotation-driven />
+
+    <beans:bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <beans:property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+        <beans:property name="prefix" value="/jsp/" />
+        <beans:property name="suffix" value=".jsp" />
+    </beans:bean>
+
+
+    <mvc:resources mapping="/pages/**" location="/WEB-INF/pages/" />
+    <mvc:resources mapping="/resources/**" location="/resources/" />
+
+
+    <!-- 다국어 처리를 위해서 locale 설정을 추가함. -->
+
+    <beans:bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <beans:property name="basenames">
+            <beans:list>
+                <beans:value>locale</beans:value>
+            </beans:list>
+        </beans:property>
+        <beans:property name="defaultEncoding" value="UTF-8"/>
+    </beans:bean>
+
+    <beans:bean id="localeResolver"	class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+        <beans:property name="defaultLocale" value="ko" />
+    </beans:bean>
+
+    <mvc:interceptors>
+        <beans:bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+            <beans:property name="paramName" value="lang" />
+        </beans:bean>
+    </mvc:interceptors>
+
+</beans:beans>
+
+
