@@ -1,0 +1,32 @@
+{  
+   "portalSites":[
+      {  
+         "portal":"NAVER",
+         "nameText":"네이버",
+         "subPages":[
+            {  
+               "name":"지도",
+               "url":"http://map.naver.com/"
+            },
+            {  
+               "name":"뉴스",
+               "url":"http://news.naver.com/"
+            }
+         ]
+      },
+      {  
+         "portal":"DAUM",
+         "nameText":"다음",
+         "subPages":[
+            {
+               "name":"지도",
+               "url": "http://map.daum.net/"
+            },
+            {
+               "name":"뉴스",
+               "url":"http://media.daum.net/"
+            }
+         ]
+      }
+   ]
+}
