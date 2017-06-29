@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko" >
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <!-- Angular Material style sheet -->
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+  <!-- Angular Material requires Angular.js Libraries -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+
+  <!-- Angular Material Library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+  
+  <!-- Your application bootstrap  -->
+  <script type="text/javascript">
+
+    var myApp = angular.module('myApp', ['ngMaterial', 'ngAnimate']);
+
+    myApp.controller('MainCtrl', ['$scope', '$mdDialog', function ($scope, $mdDialog) {
+        $scope.imageList = [
+            {name : 'iu', selected :false},
+            {name : 'google', selected : false}
+            ];
+
+        $scope.init = function(obj) {
+            console.log('init' + obj);
+        }
+
+        $scope.isChecked = function(item) {
+            angular.forEach($scope.imageList, function(obj) {
+                if (obj.name === item.name) {
+                    console.log('isChecked : ' + obj.name + ' ' + obj.selected);
+                }     
+            });
+        }
+
+        $scope.showImage =function(name) {
+            var selected = false;
+            angular.forEach($scope.imageList, function(obj) {
+                if (obj.name === name) {
+                    if (obj.selected === true) {
+                        selected = true;
+                    }
+                }
+            });
+
+            return selected;
+        }
+
+    }]);
+  </script>
+  <style>
+    .content-area {
+        border: 1px solid black;
+        margin-top: 10px;
+        padding: 10px;
+    }
+
+    .animate-show-hide {
+        transition: all linear 0.5s;
+    }
+    .animate-show-hide.ng-hide {
+        opacity: 0;
+    }
+  </style>
+</head>
+<body ng-app="myApp" ng-cloak>
+    <div ng-controller="MainCtrl" class="md-padding" ng-cloak layout="column">
+        <md-card>
+            <div layout="row">
+                <md-input-container>
+                    <div ng-repeat="item in imageList">
+                        <md-checkbox ng-model="item.selected" ng-change="isChecked(item)" aria-label="item.name">{{item.name}}</md-checkbox>
+                    </div>
+                </md-input-container>
+            </div>
+            </md-card-content>
+        </md-card>
+
+
+        <div class="check-element animate-show-hide" ng-show="showImage('iu')">
+            <img src="img/iu.png" ng-show="showImage('iu')" ng-init="init('iu')" />
+        </div>
+
+        <div class="check-element animate-show-hide" ng-show="showImage('google')">
+            <img src="img/google.png" ng-show="showImage('google')" ng-init="init('google')" />
+        </div>
+
+        <b>{{imageList}}</b>
+    </div>
+</body>
+</html>

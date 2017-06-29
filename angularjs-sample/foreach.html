@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AngularJS with Modal</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+<script type="text/javascript">
+
+    var myApp = angular.module('myApp', []);
+
+    myApp.controller('MainCtrl', ['$scope', function ($scope) {
+        $scope.singleValues = ['Hello', 'World'];
+        $scope.mapValues = {name: 'james', gender: 'male'};
+        $scope.jsonValues = [{name : 'james', gender : 'male'},
+                      {name : 'jane', gender : 'female'}
+                     ];
+    }]);
+
+    console.log('=== key / value object array === ');
+    var mapValues = {name: 'james', gender: 'male'};
+    mapValues['jane'] = 'female';
+
+    angular.forEach(mapValues, function(value, key) {
+        console.log(key + ': ' + value);
+    });
+
+    console.log('=== single array ==== ');
+    var singleValues = ['aaa', 'bbb', 'ccc'];
+    singleValues.push('ddd');
+
+    angular.forEach(singleValues, function(value) {
+        console.log(value);
+    });
+
+    console.log('=== json object array ===');
+    var jsonValues = [{name : 'james', gender : 'male'},
+                      {name : 'jane', gender : 'female'}
+                     ];
+    jsonValues.push({name:'tomas', gender:'male'});
+
+    angular.forEach(jsonValues, function(obj) {
+        console.log(obj.name + ' ' + obj.gender);
+    });
+
+</script>
+</head>
+
+<body ng-app="myApp">
+    <div ng-controller="MainCtrl">
+
+    iterate single values
+    <ul>
+        <li ng-repeat="obj in singleValues">
+            {{obj}}
+        </li>
+    </ul>
+
+    <br/>
+    iterate json values 
+    <ul>
+        <li ng-repeat="obj in jsonValues">
+            {{obj.name  + ' ' + obj.gender}}
+        </li>
+    </ul>
+
+    <br/>
+    iterate map values 
+    <ul>
+        <li ng-repeat='(key, value) in mapValues'>
+            Key: {{key}}, value: {{value}}
+        </li>
+    </ul>
+
+    </div>
+</body>
+</html>

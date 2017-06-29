@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<title>Hello World, AngularJS</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.17/angular.min.js"></script>
+<script type="text/javascript">
+    var myApp = angular.module('myApp', []);
+    
+    /// 컨트롤러는 JSON 데이터로 서버와 통신하는 함수(이벤트 함수도!)와 데이터 만을 다룬다.
+    myApp.controller('MainCtrl', ['$scope', function ($scope) {
+    
+        /// $scope 는 DOM의 현재 요소/영역을 참조하며(this 와는 다르다), 
+        /// 요소안의 데이터와 로직을 주시하는 아주 멋진 관찰 기능을 가지고 있다. 
+    
+        $scope.emails = {};
+
+        $scope.emails.messages = [{
+            "from": "Steve Jobs",
+            "subject": "I think I'm holding my phone wrong :/",
+            "sent": "2013-10-01T08:05:59Z"
+        },{
+            "from": "Ellie Goulding",
+            "subject": "I've got Starry Eyes, lulz",
+            "sent": "2013-09-21T19:45:00Z"
+        },{
+            "from": "Michael Stipe",
+            "subject": "Everybody hurts, sometimes.",
+            "sent": "2013-09-12T11:38:30Z"
+        },{
+            "from": "Jeremy Clarkson",
+            "subject": "Think I've found the best car... In the world",
+            "sent": "2013-09-03T13:15:11Z"
+        }];
+    }]);
+</script>
+</head>
+<body>
+    <div ng-app="myApp">
+        <div ng-controller="MainCtrl">
+            <ul>
+                <li ng-repeat="message in emails.messages">
+                    <p>From: {{ message.from }}</p>
+                    <p>Subject: {{ message.subject }}</p>
+                    <p>{{ message.sent | date:'MMM d, y h:mm:ss a' }}</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

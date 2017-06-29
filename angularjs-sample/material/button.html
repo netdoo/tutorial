@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko" >
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <!-- Angular Material style sheet -->
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+  <!-- Angular Material requires Angular.js Libraries -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+
+  <!-- Angular Material Library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+  
+  <!-- Your application bootstrap  -->
+  <script type="text/javascript">
+
+    var myApp = angular.module('myApp', ['ngMaterial']);
+
+    myApp.config(function($mdIconProvider) {
+        $mdIconProvider
+            .iconSet("call", 'img/icons/sets/communication-icons.svg', 24)
+            .iconSet("social", 'img/icons/sets/social-icons.svg', 24);
+    });
+
+    myApp.controller('MainCtrl', ['$scope', '$mdDialog', function ($scope, $mdDialog) {
+        $scope.user = {
+            name : 'james',
+            email : '',
+            bbs : '',
+            agree : '',
+            fruit : ''
+        };
+
+        $scope.alert = window.alert;
+        
+        $scope.showAlert = function(btn) {
+            alert('click ' + btn);
+        }
+    }]);
+  </script>
+</head>
+<body ng-app="myApp" ng-cloak>
+    <div ng-controller="MainCtrl" ng-cloak>
+        <md-content>    
+            <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+                <md-button class="md-raised" ng-click="showAlert('button');">
+                    <md-tooltip md-direction="bottom">Refresh</md-tooltip>
+                    Button
+                </md-button>
+                <md-button class="md-raised md-primary">Primary</md-button>
+                <md-button ng-disabled="true" class="md-raised md-primary">Disabled</md-button>
+                <md-button class="md-raised md-warn">Warn</md-button>
+                <md-button aria-label="Open phone interactions menu" class="md-icon-button" ng-click="showAlert('phone')">
+                    <md-icon md-menu-origin md-svg-icon="call:phone"></md-icon>
+                </md-button>
+                <md-button aria-label="Open phone interactions menu" class="md-icon-button" ng-click="showAlert('socialgroup')">
+                    <md-icon md-menu-origin md-svg-icon="social:group"></md-icon>
+                </md-button>
+            </section>
+        </md-content>
+    </div>
+</body>
+</html>

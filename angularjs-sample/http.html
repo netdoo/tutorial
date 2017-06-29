@@ -1,0 +1,211 @@
+﻿<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<title>Hello World, AngularJS</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+<script type="text/javascript">
+    var myApp = angular.module('myApp', []);
+    myApp.controller('IPLookupController', ['$scope', '$http', function ($scope, $http) {
+        $scope.ip = {}; // 사용자 객체를 생성
+        $scope.ip.time = ''; // 빈 문자열로 초기화
+        $scope.ip.text = ''; // 빈 문자열로 초기화
+       
+        $scope.printIP = function() {
+            // 서버에 IP 주소를 요청
+            $http({
+                method: 'GET',
+                url: 'http://api.ipify.org/'
+            }).success(function (data, status, headers, config) {
+                var n = new Date();
+                $scope.ip.time = n.getHours() + "시" + n.getMinutes() + "분" + n.getSeconds() + "초";
+                $scope.ip.text = data;
+            }).error(function (data, status, headers, config) {
+                console.log('error');
+            });
+        }
+    }]);
+
+    myApp.controller('HelloWorldController', ['$scope', function($scope) {
+        $scope.showHelloWorld = function(msg) {
+            alert('hello world ' + msg);
+        }
+    }]);
+
+    myApp.controller('RedirectController', RedirectController);
+    RedirectController.$inject = ['$scope', '$window'];
+    function RedirectController($scope, $window) {
+        $scope.redirectGoogle = function() {
+            $window.location.href = 'http://www.google.co.kr';
+        }
+    }
+
+    myApp.controller('FormSubmitController', ['$scope', '$http', function($scope, $http) {
+        $scope.myForm = {};
+        $scope.myForm.name = "james";
+        $scope.myForm.submitForm = function() {
+
+            var dataObject = {
+                message: "test message"
+            };
+
+            $http({
+                method: 'POST',
+                url: 'http://localhost:8080/postecho',
+                data : $.param({message:"helloworld"}),
+                headers : {'Content-Type': 'application/x-www-form-urlencoded'},
+                transformResponse: function (data, headersGetter, status) {
+                    // angularJS는 plain/text 응답값을 파싱할 수 없기 때문에, 
+                    // 다음과 같이 HTTP 응답값을 JSON 데이터 값으로 변경해 주어야 함.
+                    return {response: data};
+                }
+            }).success(function (data, status, headers, config) {
+                alert(data.response);
+            }).error(function (data, status, headers, config) {
+                alert('error');
+            });
+        }
+    }]);
+
+    myApp.controller('CheckBoxController', ['$scope', function($scope) {
+        
+        $scope.myForm = {};
+
+        $scope.checkboxModel = {
+            value1 : true,
+            value2 : 'YES',
+            value3 : true
+        };        
+
+        $scope.toggleCheck = function() {
+            var date = new Date();
+            if (date.getSeconds() % 2 == 0) {
+                $scope.checkboxModel.value3 = false;
+            } else {
+                $scope.checkboxModel.value3 = true;
+            }
+
+            return $scope.checkboxModel.value3;
+        }
+    }]);
+
+    myApp.controller('CheckBoxController2', ['$scope', function($scope) {
+        
+        $scope.myForm = {};
+
+        $scope.myForm.checkboxModel = {
+            value1 : true,
+            value2 : 'YES',
+            value3 : true
+        };        
+
+        $scope.myForm.toggleCheck = function() {
+            var date = new Date();
+            if (date.getSeconds() % 2 == 0) {
+                $scope.myForm.checkboxModel.value3 = false;
+            } else {
+                $scope.myForm.checkboxModel.value3 = true;
+            }
+
+            return $scope.myForm.checkboxModel.value3;
+        }
+    }]);
+
+    myApp.controller('SelectBoxController', ['$scope', function($scope) {
+        $scope.myForm = {};
+        $scope.myForm.car ='nissan';
+    }]);
+
+    myApp.controller('SelectBoxController2', ['$scope', function($scope) {
+        $scope.myForm = {};
+        $scope.myForm.car ='nissan';
+        $scope.myForm.options = [
+              { id : "nissan", name: "Nissan" }
+             ,{ id : "toyota", name: "Toyota" }
+             ,{ id : "fiat"  , name: "Fiat" }
+        ];
+    }]);
+
+</script>
+</head>
+<body>
+    <div ng-app="myApp">
+        <div ng-controller="IPLookupController">
+            <button ng-click="printIP()">
+                print ip
+            </button>
+            <p>{{ ip.time + ' My IP : ' + ip.text }}</p>
+        </div>
+        <div ng-controller="HelloWorldController">
+            <button ng-click="showHelloWorld('2017')">
+                show hello world
+            </button>
+        </div>
+        <div ng-controller="RedirectController">
+            <button ng-click="redirectGoogle()">
+                go to google.co.kr
+            </button> 
+        </div>
+        <div ng-controller="FormSubmitController">
+            <form>
+                <input type="text" id="name" ng-model="myForm.name" ng-minlength="5" ng-maxlength="10" placeholder="input name">
+                <button ng-click="myForm.submitForm()">
+                    Submit Form
+                </button>
+            </form>
+        </div>
+
+    <div ng-controller="CheckBoxController">
+        <form name="myForm" >
+            <label>Value1:<input type="checkbox" ng-model="checkboxModel.value1"></label><br/>
+            <label>Value2:<input type="checkbox" ng-model="checkboxModel.value2" ng-true-value="'YES'" ng-false-value="'NO'"></label><br/>
+            <label>Value3:<input type="checkbox" ng-model="checkboxModel.value3" ng-checked="toggleCheck()" ></label><br/>
+            <tt>value1 = {{checkboxModel.value1}}</tt><br/>
+            <tt>value2 = {{checkboxModel.value2}}</tt><br/>
+            <tt>value3 = {{checkboxModel.value3}}</tt><br/>
+        </form>
+    </div>
+
+    <div ng-controller="CheckBoxController2">
+        <form>
+            <label>Value1:<input type="checkbox" ng-model="myForm.checkboxModel.value1"></label><br/>
+            <label>Value2:<input type="checkbox" ng-model="myForm.checkboxModel.value2" ng-true-value="'YES'" ng-false-value="'NO'"></label><br/>
+            <label>Value3:<input type="checkbox" ng-model="myForm.checkboxModel.value3" ng-checked="myForm.toggleCheck()" ></label><br/>
+            <tt>value1 = {{myForm.checkboxModel.value1}}</tt><br/>
+            <tt>value2 = {{myForm.checkboxModel.value2}}</tt><br/>
+            <tt>value3 = {{myForm.checkboxModel.value3}}</tt><br/>
+        </form>
+    </div>
+
+    <div ng-controller="SelectBoxController" >
+        <form>
+            <select ng-model="myForm.car">
+                <option value="nissan">Nissan</option>
+                <option value="toyota">Toyota</option>
+                <option value="fiat">Fiat</option>
+            </select>
+        </form>
+
+        <div>
+            {{myForm.car}}
+        </div>
+    </div>
+
+
+    <div ng-controller="SelectBoxController2">
+        <form>
+            <select ng-model="myForm.car" ng-options="obj.id as obj.name for obj in myForm.options">
+                
+            </select>
+        </form>
+
+        <div>
+            {{myForm.car}}
+        </div>
+    </div>
+
+</body>
+</html>

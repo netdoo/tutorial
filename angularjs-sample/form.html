@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AngularJS with form validation, form submit</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+<script type="text/javascript">
+
+    var myApp = angular.module('myApp', []);
+
+    myApp.controller('MainCtrl', ['$scope', function ($scope) {
+        $scope.text = 'Hello World';
+        $scope.echo = {};
+        $scope.echo.message = 'james';
+        $scope.echo.invalid = {
+            message : {
+                minlength : '최소 3글자 이상 입력해야합니다.',
+                maxlength : '최대 9글자 미만 입력해야 합니다.'
+            }
+        };
+
+        $scope.echo.submitForm = function(form) {
+            if (form.$valid) {                
+                document.getElementById('echoform').action = 'http://127.0.0.1:8080/postecho';
+                document.getElementById('echoform').submit();
+            } else {
+                if (form.message.$error.minlength) {
+                    alert('invalid min param' + $scope.echo.invalid.message.minlength);
+                } else if (form.message.$error.maxlength) {
+                    alert('invalid max param' + $scope.echo.invalid.message.maxlength);
+                }
+            }
+        }
+    }]);
+</script>
+
+<style>
+input.ng-invalid {
+    border: 5px solid red;
+}
+
+input.ng-valid {
+    /*
+    background-color: lightgreen;
+    */
+}
+
+</style>
+</head>
+
+<body ng-app="myApp" ng-controller="MainCtrl">
+    <form id="echoform" name="echoform" method="post" novalidate ng-submit="echo.submitForm(echoform)">
+         <input type="text" ng-model="echo.message" name="message" required ng-minlength="3" ng-maxlength="9"/>
+         <input type="submit" ng-disabled="echoform.$invalid" class="btn" type="submit" value="submit">
+         <span ng-show="echoform.message.$error.minlength" role="alert">{{ echo.invalid.message.minlength }} .</span>
+         <span ng-show="echoform.message.$error.maxlength" role="alert">최대 9글자 미만 입력해야합니다.</span>
+    </form>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<title>Hello World, AngularJS</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.17/angular.min.js"></script>
+<script type="text/javascript">
+    var myApp = angular.module('myApp', []);
+    
+    /// 컨트롤러는 JSON 데이터로 서버와 통신하는 함수(이벤트 함수도!)와 데이터 만을 다룬다.
+    myApp.controller('MainCtrl', ['$scope', function ($scope) {
+    
+        /// $scope 는 DOM의 현재 요소/영역을 참조하며(this 와는 다르다), 
+        /// 요소안의 데이터와 로직을 주시하는 아주 멋진 관찰 기능을 가지고 있다. 
+    
+        $scope.main = {};
+        $scope.main.test1 = [];
+        $scope.main.test2 = [{
+            "some": "data"
+        }];
+        
+    }]);
+</script>
+</head>
+<body>
+    <div ng-app="myApp">
+        <div ng-controller="MainCtrl">
+            <p>Test 1: {{ main.test1.length > 0 && 'My data' || 'No data' }}</p>
+            <p>Test 2: {{ main.test2.length > 0 && 'My data' || 'No data' }}</p>
+        </div>
+    </div>
+</body>
+</html>
