@@ -40,6 +40,11 @@
             $scope.remove_chip = function(chip) {
                 console.log('remove : ' + chip);
             }
+
+            $scope.$watchCollection('tags', function(newVal, oldVal) {
+                console.log('new ' + newVal);
+                console.log('old ' + oldVal);
+            });
         }]);
     </script>
     <style>
@@ -73,7 +78,12 @@
 
 <body ng-app="MyApp">
     <div ng-controller="AppCtrl" layout="column" ng-cloak="">
-        <md-chips ng-model="tags" md-separator-keys="customKeys" md-enable-chip-edit="true" md-on-add="add_chip($chip)" md-on-remove="remove_chip($chip)" readonly="readonly" placeholder="Enter a fru" md-autofocus>
+        <md-chips ng-model="tags" md-separator-keys="customKeys" 
+        md-enable-chip-edit="true" 
+        md-on-add="add_chip($chip)" 
+        ng-change="remove_chip($chip)"
+        
+        readonly="readonly" placeholder="키워드 입력후 [엔터]" md-autofocus>
         </md-chips> 
     </div>
 </body>
