@@ -15,6 +15,7 @@ myApp.service('PagerService', function() {
         var startPage = currentPage - ((currentPage-1)%blockSize);
         var endPage = Math.min(startPage + (blockSize-1), totalPages);
 
+
         // more flexible pagination
         var midBlockPos = blockSize / 2;
 

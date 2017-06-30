@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdn.gitcdn.link/cdn/angular/bower-material/v1.1.1/angular-material.css">
+    <link rel="stylesheet" href="https://material.angularjs.org/1.1.1/docs.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-route.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-114/svg-assets-cache.js"></script>
+    <script src="https://cdn.gitcdn.link/cdn/angular/bower-material/master/angular-material.js"></script>
+
+    <script type="text/javascript">
+        var myApp = angular.module('MyApp',['ngMaterial', 'ngMessages', 'material.svgAssetsCache']);
+        myApp.config(function($mdIconProvider) {
+            $mdIconProvider
+                .iconSet("call", 'img/icons/sets/communication-icons.svg', 24)
+                .iconSet("social", 'img/icons/sets/social-icons.svg', 24)
+                .iconSet("core", 'img/icons/sets/core-icons.svg', 24)
+                .icon('md-close', 'img/icons/ic_close_24px.svg', 24);
+        });
+
+        myApp.controller('AppCtrl',  ['$scope', '$mdDialog', '$mdConstant', function($scope, $mdDialog, $mdConstant) {
+            this.keys = [$mdConstant.KEY_CODE.ENTER, $mdConstant.KEY_CODE.COMMA];
+            $scope.tags = ['MBC','KBS','SBS'];
+            var semicolon = 186;
+            $scope.customKeys = [$mdConstant.KEY_CODE.ENTER, $mdConstant.KEY_CODE.COMMA, semicolon];
+
+            $scope.add_chip = function(chip) {
+                alert('add : ' + chip);
+            }
+
+            $scope.remove_chip = function(chip) {
+                alert('remove : ' + chip);
+            }
+        }]);
+    </script>
+    <style>
+
+    .md-chips.md-removable md-chip .md-chip-content {
+        padding-right: 12px;
+    }
+
+    .md-chips md-chip .md-chip-remove md-icon {
+        height: 18px;
+        width: 18px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.3);
+        transition: background 0.15s linear;
+        transform: translate3d(-50%, -50%, 0) scale(0.7);
+        color: white;
+        fill: white;
+    }
+
+    .md-chips md-chip .md-chip-remove md-icon:hover {
+        background: red;
+        transition: background 0.15s linear;
+    }
+
+    </style>
+</head>
+
+<body ng-app="MyApp">
+    <div ng-controller="AppCtrl" layout="column" ng-cloak="">
+        <md-chips ng-model="tags" md-separator-keys="customKeys"  md-on-add="add_chip($chip)" md-on-remove="remove_chip($chip)" readonly="readonly" placeholder="Enter a fru" md-autofocus>
+        </md-chips> 
+    </div>
+</body>
+</html>
