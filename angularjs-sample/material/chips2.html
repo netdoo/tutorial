@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdn.gitcdn.link/cdn/angular/bower-material/v1.1.1/angular-material.css">
+    <link rel="stylesheet" href="https://material.angularjs.org/1.1.1/docs.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-route.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-114/svg-assets-cache.js"></script>
+    <script src="https://cdn.gitcdn.link/cdn/angular/bower-material/master/angular-material.js"></script>
+
+    <script type="text/javascript">
+        var myApp = angular.module('MyApp',['ngMaterial', 'ngMessages', 'material.svgAssetsCache']);
+        myApp.config(function($mdIconProvider) {
+            $mdIconProvider
+                .iconSet("call", 'img/icons/sets/communication-icons.svg', 24)
+                .iconSet("social", 'img/icons/sets/social-icons.svg', 24)
+                .iconSet("core", 'img/icons/sets/core-icons.svg', 24)
+                .icon('md-close', 'img/icons/ic_close_24px.svg', 24);
+        });
+
+        myApp.controller('BasicDemoCtrl',  ['$scope', '$mdDialog', '$mdConstant', function($scope, $mdDialog, $mdConstant) {
+            
+            this.keys = [$mdConstant.KEY_CODE.ENTER, $mdConstant.KEY_CODE.COMMA];
+            $scope.tags = ['MBC','KBS','SBS'];
+            var semicolon = 186;
+            $scope.customKeys = [$mdConstant.KEY_CODE.ENTER, $mdConstant.KEY_CODE.COMMA, semicolon];
+
+            $scope.add_chip = function(chip) {
+                alert('add : ' + chip);
+            }
+
+            $scope.remove_chip = function(chip) {
+                alert('remove : ' + chip);
+            }
+
+            var self = this;
+
+    $scope.readonly = false;
+
+    // Lists of fruit names and Vegetable objects
+    $scope.fruitNames = ['Apple', 'Banana', 'Orange'];
+    $scope.roFruitNames = angular.copy(self.fruitNames);
+    $scope.editableFruitNames = angular.copy(self.fruitNames);
+
+    $scope.tags = [];
+    $scope.vegObjs = [
+      {
+        'name' : 'Broccoli',
+        'type' : 'Brassica'
+      },
+      {
+        'name' : 'Cabbage',
+        'type' : 'Brassica'
+      },
+      {
+        'name' : 'Carrot',
+        'type' : 'Umbelliferous'
+      }
+    ];
+
+    $scope.newVeg = function(chip) {
+      return {
+        name: chip,
+        type: 'unknown'
+      };
+    };
+  
+        }]);
+    </script>
+    <style>
+
+    .md-chips {
+	font-size: 15px
+}
+.md-chips md-chip {
+    border-radius: 3px
+}
+.md-chips md-chip .md-chip-remove md-icon {
+        height: 14px;
+        width: 14px
+}
+md-icon {
+height: 14px;
+width: 14px;
+min-height: 14px;
+min-width:14px
+}
+.md-contact-chips .md-chips md-chip .md-contact-avatar img {
+    border-radius: 13px
+}
+
+.chipsdemoBasicUsage .errors {
+  font-size: 12px;
+  color: #dd2c00;
+  margin-top: 10px; }
+
+.chipsdemoBasicUsage .custom-chips md-chip {
+  position: relative; }
+
+
+    .chipsdemoBasicUsage .custom-chips .md-chips.md-removable md-chip .md-chip-content {
+        padding-right: 12px;
+    }
+
+
+
+  .chipsdemoBasicUsage .custom-chips md-chip .md-chip-remove-container {
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    margin-right: 0;
+    height: 24px; }
+    .chipsdemoBasicUsage .custom-chips md-chip .md-chip-remove-container button.vegetablechip {
+      position: relative;
+      height: 24px;
+      width: 24px;
+      line-height: 30px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 50%;
+      border: none;
+      box-shadow: none;
+      padding: 0;
+      margin: 0;
+      transition: background 0.15s linear;
+      display: block; }
+      .chipsdemoBasicUsage .custom-chips md-chip .md-chip-remove-container button.vegetablechip md-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate3d(-50%, -50%, 0) scale(0.9);
+        height: 18px;
+        width: 18px;
+        color: white;
+        fill: white; }
+      .chipsdemoBasicUsage .custom-chips md-chip .md-chip-remove-container button.vegetablechip:hover, .chipsdemoBasicUsage .custom-chips md-chip .md-chip-remove-container button.vegetablechip:focus {
+        background: rgba(255, 0, 0, 0.8); }
+  .chipsdemoBasicUsage .custom-chips md-chip:not(.md-readonly) md-chip-template {
+    padding-right: 5px; }
+
+
+/*
+Copyright 2016 Google Inc. All Rights Reserved. 
+Use of this source code is governed by an MIT-style license that can be in foundin the LICENSE file at https://material.angularjs.org/license.
+*/
+    </style>
+</head>
+
+<body>
+<div ng-controller="BasicDemoCtrl" layout="column" ng-cloak="" class="chipsdemoBasicUsage" ng-app="MyApp">
+
+  <md-content class="md-padding" layout="column">
+    <h2 class="md-title">Use a custom chip template.</h2>
+
+    <md-chips class="custom-chips" ng-model="vegObjs" md-transform-chip="newVeg($chip)" md-separator-keys="customKeys"  md-enable-chip-edit="true"  md-on-add="add_chip($chip)" md-on-remove="remove_chip($chip)" md-autofocus>
+      <md-chip-template>
+        <span>
+          <strong> {{$chip.name}}</strong>
+        </span>
+      </md-chip-template>
+      <button md-chip-remove="" class="md-primary vegetablechip">
+        <md-icon md-svg-icon="md-close"></md-icon>
+      </button>
+    </md-chips>
+
+<md-chips ng-model="tags" md-separator-keys="customKeys"  md-enable-chip-edit="true"  md-on-add="add_chip($chip)" md-on-remove="remove_chip($chip)" readonly="readonly" placeholder="Enter a fru" md-autofocus>
+</md-chips>
+  </md-content>
+</div>
+
+<!--
+Copyright 2016 Google Inc. All Rights Reserved. 
+Use of this source code is governed by an MIT-style license that can be in foundin the LICENSE file at https://material.angularjs.org/license.
+-->
+</body>
+</html>

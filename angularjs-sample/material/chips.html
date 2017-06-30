@@ -34,17 +34,18 @@
             $scope.customKeys = [$mdConstant.KEY_CODE.ENTER, $mdConstant.KEY_CODE.COMMA, semicolon];
 
             $scope.add_chip = function(chip) {
-                alert('add : ' + chip);
+                console.log('add : ' + chip);
             }
 
             $scope.remove_chip = function(chip) {
-                alert('remove : ' + chip);
+                console.log('remove : ' + chip);
             }
         }]);
     </script>
     <style>
 
     .md-chips.md-removable md-chip .md-chip-content {
+        margin-top: 1px;
         padding-right: 12px;
     }
 
@@ -72,7 +73,7 @@
 
 <body ng-app="MyApp">
     <div ng-controller="AppCtrl" layout="column" ng-cloak="">
-        <md-chips ng-model="tags" md-separator-keys="customKeys"  md-on-add="add_chip($chip)" md-on-remove="remove_chip($chip)" readonly="readonly" placeholder="Enter a fru" md-autofocus>
+        <md-chips ng-model="tags" md-separator-keys="customKeys" md-enable-chip-edit="true" md-on-add="add_chip($chip)" md-on-remove="remove_chip($chip)" readonly="readonly" placeholder="Enter a fru" md-autofocus>
         </md-chips> 
     </div>
 </body>
