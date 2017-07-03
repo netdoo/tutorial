@@ -14,11 +14,11 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
-    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-114/svg-assets-cache.js"></script>
+    
     <script src="https://cdn.gitcdn.link/cdn/angular/bower-material/master/angular-material.js"></script>
 
     <script type="text/javascript">
-        var myApp = angular.module('MyApp',['ngMaterial', 'ngMessages', 'material.svgAssetsCache']);
+        var myApp = angular.module('MyApp',['ngMaterial', 'ngMessages']);
         myApp.config(function($mdIconProvider) {
             $mdIconProvider
                 .iconSet("call", 'img/icons/sets/communication-icons.svg', 24)
