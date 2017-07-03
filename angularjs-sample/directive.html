@@ -22,19 +22,31 @@
             "username" : "Tomas",
             "id" : "89101112"
         }
+
+        $scope.clickCustomButton =function() {
+            console.log('click custom button');
+        }
     }]);
     
+    ///
+    /// directive naming convention
+    ///
+    /// 1. Javascript에서 AngularJS의 디렉티브 생성 시 디렉티브 이름은 camelCase작명법을 따라 작성. (ex: customButton)
+    /// 2. HTML에서 AngularJS의 디렉티브를 사용 시 '-'를 이용한 snake-case 작명법으로 사용. (ex: custom-button)
+    ///
+
     myApp.directive('customButton', function () {
         return {
-            restrict: 'A',
-            replace: true,
-            transclude: true,
+            restrict: 'A',      /// (E:Element, A:Attribute, C:Class, M:Comment)
+            replace: true,      /// 디렉티브를 사용한 HTML의 태그에 template 또는 templateUrl에 포함된 태그 내용을 추가할지 교체할지 설정
+            transclude: true,   /// template 또는 templateUrl에서 디렉티브내의 원본내용을 포함시킬지 설정.
             template: '<a href="" class="myawesomebutton" ng-transclude>' +
                       '<i class="icon-ok-sign"></i>' +
                       '</a>',
             link: function (scope, element, attrs) {
-                // DOM manipulation/events here!
-                console.log('click me');
+                /// 디렉티브와 HTML이 상호작용(동적인 view) 할 수 있도록 디렉티브에 event listener를 등록하며
+                /// scope와 DOM 엘리먼트간에 2-way data binding을 위한 $watch를 설정할 때 호출됨.
+                console.log('direc');
             }
         };
     });
@@ -47,8 +59,8 @@
             <p>{{ text }}</p>
             <p>{{ user.details.username }}</p>
             <p>{{ user.details.id }}</p>
+            <a custom-button ng-click="clickCustomButton()">Click me</a>
         </div>
-        <a custom-button>Click me</a>
     </div>
 </body>
 </html>
