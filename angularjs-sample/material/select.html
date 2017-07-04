@@ -10,6 +10,8 @@
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
 
   <!-- Angular Material Library -->
   <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
@@ -23,29 +25,34 @@
         $scope.user = {
             bbs : ''
         };
-        
+
         $scope.bbsList = ['MBC', 'EBS', 'KBS', 'SBS'];
+        $scope.hours =  _.range(1, 25);
     }]);
   </script>
 </head>
 <body ng-app="myApp" ng-cloak>
-    <div ng-controller="MainCtrl" class="md-padding" ng-cloak layout="column">
-    <md-card>
+    <div ng-controller="MainCtrl" class="md-padding" ng-cloak layout="row">
         <div layout="row">
             <md-input-container>
-            <label>BBS</label>
             <md-select ng-model="user.bbs">
                 <md-option><em>TVN</em></md-option>
-                <md-option ng-repeat="bbs in bbsList" ng-value="bbs" ng-disabled="$index === 1">
+                <md-option ng-repeat="(index,bbs) in bbsList" ng-value="bbs" ng-disabled="index === 1" ng-selected="bbs == 'KBS'" >
                     {{bbs}}
                 </md-option>
                 <md-option><em>JTBC</em></md-option>
             </md-select>
+            <span>선택한 값 : {{user.bbs}}</span>
             </md-input-container>
         </div>
-        </md-card-content>
-    </md-card>
-    <b>{{user.bbs}}</b>
+
+        <div layout="row">
+            <md-input-container>
+            <select ng-model="selectedHour" ng-options="hour + '시' for hour in hours" ng-init="selectedHour=1">
+            </select>
+            <span>선택한 시간 : {{selectedHour}}</span>
+            </md-input-container>
+        </div>
     </div>
 </body>
 </html>

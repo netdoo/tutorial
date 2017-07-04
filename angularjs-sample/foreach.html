@@ -75,5 +75,18 @@
     </ul>
 
     </div>
+
+    <table ng-controller="MainCtrl" border="1px">
+        <thead>
+            <th>Name</th>
+            <th>Gender</th>
+        </thead>
+        <tbody ng-repeat="item in jsonValues">
+            <tr>
+                <td>{{item.name}}</td>
+                <td>{{item.gender}}</td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 </html>

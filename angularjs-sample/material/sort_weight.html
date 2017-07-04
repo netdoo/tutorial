@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdn.gitcdn.link/cdn/angular/bower-material/v1.1.1/angular-material.css">
+    <link rel="stylesheet" href="https://material.angularjs.org/1.1.1/docs.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-route.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
+    <!--
+    <script src="svg-assets-cache.js"></script>
+    -->
+    <script src="https://cdn.gitcdn.link/cdn/angular/bower-material/master/angular-material.js"></script>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+
+    var myApp = angular.module('MyApp',['ngMaterial', 'ngMessages']);
+
+    myApp.config(function($mdIconProvider) {
+        $mdIconProvider
+            .iconSet("call", 'img/icons/sets/communication-icons.svg', 24)
+            .iconSet("social", 'img/icons/sets/social-icons.svg', 24)
+            .iconSet("core", 'img/icons/sets/core-icons.svg', 24)
+            .icon('md-close', 'img/icons/ic_close_24px.svg', 24);
+    });
+
+    myApp.config(function($mdDateLocaleProvider) {
+        $mdDateLocaleProvider.formatDate = function(date) {
+
+            if (date === undefined) 
+                return '날짜선택';
+
+            var day = date.getDate();
+            var monthIndex = date.getMonth();
+            var year = date.getFullYear();
+            return year + '-' + (monthIndex + 1) + '-' + day;
+        };
+    });
+
+    myApp.service('PagerService', function() {
+        this.GetPager = function(totalItems, currentPage, pageSize, blockSize) {
+            // default to first page
+            currentPage = currentPage || 1;
+
+            // default page size is 10
+            pageSize = pageSize || 10;
+            blockSize =blockSize || 10;
+
+            // calculate total pages
+            var totalPages = Math.ceil(totalItems / pageSize);
+
+            // default pagination
+            var startPage = currentPage - ((currentPage-1)%blockSize);
+            var endPage = Math.min(startPage + (blockSize-1), totalPages);
+
+
+            // more flexible pagination
+            var midBlockPos = blockSize / 2;
+
+            if (totalPages <= blockSize) {
+                // less than 10 total pages so show all
+                startPage = 1;
+                endPage = totalPages;
+            } else {
+                // more than 10 total pages so calculate start and end pages
+                if (currentPage <= (midBlockPos+1)) {
+                    startPage = 1;
+                    endPage = blockSize;
+                } else if (currentPage + (midBlockPos-1) >= totalPages) {
+                    startPage = totalPages - (blockSize-1);
+                    endPage = totalPages;
+                } else {
+                    startPage = currentPage - midBlockPos;
+                    endPage = currentPage + (midBlockPos-1);
+                }
+            }
+
+            // calculate start and end item indexes
+            var startIndex = (currentPage - 1) * pageSize;
+            var endIndex = Math.min(startIndex + pageSize - 1, totalItems - 1);
+
+            // create an array of pages to ng-repeat in the pager control
+            var pages = _.range(startPage, endPage + 1);
+
+            // return object with all pager properties required by the view
+            return {
+                totalItems: totalItems,
+                currentPage: currentPage,
+                pageSize: pageSize,
+                totalPages: totalPages,
+                startPage: startPage,
+                endPage: endPage,
+                startIndex: startIndex,
+                endIndex: endIndex,
+                pages: pages
+            };
+        };
+    });
+
+
+
+    myApp.controller('AppCtrl',  ['$scope', '$mdDialog', '$mdConstant', 'PagerService', function($scope, $mdDialog, $mdConstant, PagerService) {
+
+        $scope.dummyItems = _.range(1, 151); // dummy array of items to be paged
+        $scope.pager = {};
+        $scope.setPage = function(page) {
+            if (page < 1 || page > $scope.pager.totalPages) {
+                return;
+            }
+    
+            // get pager object from service
+            $scope.pager = PagerService.GetPager($scope.dummyItems.length, page, 5, 12);
+    
+            // get current page of items
+            $scope.items = $scope.dummyItems.slice($scope.pager.startIndex, $scope.pager.endIndex + 1);
+        }
+
+        $scope.setPage(1);
+        $scope.status = ' ';
+        $scope.customFullscreen = false;
+
+        $scope.registerNew = function(ev) {
+            $mdDialog.show({
+                locals: {mode : 'NEW'},
+                multiple: true,
+                controller: SortWeightController,
+                templateUrl: 'sort.weight.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose:true,
+                fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
+            });
+        };
+
+        this.keys = [$mdConstant.KEY_CODE.ENTER, $mdConstant.KEY_CODE.COMMA];
+        $scope.tags = ['MBC','KBS','SBS'];
+        var semicolon = 186;
+        $scope.customKeys = [$mdConstant.KEY_CODE.ENTER, $mdConstant.KEY_CODE.COMMA, semicolon];
+
+        $scope.add_chip = function(chip) {
+            console.log('add : ' + chip);
+        }
+
+        $scope.remove_chip = function(chip) {
+            console.log('remove : ' + chip);
+        }
+
+        $scope.$watchCollection('tags', function(newVal, oldVal) {
+            console.log('new ' + newVal);
+            console.log('old ' + oldVal);
+        });
+
+        $scope.user = {
+            bbs : ''
+        };
+    
+        $scope.bbsList = ['TVN', 'MBC', 'EBS', 'KBS', 'SBS', '한국문화방송'];
+
+
+        $scope.dealList = [{status : '반영중', number: '123456788', name:'토다이뷔페이용권 #1', weightKeyword:['토다이','뷔페1'], weight:100, startTime:'2017-06-24', finishTime:'2017-06-28', lastUpdateTime:'2017-06-24', userid:'홍길동', logid:'aaa'},
+                            {status : '반영중', number: '123456789', name:'토다이뷔페이용권 #2', weightKeyword:['토다이','뷔페2'], weight:200, startTime:'2017-06-25', finishTime:'2017-06-29', lastUpdateTime:'2017-06-24', userid:'홍길동', logid:'bbbaaa'}
+                        ];
+
+
+        $scope.clickDealNumber =function(dealNumber) {
+            alert('deal number : ' + dealNumber);
+        }
+
+        $scope.clickShowLog =function(dealNumber) {
+            alert('in ClickShowLog(), deal number : ' + dealNumber);
+        }
+    }]);
+
+    function SortWeightController($scope, $mdDialog, $mdConstant, mode) {
+
+        this.keys = [$mdConstant.KEY_CODE.ENTER, $mdConstant.KEY_CODE.COMMA];
+        $scope.tags = ['MBC','KBS','SBS'];
+        var semicolon = 186;
+        $scope.customKeys = [$mdConstant.KEY_CODE.ENTER, $mdConstant.KEY_CODE.COMMA, semicolon];
+        $scope.mode = mode;
+console.log('create SortWeightController : ' + mode);
+
+console.log('create SortWeightController scope.mode : ' + $scope.mode);
+
+        $scope.hours = _.range(1, 25);
+        $scope.startHour = 1;
+
+        $scope.add_chip = function(chip) {
+            console.log('add : ' + chip);
+        }
+
+        $scope.remove_chip = function(chip) {
+            console.log('remove : ' + chip);
+        }
+
+        $scope.$watchCollection('tags', function(newVal, oldVal) {
+            console.log('new ' + newVal);
+            console.log('old ' + oldVal);
+        });
+
+
+        $scope.hide = function() {
+            $mdDialog.hide();
+        };
+
+        $scope.cancel = function() {
+            $mdDialog.cancel();
+        };
+
+        $scope.answer = function(answer) {
+            console.log('DialogController ' + answer);
+            $mdDialog.hide(answer);
+        };
+
+        $scope.show2 = function(ev) {
+            $mdDialog.show({
+                multiple: true,
+                controller: DealViewController,
+                templateUrl: 'deal.view.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose:true,
+                fullscreen: false//$scope.customFullscreen // Only for -xs, -sm breakpoints.
+            });
+        };
+    }
+
+    function DealViewController($scope, $mdDialog) {
+        $scope.hide = function() {
+            $mdDialog.hide();
+        };
+
+        $scope.cancel = function() {
+            $mdDialog.cancel();
+        };
+
+        $scope.answer = function(answer) {
+            console.log('DealViewController : ' + answer);
+            $mdDialog.hide(answer);
+        };
+    }
+
+    </script>
+
+    <style>
+    .md-dialog-backdrop:nth-of-type(even) {
+        z-index: 81;
+    }
+
+    .md-dialog-backdrop:nth-of-type(odd) {
+        z-index: 79;
+    }
+
+    .md-dialog-container:nth-of-type(even) {
+        z-index: 82;
+    }
+
+    .md-dialog-container:nth-of-type(odd) {
+        z-index: 80;
+    }
+
+    .md-chips.md-removable md-chip .md-chip-content {
+        margin-top: 1px;
+        padding-right: 12px;
+    }
+
+    .md-chips md-chip .md-chip-remove md-icon {
+        height: 18px;
+        width: 18px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.3);
+        transition: background 0.15s linear;
+        transform: translate3d(-50%, -50%, 0) scale(0.7);
+        color: white;
+        fill: white;
+    }
+
+    .md-chips md-chip .md-chip-remove md-icon:hover {
+        background: red;
+        transition: background 0.15s linear;
+    }
+    
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        /* display: none; <- Crashes Chrome on hover */
+        -webkit-appearance: none;
+        margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+    }
+
+    /* PAGINATION */
+    .touch {
+        cursor: pointer;
+    }
+
+    #pager ul li {    
+        margin-left: 0px;
+    }
+
+
+    .top-input-area {
+        background-color: lightgray;
+        padding: 10px;
+    }
+
+    .small-button {
+        padding: 0 6px 0 6px;
+        margin-top: 10px;
+        min-height: 28px !important;
+        min-width: 80px !important;
+        font-size: 14px !important;
+        line-height: 0px; 
+    }
+
+    .top-info-area-label {
+        font-size: 14px;
+        padding: 8px;
+        margin-top: 10px;
+        margin-left: 6px;
+        margin-right: 0px;
+        align-content: center;
+        vertical-align: middle;
+        min-height: 22px !important;
+        border-radius: 0px;
+    }
+
+    .top-info-area-input {
+        height:30px;
+        margin-top:10px;
+    }
+
+    .new-input-area {
+        background-color: white;
+        padding: 10px;
+    }
+
+    .list-view-area {
+        background-color: white;
+        padding: 0px;
+    }
+
+    .list-view-area th {
+        text-align: center;
+        padding: 10px;
+        background: lightgray;
+        border-color: gray;
+        font-weight: bolder;
+    }
+
+    .list-view-area td {
+        text-align: center;
+
+    }
+
+    .show-log-button {
+        padding: 0 6px 0 6px;
+        margin-top: 10px;
+        min-height: 28px !important;
+        min-width: 80px !important;
+        font-size: 14px !important;
+        line-height: 0px; 
+        background: #5bc0de;
+    }
+
+    .show-log-button span {
+        color: white;
+        font-weight: bolder;
+    }
+
+    .input-hint {
+        color:red;
+        font-size: 12px;
+    }
+
+    .input-hour {
+        height: 30px;
+        margin-left: 20px;
+    }
+
+
+    .deal-view-table th {
+        padding: 10px;
+        text-align: center;
+        font-weight: bolder;
+    }
+
+    .deal-view-table td {
+        padding: 10px;
+    }
+
+    </style>
+</head>
+
+<body ng-app="MyApp">
+
+    <div ng-controller="AppCtrl" class="md-padding dialogdemoBasicUsage" id="popupContainer" ng-cloak="">
+        <div class="top-input-area" layout="row">
+            <label class="label label-info top-info-area-label">딜반영상태</label>
+            <md-select style='height:20px;margin:4px;width:10%;' ng-model="user.bbs">
+                <md-option style='height:25px;margin-left:2px;' ng-repeat="bbs in bbsList" ng-value="bbs" ng-disabled="$index === 1">
+                    {{bbs}}
+                </md-option>
+            </md-select>
+            <label class="label label-info top-info-area-label">딜번호</label>
+            <input type="number" ng-model="user.name" class="top-info-area-input" style="width:20%;">
+            <label class="label label-info top-info-area-label">상품명</label>
+            <input ng-model="user.name" class="top-info-area-input" style="width:30%;">
+            <label class="label label-info top-info-area-label">정렬가중치 적용 키워드</label>
+            <input ng-model="user.name" class="top-info-area-input" style="width:30%;">
+            <label class="label label-info top-info-area-label">작업자</label>
+            <input ng-model="user.name" class="top-info-area-input" style="width:10%;">
+            <span flex></span>
+            <md-button class="md-raised small-button" ng-click="showAlert('button');" style="height: 20px;">검색</md-button>
+            
+        </div>
+
+        <div class="new-input-area" layout="row">
+            <span flex></span>
+            <md-button class="md-raised small-button md-primary" ng-click="registerNew('button');" style="height: 20px;" md-primary>신규등록</md-button>
+        </div>
+
+        <div class="list-view-area" layout="row">
+        <table border="1px" style="width:100%;border-color:gray;">
+            <thead>
+                <th>딜반영상태</th>
+                <th>딜번호</th>
+                <th>상품명</th>
+                <th>정렬가중치 적용 키워드</th>
+                <th>가중치 (+/-)1~99999</th>
+                <th>시작일</th>
+                <th>종료일</th>
+                <th>최종수정일</th>
+                <th>작업자</th>
+                <th>작업로그</th>
+            </thead>
+            <tbody ng-repeat="item in dealList">
+                <tr>
+                    <td>{{item.status}}</td>
+                    <td><a href="#" ng-click="clickDealNumber(item.number)"> {{item.number}}</a></td>
+                    <td style="width:20%;">{{item.name}}</td>
+                    <td style="width:20%;">{{item.weightKeyword}}</td>
+                    <td>{{item.weight}}</td>
+                    <td>{{item.startTime}}</td>
+                    <td>{{item.finishTime}}</td>
+                    <td>{{item.lastUpdateTime}}</td>
+                    <td>{{item.userid}}</td>
+                    <td style="width:1%;"><md-button class="md-raised show-log-button" style="background: #5bc0de;"  ng-click="clickShowLog(item.number);">로그보기</md-button></td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+        
+        <div class="text-center">
+            <div id="pager">
+                <ul ng-if="pager.pages.length" class="pagination touch">
+                    <li ng-class="{disabled:pager.currentPage === 1}">
+                        <a ng-click="setPage(1)">처음</a>
+                    </li>
+                    <li ng-class="{disabled:pager.currentPage === 1}">
+                        <a ng-click="setPage(pager.currentPage - 1)">이전</a>
+                    </li>
+                    <li ng-repeat="page in pager.pages" ng-class="{active:pager.currentPage === page}">
+                        <a ng-click="setPage(page)">{{page}}</a>
+                    </li>
+                                   
+                    <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                        <a ng-click="setPage(pager.currentPage + 1)">다음</a>
+                    </li>
+                    <li ng-class="{disabled:pager.currentPage === pager.totalPages}">
+                        <a ng-click="setPage(pager.totalPages)">마지막</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+
+
+<!-- 정렬 가중치 등록 시작 -->
+<script type="text/ng-template" id="sort.weight.html">
+    <md-dialog aria-label="Dialog1" flex="60">
+    <form ng-cloak>
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>정렬 가중치 등록</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="cancel()"><md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon></md-button>
+        </div>
+    </md-toolbar>
+
+    <md-dialog-content>
+        <div class="md-dialog-content">
+        <table border="1px" width="100%">
+        <tr>
+            <td style="width:100px;" align="center">딜 연동</td> 
+            <td align="left" style="padding:10px;width:300px;">
+                <div layout="row">
+                    <div><input type="number" ng-model="user.name"  style="height:34px;width:180px;margin-top:6px;"></div>
+                    <div><md-button class="md-raised md-primary" ng-click="showAlert('button');" style="height: 20px;width:30px;">딜 조회</md-button></div>
+                </div>
+            </td> 
+            <td align="center" style="width:100px;">딜 제목</td> 
+            <td style="padding:10px;">토다이 뷔페</td> 
+        </tr>
+        <tr>
+            <td align="center">가중치 설정</td> 
+            <td colspan="3"   style="padding:10px;"> 
+                <div layout="row" style="margin-top:10px;">
+                    <div style=""><label>가중치 점수</label><input style="width:80px;height:34px;margin-left:10px;"></div>
+                    <div style="margin-left:15px;"><span class="input-hint">* 0~99999까지 설정<br/>* 마이너스 가중치는 숫자앞에 "-"를 붙임. ex) -100</span></div>
+                </div>
+                
+                <hr/>
+                
+                <div layout="column" style="margin-top:10px;">
+                    <div flex><label>가중치 키워드</label><span class="input-hint" style="margin-left:20px;" flex    >* 최대 50자 까지 입력 가능하며, 구분자는 ";" 입니다. ex) 나이키;운동화</span> </div>
+                    <div flex><md-chips ng-model="tags" md-separator-keys="customKeys" md-enable-chip-edit="true" md-on-add="add_chip($chip)" ng-change="remove_chip($chip)" readonly="readonly" placeholder="키워드 입력후 [엔터]" md-autofocus></md-chips></div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">노출기간</td> <td colspan="3" style="padding:10px;">
+                <div layout="row" layout-align="start center">
+                    <label>시작일</label><md-datepicker style="padding:0px;" ng-model="user.birthDate" md-placeholder="Enter date"></md-datepicker>
+                    <select class="input-hour" ng-model="startHour" ng-options="hour + '시' for hour in hours" ng-init="startHour=1"></select>
+                    <label style="margin-left:20px;">~</label>
+                    <label style="margin-left:20px;">종료일</label>
+                    <md-datepicker ng-model="user.birthDate" md-placeholder="Enter date"></md-datepicker>
+                    <select class="input-hour" ng-model="startHour" ng-options="hour + '시' for hour in hours" ng-init="startHour=1">
+                    </select>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td align="center" style="height:50px;">등록일</td> <td>2017.12.10</td> <td align="center">최종 수정일</td> <td>2017.12.20</td>
+        </tr>
+        </table>
+        </div>
+        <div layout="row" width="100%" layout-align="center center" style="margin-bottom:20px;">
+            <div><md-button class="md-primary md-raised" ng-click="show2($event)">등록</md-button></div>
+            <div><md-button class="md-raised" ng-click="answer('close')">취소</md-button></div>
+        </div>
+    </md-dialog-content>
+    </form>
+    </md-dialog>
+</script>
+
+<!-- End of 정렬 가중치 등록 -->
+
+
+
+<script type="text/ng-template" id="deal.view.html">
+    <md-dialog aria-label="DealViewDialog" flex="40">
+    <form ng-cloak>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>딜 조회</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()"><md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon></md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content >
+            <div style="padding-left:20px;padding-right:20px;padding-top:10px;" layout="row">
+                <div><input type="number" ng-model="user.name"  style="width:180px;height:34px;margin-top:8px;"></div>
+                <div><md-button class="md-raised md-primary" style="height:20px;">조회</md-button></div>
+            </div>
+
+            <div style="padding-left:20px;padding-right:20px;padding-top:10px;" layout="row">
+            <table class="deal-view-table" border="1" width="100%">
+                <thead>
+                <th width="10%"></th><th width="20%">딜 번호</th><th width="70%">상품명</th>
+                </thead>
+                <tbody>
+                <tr>
+                    <td align="center"><md-button class="md-raised show-log-button" style="background: #5bc0de;"  ng-click="clickShowLog(item.number);">선택</md-button> </td><td>123456</td><td>포타이</td>
+                </tr>
+                </tbody>
+            </table>
+            </div>
+
+
+            <div layout="row" width="100%" layout-align="center center" style="margin-bottom:20px;margin-top:20px;">
+                <div><md-button ng-click="answer('close')" class="md-raised md-primary" md-autofocus>닫기</md-button></div>
+            </div>
+
+        </md-dialog-content>
+    </form>
+    </md-dialog>
+</script>
+
+
+    </div>
+
+<!--
+    <div ng-controller="ChipCtrl" layout="column" ng-cloak="">
+
+        
+    </div>
+    -->
+</body>
+</html>  
+  
