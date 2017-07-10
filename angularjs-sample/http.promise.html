@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<title>AngularJS with Promise</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+<script type="text/javascript">
+    var myApp = angular.module('myApp', []);
+    myApp.controller('PromiseController', ['$scope', '$http', function ($scope, $http) {
+        $scope.ip = {};      // 사용자 객체를 생성
+        $scope.ip.time = ''; // 빈 문자열로 초기화
+        $scope.ip.text = ''; // 빈 문자열로 초기화
+    
+        $scope.user = {};
+        
+        function getUser() {
+            return new Promise(function(resolve, reject) { 
+                $http({
+                    method: 'GET',
+                    url: 'http://jsonplaceholder.typicode.com/posts/1'
+                }).success(function (data, status, headers, config) {
+                    resolve(data);
+                }).error(function (data, status, headers, config) {
+                    reject(data);
+                });
+            }); 
+        }
+        
+        function getIP() {
+            return new Promise(function(resolve, reject) { 
+                $http({
+                    method: 'GET',
+                    url: 'http://api.ipify.org/'
+                }).success(function (data, status, headers, config) {
+                    resolve(data);
+                }).error(function (data, status, headers, config) {
+                    reject(data);
+                });
+            });
+        }
+            
+        $scope.promiseGet = function() {
+            getIP().then(function(data) {
+                var n = new Date();
+                $scope.ip.time = n.getHours() + "시" + n.getMinutes() + "분" + n.getSeconds() + "초";
+                $scope.ip.text = data;
+                return getUser();
+            }).then(function(data) {
+                $scope.user = data;
+                $scope.$apply();
+            }).catch(function(err) {
+                console.log('exception : ' + err);
+            });
+        }
+    }]);
+   
+
+</script>
+</head>
+<body>
+    <div ng-app="myApp">
+        <div ng-controller="PromiseController">
+            <button ng-click="promiseGet()">
+                call multiple get
+            </button>
+            <p>{{ ip.time + ' My IP : ' + ip.text }}</p>
+            <p>{{ user.userId + ' : ' + user.title}}</p>
+        </div>
+    </div>
+</body>
+</html>
