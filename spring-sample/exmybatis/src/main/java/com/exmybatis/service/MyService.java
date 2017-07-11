@@ -38,6 +38,15 @@ public class MyService {
         return nameQueryMapper.getUserNames(params);
     }
 
+    public int getUserNamesCount(String userId, String userType) {
+        HashMap<String, Object> params = new HashMap<>();
+
+        params.put("user_id", userId);
+        params.put("user_type", userType);
+
+        return nameQueryMapper.getUserNamesCount(params);
+    }
+
     public int updateUser(String userId, String userName, String userType) {
         HashMap<String, Object> params = new HashMap<>();
 
@@ -47,6 +56,8 @@ public class MyService {
 
         return nameQueryMapper.updateUser(params);
     }
+
+
 }
 
 

@@ -9,5 +9,6 @@ import java.util.List;
 public interface NameQueryMapper {
     List<String> getNames(@Param("names") List names);
     List<String> getUserNames(HashMap params);
+    int getUserNamesCount(HashMap params);
     int updateUser(HashMap params);
 }

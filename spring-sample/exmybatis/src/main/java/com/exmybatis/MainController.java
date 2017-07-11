@@ -218,6 +218,17 @@ public class MainController {
         return result;
     }
 
+    @RequestMapping(value = "/getUserNamesCount", method = RequestMethod.GET, produces="application/json;charset=UTF-8")
+    public @ResponseBody int getUserNamesCount(
+            @RequestParam(value="user_id", required=false, defaultValue="") String userId,
+            @RequestParam(value="user_type", required=false, defaultValue="") String userType
+    ) throws Exception {
+
+        int count = myService.getUserNamesCount(userId, userType);
+
+        return count;
+    }
+
     @RequestMapping(value = "/updateUser", method = RequestMethod.GET, produces="application/json;charset=UTF-8")
     public @ResponseBody int updateUser(
             @RequestParam(value="user_id", required=false, defaultValue="") String userId,

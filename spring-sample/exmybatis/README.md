@@ -1,3 +1,5 @@
+# 데이터베이스 초기화
+
 ```sql
 DROP TABLE `users`;
 
@@ -25,3 +27,13 @@ FROM users
 LIMIT 2, 3;
 
 ```
+
+
+
+# Jetty 실행
+
+Run > Edit Configurations > Parameters > Command line
+```
+-Djetty.http.port=9999 jetty:run-war
+```
+

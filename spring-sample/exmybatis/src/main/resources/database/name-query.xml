@@ -12,11 +12,23 @@
 
 	</select>
 
+	<select id="getUserNamesCount" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*)
+		FROM users
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">
+			<include refid="WhereCondition"/>
+		</trim>
+	</select>
+
 	<select id="getUserNames" parameterType="hashmap" resultType="String">
 		SELECT user_name
 		FROM users
 		<trim prefix="WHERE" prefixOverrides="AND |OR ">
+			<include refid="WhereCondition"/>
+		</trim>
+	</select>
 
+	<sql id="WhereCondition">
 		<if test="user_id != null and user_id.length() > 0">
 			AND user_id = #{user_id}
 		</if>
@@ -24,8 +36,7 @@
 		<if test="user_type != null and user_type.length() > 0">
 			AND user_type = #{user_type}
 		</if>
-		</trim>
-	</select>
+	</sql>
 
 	<update id="updateUser" parameterType="hashmap">
 		UPDATE users
