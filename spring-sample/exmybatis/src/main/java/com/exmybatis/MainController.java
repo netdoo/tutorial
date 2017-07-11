@@ -206,5 +206,28 @@ public class MainController {
 
         return result;
     }
+
+    @RequestMapping(value = "/getUserNames", method = RequestMethod.GET, produces="application/json;charset=UTF-8")
+    public @ResponseBody List<String> getUserNames(
+            @RequestParam(value="user_id", required=false, defaultValue="") String userId,
+            @RequestParam(value="user_type", required=false, defaultValue="") String userType
+    ) throws Exception {
+
+        List<String> result = myService.getUserNames(userId, userType);
+
+        return result;
+    }
+
+    @RequestMapping(value = "/updateUser", method = RequestMethod.GET, produces="application/json;charset=UTF-8")
+    public @ResponseBody int updateUser(
+            @RequestParam(value="user_id", required=false, defaultValue="") String userId,
+            @RequestParam(value="user_name", required=false, defaultValue="") String userName,
+            @RequestParam(value="user_type", required=false, defaultValue="") String userType
+    ) throws Exception {
+
+        int row = myService.updateUser(userId, userName, userType);
+
+        return row;
+    }
 }
 

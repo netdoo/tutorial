@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -14,7 +15,7 @@ public class MyService {
     private MyDAO dao;
 
     @Autowired
-    private NameQueryMapper dealMapper;
+    private NameQueryMapper nameQueryMapper;
 
     /// Transaction 이 올바르게 동작하는지 확인하기위해서
     /// 고의적으로 중복된 키 값을 두 번 INSERT 함.
@@ -24,7 +25,28 @@ public class MyService {
     }
 
     public List<String> getNames(List<String> names) {
-        return this.dealMapper.getNames(names);
+        return this.nameQueryMapper.getNames(names);
+    }
+
+
+    public List<String> getUserNames(String userId, String userType) {
+        HashMap<String, Object> params = new HashMap<>();
+
+        params.put("user_id", userId);
+        params.put("user_type", userType);
+
+        return nameQueryMapper.getUserNames(params);
+    }
+
+    public int updateUser(String userId, String userName, String userType) {
+        HashMap<String, Object> params = new HashMap<>();
+
+        params.put("user_id", userId);
+        params.put("user_name", userName);
+        params.put("user_type", userType);
+
+        return nameQueryMapper.updateUser(params);
     }
 }
+
 

@@ -11,4 +11,33 @@
 		</foreach>
 
 	</select>
+
+	<select id="getUserNames" parameterType="hashmap" resultType="String">
+		SELECT user_name
+		FROM users
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">
+
+		<if test="user_id != null and user_id.length() > 0">
+			AND user_id = #{user_id}
+		</if>
+
+		<if test="user_type != null and user_type.length() > 0">
+			AND user_type = #{user_type}
+		</if>
+		</trim>
+	</select>
+
+	<update id="updateUser" parameterType="hashmap">
+		UPDATE users
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="user_name != null and user_name.length() > 0">
+				user_name = #{user_name},
+			</if>
+
+			<if test="user_type != null and user_type.length() > 0">
+				user_type = #{user_type},
+			</if>
+		</trim>
+		WHERE user_id = #{user_id}
+	</update>
 </mapper>
