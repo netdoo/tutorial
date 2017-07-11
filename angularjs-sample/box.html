@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<script src="box.js"></script>
+
+<script type="text/javascript">
+function onLoad() {
+    var box = new Box(100, 200);
+    console.log(JSON.stringify(box.toJson()));
+    document.getElementById("memo").innerHTML = JSON.stringify(box.toJson());
+}
+</script>
+</head>
+<body onload="onLoad()">
+<p id="memo"></p>
+</body>
+</html>
