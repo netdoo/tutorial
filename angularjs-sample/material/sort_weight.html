@@ -22,12 +22,19 @@
     
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-
+    <script src="model/sort-weight-deal-class.js"></script>
     <script type="text/javascript">
 
-    var myApp = angular.module('MyApp',['ngMaterial', 'ngMessages']);
+    var sortWeightApp = angular.module('SortWeightApp',['ngMaterial', 'ngMessages']);
 
-    myApp.config(function($mdIconProvider) {
+    sortWeightApp.constant('sortWeightConfig', {
+        config1: 'hello',
+        config2: 'world',
+        DEF_PAGE_SIZE : 10,
+        DEF_BLOCK_SIZE : 10
+    });
+    
+    sortWeightApp.config(function($mdIconProvider) {
         $mdIconProvider
             .iconSet("call", 'img/icons/sets/communication-icons.svg', 24)
             .iconSet("social", 'img/icons/sets/social-icons.svg', 24)
@@ -35,7 +42,7 @@
             .icon('md-close', 'img/icons/ic_close_24px.svg', 24);
     });
 
-    myApp.config(function($mdDateLocaleProvider) {
+    sortWeightApp.config(function($mdDateLocaleProvider) {
         $mdDateLocaleProvider.formatDate = function(date) {
 
             if (date === undefined) 
@@ -48,7 +55,7 @@
         };
     });
 
-    myApp.service('PagerService', function() {
+    sortWeightApp.service('PagerService', function() {
         this.GetPager = function(totalItems, currentPage, pageSize, blockSize) {
             // default to first page
             currentPage = currentPage || 1;
@@ -110,34 +117,72 @@
 
 
 
-    myApp.controller('AppCtrl',  ['$scope', '$mdDialog', '$mdConstant', 'PagerService', function($scope, $mdDialog, $mdConstant, PagerService) {
+    sortWeightApp.controller('AppCtrl',  ['$scope', '$mdDialog', '$mdConstant', 'PagerService', 'sortWeightConfig', function($scope, $mdDialog, $mdConstant, PagerService, sortWeightConfig) {
 
+        $scope.debugmode = true;
         $scope.dummyItems = _.range(1, 151); // dummy array of items to be paged
         $scope.pager = {};
+       // $scope.dealList = [];
+       
+       console.log("sortWeightConfig : " + sortWeightConfig.config1 + sortWeightConfig.config2);
+        
         $scope.setPage = function(page) {
             if (page < 1 || page > $scope.pager.totalPages) {
                 return;
             }
     
             // get pager object from service
-            $scope.pager = PagerService.GetPager($scope.dummyItems.length, page, 5, 12);
+            $scope.pager = PagerService.GetPager($scope.dummyItems.length, page, sortWeightConfig.DEF_PAGE_SIZE, sortWeightConfig.DEF_BLOCK_SIZE);
     
             // get current page of items
             $scope.items = $scope.dummyItems.slice($scope.pager.startIndex, $scope.pager.endIndex + 1);
+            
+            $scope.dealList = [];
+            for (var i = $scope.pager.startIndex; i < $scope.pager.endIndex + 1; i++) {
+                $scope.dealList.push(new SortWeightDeal('MAINDEAL', '반영중', i, '나이키 운동화', ['나이키', '운동화'], 100, '2017-06-24', '2017-06-28', '2017-06-24', '홍길동').toJson());
+            }
+
+            console.log('click setPage ' + page + "$scope.pager.startIndex : " + $scope.pager.startIndex + "$scope.pager.endIndex  : " +$scope.pager.endIndex );
         }
 
         $scope.setPage(1);
         $scope.status = ' ';
         $scope.customFullscreen = false;
 
-        $scope.registerNew = function(ev) {
+        $scope.registerNew = function() {
+        
+            var deal = {
+                name: '',
+                number: '',
+                weightKeyword: []
+            };
+        
+            var param = {'mode' : 'NEW',
+                         'deal' : deal};
+            
             $mdDialog.show({
-                locals: {mode : 'NEW'},
+                locals: {'param' : param},
                 multiple: true,
-                controller: SortWeightController,
-                templateUrl: 'sort.weight.html',
+                controller: SortWeightDialogController,
+                templateUrl: 'sort.weight.dialog',
                 parent: angular.element(document.body),
-                targetEvent: ev,
+                // targetEvent: ev,
+                clickOutsideToClose:true,
+                fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
+            });
+        };
+
+        $scope.editSortWeight = function(deal) {
+            var param = {'mode' : 'EDIT',
+                         'deal' : deal};
+
+            $mdDialog.show({
+                locals: {'param' : param},
+                multiple: true,
+                controller: SortWeightDialogController,
+                templateUrl: 'sort.weight.dialog',
+                parent: angular.element(document.body),
+               /// targetEvent: ev,
                 clickOutsideToClose:true,
                 fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
             });
@@ -161,41 +206,82 @@
             console.log('old ' + oldVal);
         });
 
-        $scope.user = {
-            bbs : ''
+        $scope.sortWeightSearch = {
+            bbs : '',
+            status : ['전체', '반영중', '반영전', '종료'],
+            dealNumber : 1234,
+            productName : '토다이뷔페이용권',
+            keywords : ['토다이', '뷔페'],
+            userName : 'guest'
         };
-    
-        $scope.bbsList = ['TVN', 'MBC', 'EBS', 'KBS', 'SBS', '한국문화방송'];
-
-
-        $scope.dealList = [{status : '반영중', number: '123456788', name:'토다이뷔페이용권 #1', weightKeyword:['토다이','뷔페1'], weight:100, startTime:'2017-06-24', finishTime:'2017-06-28', lastUpdateTime:'2017-06-24', userid:'홍길동', logid:'aaa'},
-                            {status : '반영중', number: '123456789', name:'토다이뷔페이용권 #2', weightKeyword:['토다이','뷔페2'], weight:200, startTime:'2017-06-25', finishTime:'2017-06-29', lastUpdateTime:'2017-06-24', userid:'홍길동', logid:'bbbaaa'}
-                        ];
-
-
-        $scope.clickDealNumber =function(dealNumber) {
-            alert('deal number : ' + dealNumber);
+           
+       // $scope.dealList = new Array();     
+       // $scope.dealList.push(new SortWeightDeal('MAINDEAL', '반영중', 1111, '토다이뷔페이용권', ['토다이', '뷔페'], 100, '2017-06-24', '2017-06-28', '2017-06-24', '홍길동').toJson());
+       // $scope.dealList.push(new SortWeightDeal('MAINDEAL', '반영중', 2222, '나이키 운동화', ['나이키', '운동화'], 100, '2017-06-24', '2017-06-28', '2017-06-24', '홍길동').toJson());
+       
+        $scope.clickDealNumber =function(deal) {
+            $scope.editSortWeight(deal);
         }
 
-        $scope.clickShowLog =function(dealNumber) {
-            alert('in ClickShowLog(), deal number : ' + dealNumber);
+        $scope.clickShowLog = function(dealNumber) {
+            
+            var param = {'mode' : 'EDIT',
+                         'dealNumber' : dealNumber};
+
+            $mdDialog.show({
+                locals: {'param' : param},
+                multiple: true,
+                controller: LogViewDialogController,
+                templateUrl: 'log.view.dialog',
+                parent: angular.element(document.body),
+               /// targetEvent: ev,
+                clickOutsideToClose:true,
+                fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
+            });
+        }
+
+        $scope.onClickSortWeightListSearch = function() {
+            alert('click onClickSortWeightListSearch() ');
         }
     }]);
 
-    function SortWeightController($scope, $mdDialog, $mdConstant, mode) {
+    function SortWeightDialogController($scope, $mdDialog, $mdConstant, param) {
 
-        this.keys = [$mdConstant.KEY_CODE.ENTER, $mdConstant.KEY_CODE.COMMA];
-        $scope.tags = ['MBC','KBS','SBS'];
+        $scope.deal = param.deal;
+        //$scope.tags = ['MBC','KBS','SBS'];
         var semicolon = 186;
         $scope.customKeys = [$mdConstant.KEY_CODE.ENTER, $mdConstant.KEY_CODE.COMMA, semicolon];
-        $scope.mode = mode;
-console.log('create SortWeightController : ' + mode);
+        $scope.mode = param.mode;
+        //$scope.dealNumber = param.deal.number;
+        //$scope.tags = param.deal.weightKeyword;
 
-console.log('create SortWeightController scope.mode : ' + $scope.mode);
+console.log('create SortWeightDialogController param : ' + param);
 
         $scope.hours = _.range(1, 25);
+        $scope.minStartDate = new Date(2017, 6, 5);
+        $scope.startDate = undefined;
         $scope.startHour = 1;
-
+        $scope.openStartDate = false;
+        $scope.endDate = undefined;
+        $scope.endHour = 1;
+        $scope.maxEndDate = undefined;
+        $scope.openEndDate = false;
+        
+        $scope.onChangeStartDate = function() {
+            var endDate = new Date($scope.startDate);
+            endDate.setDate($scope.startDate.getDate() + 30);
+            $scope.maxEndDate = endDate;            
+        }
+        
+        $scope.onClickStartDate = function() {
+            //alert('onClickStartDate');
+            $scope.openStartDate = true;
+        }
+        
+        $scope.onClickEndDate = function() {
+            $scope.openEndDate = true;
+        }
+        
         $scope.add_chip = function(chip) {
             console.log('add : ' + chip);
         }
@@ -223,20 +309,119 @@ console.log('create SortWeightController scope.mode : ' + $scope.mode);
             $mdDialog.hide(answer);
         };
 
-        $scope.show2 = function(ev) {
+        $scope.onClickDealView = function(dealNumber) {
+            var param = {'mode' : 'EDIT',
+                         'dealNumber' : dealNumber};
+
             $mdDialog.show({
+                locals: {'param' : param},
                 multiple: true,
                 controller: DealViewController,
-                templateUrl: 'deal.view.html',
+                templateUrl: 'deal.view.dialog',
                 parent: angular.element(document.body),
-                targetEvent: ev,
+                //targetEvent: ev,
                 clickOutsideToClose:true,
                 fullscreen: false//$scope.customFullscreen // Only for -xs, -sm breakpoints.
+            }).then(function(answer) {
+                $scope.dealNumber = answer;
+                console.log('You said the information was "' + answer + '".');
+            }, function() {
+                console.log('You cancelled the dialog.');
+            });
+        };
+
+        $scope.onClickSave = function() {
+            var param = {'message' : '등록이 완료되었습니다.'};
+
+            $mdDialog.show({
+                locals: {'param' : param},
+                multiple: true,
+                controller: AlertDialogController,
+                templateUrl: 'alert.dialog',
+                parent: angular.element(document.body),
+                //targetEvent: ev,
+                clickOutsideToClose:true,
+                fullscreen: false//$scope.customFullscreen // Only for -xs, -sm breakpoints.
+            }).then(function(answer) {
+               // $scope.dealNumber = answer;
+                console.log('alert dialog answer "' + answer + '".');
+                $mdDialog.hide();
+            }, function() {
+                console.log('cancel alert dialog.');
+            });
+        };
+
+        $scope.onClickEdit = function() {
+            var param = {'message' : '수정이 완료되었습니다.'};
+
+            $mdDialog.show({
+                locals: {'param' : param},
+                multiple: true,
+                controller: AlertDialogController,
+                templateUrl: 'alert.dialog',
+                parent: angular.element(document.body),
+                //targetEvent: ev,
+                clickOutsideToClose:true,
+                fullscreen: false//$scope.customFullscreen // Only for -xs, -sm breakpoints.
+            }).then(function(answer) {
+               // $scope.dealNumber = answer;
+                console.log('alert dialog answer "' + answer + '".');
+                $mdDialog.hide();
+            }, function() {
+                console.log('cancel alert dialog.');
+            });
+        };
+
+        $scope.onClickDelete = function() {
+            var param = {'message' : '12345에 적용된 가중치를 삭제하시겠습니까?'};
+
+            $mdDialog.show({
+                locals: {'param' : param},
+                multiple: true,
+                controller: ConfirmDialogController,
+                templateUrl: 'confirm.dialog',
+                parent: angular.element(document.body),
+                //targetEvent: ev,
+                clickOutsideToClose:true,
+                fullscreen: false//$scope.customFullscreen // Only for -xs, -sm breakpoints.
+            }).then(function(answer) {
+               // $scope.dealNumber = answer;
+                console.log('confirm dialog answer "' + answer + '".');
+                var param = {'message' : '삭제 되었습니다.'};
+                $mdDialog.show({
+                    locals: {'param' : param},
+                    multiple: true,
+                    controller: AlertDialogController,
+                    templateUrl: 'alert.dialog.html',
+                    parent: angular.element(document.body),
+                    //targetEvent: ev,
+                    clickOutsideToClose:true,
+                    fullscreen: false//$scope.customFullscreen // Only for -xs, -sm breakpoints.
+                })
+
+
+                $mdDialog.hide();
+            }, function() {
+                console.log('cancel confirm dialog.');
             });
         };
     }
 
-    function DealViewController($scope, $mdDialog) {
+
+
+
+
+
+
+
+
+    function DealViewController($scope, $mdDialog, param) {
+
+console.log('create DealViewController param : ' + param);
+
+        $scope.dealNumber = param.dealNumber;
+
+
         $scope.hide = function() {
             $mdDialog.hide();
         };
@@ -249,9 +434,90 @@ console.log('create SortWeightController scope.mode : ' + $scope.mode);
             console.log('DealViewController : ' + answer);
             $mdDialog.hide(answer);
         };
+
+        $scope.onClickSelect = function(dealNumber) {
+            alert('onClickSelect() dealNumber : ' + dealNumber);
+            $mdDialog.hide(dealNumber);
+        }
+
+        $scope.onClickSearch = function(dealNumber) {
+            alert('onClickSearch() dealNumber : ' + dealNumber);
+        }
+    }
+
+    function LogViewDialogController($scope, $mdDialog, param) {
+
+        console.log('create LogViewDialogController param : ' + param);
+
+        $scope.message = param.message;
+
+        $scope.logList = [{createDate:'2015', userName: 'aaa', content:'111'},
+                           {createDate:'2016', userName: 'bbb', content:'222'},
+                           {createDate:'2017', userName: 'ccc', content:'333'}];
+        
+        $scope.hide = function() {
+            console.log('LogViewDialogController : hide');
+            $mdDialog.hide();
+        };
+
+        $scope.cancel = function() {
+            $mdDialog.cancel();
+        };
+
+        $scope.answer = function(answer) {
+            console.log('LogViewDialogController : ' + answer);
+            $mdDialog.hide(answer);
+        };
+    }
+
+
+    function AlertDialogController($scope, $mdDialog, param) {
+
+console.log('create AlertDialogController param : ' + param);
+
+        $scope.message = param.message;
+
+
+        $scope.hide = function() {
+            console.log('AlertDialogController : hide');
+            $mdDialog.hide();
+        };
+
+        $scope.cancel = function() {
+            $mdDialog.cancel();
+        };
+
+        $scope.answer = function(answer) {
+            console.log('AlertDialogController : ' + answer);
+            $mdDialog.hide(answer);
+        };
+    }
+
+    function ConfirmDialogController($scope, $mdDialog, param) {
+
+console.log('create ConfirmDialogController param : ' + param);
+
+        $scope.message = param.message;
+
+
+        $scope.hide = function() {
+            console.log('ConfirmDialogController : hide');
+            $mdDialog.hide();
+        };
+
+        $scope.cancel = function() {
+            $mdDialog.cancel();
+        };
+
+        $scope.answer = function(answer) {
+            console.log('ConfirmDialogController : ' + answer);
+            $mdDialog.hide(answer);
+        };
     }
 
     </script>
+
+    
 
     <style>
     .md-dialog-backdrop:nth-of-type(even) {
@@ -405,32 +671,49 @@ console.log('create SortWeightController scope.mode : ' + $scope.mode);
     </style>
 </head>
 
-<body ng-app="MyApp">
-
+<body ng-app="SortWeightApp">
     <div ng-controller="AppCtrl" class="md-padding dialogdemoBasicUsage" id="popupContainer" ng-cloak="">
+        <div ng-show="debugmode" style="border:1px solid red;">
+            <p>debugmode</p> 
+            {{"sortWeightSearch.selectedStatus : " + sortWeightSearch.selectedStatus}} <br/>
+            {{"sortWeightSearch.dealNumber : " + sortWeightSearch.dealNumber}} <br/>
+            {{"sortWeightSearch.productName : " + sortWeightSearch.productName}} <br/>
+            {{"sortWeightSearch.productName : " + sortWeightSearch.productName}} <br/>
+            {{"sortWeightSearch.keywords : " + sortWeightSearch.keywords}} <br/>
+            {{"sortWeightSearch.userName : " + sortWeightSearch.userName}} <br/>
+
+
+        </div>
+
         <div class="top-input-area" layout="row">
             <label class="label label-info top-info-area-label">딜반영상태</label>
-            <md-select style='height:20px;margin:4px;width:10%;' ng-model="user.bbs">
-                <md-option style='height:25px;margin-left:2px;' ng-repeat="bbs in bbsList" ng-value="bbs" ng-disabled="$index === 1">
-                    {{bbs}}
+            
+            <select style='height:30px;width:100px;margin-top:10px;' ng-model="sortWeightSearch.selectedStatus" ng-options="status + '' for status in sortWeightSearch.status" ng-init="sortWeightSearch.selectedStatus='전체'">
+            </select>
+
+            <!--
+            <md-select aria-label='sort-weight-status' style='height:20px;margin:4px;width:10%;' ng-model="sortWeightSearch.selectedStatus">
+                <md-option style='height:25px;margin-left:2px;' ng-repeat="status in sortWeightSearch.status" ng-value="status" ng-selected="$index === 0">
+                    {{status}}
                 </md-option>
             </md-select>
+            -->
             <label class="label label-info top-info-area-label">딜번호</label>
-            <input type="number" ng-model="user.name" class="top-info-area-input" style="width:20%;">
+            <input type="number" ng-model="sortWeightSearch.dealNumber" class="top-info-area-input" style="width:120px;padding-left:10px;padding-right:10px;">
             <label class="label label-info top-info-area-label">상품명</label>
-            <input ng-model="user.name" class="top-info-area-input" style="width:30%;">
+            <input ng-model="sortWeightSearch.productName" class="top-info-area-input" style="width:30%;padding-left:10px;padding-right:10px;">
             <label class="label label-info top-info-area-label">정렬가중치 적용 키워드</label>
-            <input ng-model="user.name" class="top-info-area-input" style="width:30%;">
+            <input ng-model="sortWeightSearch.keywords" class="top-info-area-input" style="width:30%;padding-left:10px;padding-right:10px;">
             <label class="label label-info top-info-area-label">작업자</label>
-            <input ng-model="user.name" class="top-info-area-input" style="width:10%;">
+            <input ng-model="sortWeightSearch.userName" class="top-info-area-input" style="width:10%;padding-left:10px;padding-right:10px;">
             <span flex></span>
-            <md-button class="md-raised small-button" ng-click="showAlert('button');" style="height: 20px;">검색</md-button>
+            <md-button class="md-raised small-button" ng-click="onClickSortWeightListSearch('button');" style="height: 20px;">검색</md-button>
             
         </div>
 
         <div class="new-input-area" layout="row">
             <span flex></span>
-            <md-button class="md-raised small-button md-primary" ng-click="registerNew('button');" style="height: 20px;" md-primary>신규등록</md-button>
+            <md-button class="md-raised small-button md-primary" ng-click="registerNew();" style="height: 30px;" md-primary>신규등록</md-button>
         </div>
 
         <div class="list-view-area" layout="row">
@@ -447,18 +730,18 @@ console.log('create SortWeightController scope.mode : ' + $scope.mode);
                 <th>작업자</th>
                 <th>작업로그</th>
             </thead>
-            <tbody ng-repeat="item in dealList">
+            <tbody ng-repeat="deal in dealList">
                 <tr>
-                    <td>{{item.status}}</td>
-                    <td><a href="#" ng-click="clickDealNumber(item.number)"> {{item.number}}</a></td>
-                    <td style="width:20%;">{{item.name}}</td>
-                    <td style="width:20%;">{{item.weightKeyword}}</td>
-                    <td>{{item.weight}}</td>
-                    <td>{{item.startTime}}</td>
-                    <td>{{item.finishTime}}</td>
-                    <td>{{item.lastUpdateTime}}</td>
-                    <td>{{item.userid}}</td>
-                    <td style="width:1%;"><md-button class="md-raised show-log-button" style="background: #5bc0de;"  ng-click="clickShowLog(item.number);">로그보기</md-button></td>
+                    <td>{{deal.status}}</td>
+                    <td><a href="#" ng-click="clickDealNumber(deal)"> {{deal.number}}</a></td>
+                    <td style="width:20%;">{{deal.name}}</td>
+                    <td style="width:20%;">{{deal.weightKeyword}}</td>
+                    <td>{{deal.weight}}</td>
+                    <td>{{deal.startDateTime}}</td>
+                    <td>{{deal.finishDateTime}}</td>
+                    <td>{{deal.lastUpdateDateTime}}</td>
+                    <td>{{deal.userId}}</td>
+                    <td style="width:1%;"><md-button class="md-raised show-log-button" style="background: #5bc0de;"  ng-click="clickShowLog(deal.number);">로그보기</md-button></td>
                 </tr>
             </tbody>
         </table>
@@ -487,17 +770,33 @@ console.log('create SortWeightController scope.mode : ' + $scope.mode);
             </div>
         </div>
         
+<style>
 
+.sort-weight-dialog-field {
+    background: lightgray;
+    width: 100px;
+    text-align : center;
+    font-weight: bolder;
+    min-height: 50px;
+    min-width:100px;
+}
 
-<!-- 정렬 가중치 등록 시작 -->
-<script type="text/ng-template" id="sort.weight.html">
+/*
+style="width:100px;" align="center"
+*/
+
+</style>
+
+<!-- 정렬 가중치 등록 / 수정 시작 -->
+
+<script type="text/ng-template" id="sort.weight.dialog">
     <md-dialog aria-label="Dialog1" flex="60">
     <form ng-cloak>
     <md-toolbar>
         <div class="md-toolbar-tools">
-            <h2>정렬 가중치 등록</h2>
+            <h2>{{mode === 'NEW' ? '정렬 가중치 등록' : '정렬 가중치 수정'}}</h2>
             <span flex></span>
-            <md-button class="md-icon-button" ng-click="cancel()"><md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon></md-button>
+            <md-button class="md-icon-button" ng-click="cancel()"><md-icon md-svg-src="md-close" aria-label="Close dialog"></md-icon></md-button>
         </div>
     </md-toolbar>
 
@@ -505,21 +804,50 @@ console.log('create SortWeightController scope.mode : ' + $scope.mode);
         <div class="md-dialog-content">
         <table border="1px" width="100%">
         <tr>
-            <td style="width:100px;" align="center">딜 연동</td> 
-            <td align="left" style="padding:10px;width:300px;">
+            <td class="sort-weight-dialog-field">메인/옵션딜<br/>가중치<br/>적용 여부</td>
+            <td colspan="3" style="padding:10px;">
                 <div layout="row">
-                    <div><input type="number" ng-model="user.name"  style="height:34px;width:180px;margin-top:6px;"></div>
-                    <div><md-button class="md-raised md-primary" ng-click="showAlert('button');" style="height: 20px;width:30px;">딜 조회</md-button></div>
+                    <div>
+                    <md-radio-group ng-model="user.fruit" layout="row">
+                        <md-radio-button value="Apple" class="md-primary">메인딜만 적용</md-radio-button>
+                        <md-radio-button value="Banana">메인딜/옵션딜 모두 적용</md-radio-button>
+                    </md-radio-group>
+                    </div>
+                   
+                </div>
+                
+                    <hr style="width:100%;background:red;margin-top:10px;margin-bottom:10px;" />
+                    
+                    <div>
+                        <span class="input-hint">
+                        * 메인딜만 적용 : 연동한 메인딜만 가중치 적용(하위 옵션딜은 영향받지 않음)<br/>
+                        * 메인딜/옵션딜 모두 적용 : 연동한 메인딜과 그 하위의 옵션딜에도 가중치 적용
+                        </span>
+                    </div>
+                    
+                
+            </td>
+        </tr>
+        <tr>
+            <td class="sort-weight-dialog-field">딜 번호</td>
+            <td align="left" style="padding:10px;width:300px;">
+                <div layout="row" ng-show="mode==='NEW'">
+                    <div><input type="number" ng-model="dealNumber" style="padding-left:10px;padding-right:10px;height:34px;width:180px;margin-top:6px;"></div>
+                    <div><md-button class="md-raised md-primary" ng-click="onClickDealView(dealNumber);" style="height: 20px;width:30px;">딜 조회</md-button></div>
+                </div>
+                <div layout="row" ng-show="mode==='EDIT'">
+                    <div>60357392</div>
+                    <div style="margin-left:20px;">(딜 상태 : 반영중)</div>
                 </div>
             </td> 
-            <td align="center" style="width:100px;">딜 제목</td> 
+            <td class="sort-weight-dialog-field" style="width:100px;">딜 제목</td> 
             <td style="padding:10px;">토다이 뷔페</td> 
         </tr>
         <tr>
-            <td align="center">가중치 설정</td> 
+            <td class="sort-weight-dialog-field">가중치 설정</td> 
             <td colspan="3"   style="padding:10px;"> 
                 <div layout="row" style="margin-top:10px;">
-                    <div style=""><label>가중치 점수</label><input style="width:80px;height:34px;margin-left:10px;"></div>
+                    <div style=""><label>가중치 점수</label><input style="padding-left:10px;padding-right:10px;width:80px;height:34px;margin-left:10px;"></div>
                     <div style="margin-left:15px;"><span class="input-hint">* 0~99999까지 설정<br/>* 마이너스 가중치는 숫자앞에 "-"를 붙임. ex) -100</span></div>
                 </div>
                 
@@ -527,42 +855,59 @@ console.log('create SortWeightController scope.mode : ' + $scope.mode);
                 
                 <div layout="column" style="margin-top:10px;">
                     <div flex><label>가중치 키워드</label><span class="input-hint" style="margin-left:20px;" flex    >* 최대 50자 까지 입력 가능하며, 구분자는 ";" 입니다. ex) 나이키;운동화</span> </div>
-                    <div flex><md-chips ng-model="tags" md-separator-keys="customKeys" md-enable-chip-edit="true" md-on-add="add_chip($chip)" ng-change="remove_chip($chip)" readonly="readonly" placeholder="키워드 입력후 [엔터]" md-autofocus></md-chips></div>
+                    <div flex><md-chips ng-model="deal.weightKeyword" md-separator-keys="customKeys" md-enable-chip-edit="true" md-on-add="add_chip($chip)" ng-change="remove_chip($chip)" readonly="readonly" placeholder="키워드 입력후 [엔터]" md-autofocus></md-chips></div>
                 </div>
             </td>
         </tr>
         <tr>
-            <td align="center">노출기간</td> <td colspan="3" style="padding:10px;">
+            <td class="sort-weight-dialog-field">노출기간</td> <td colspan="3" style="padding:10px;">
                 <div layout="row" layout-align="start center">
-                    <label>시작일</label><md-datepicker style="padding:0px;" ng-model="user.birthDate" md-placeholder="Enter date"></md-datepicker>
-                    <select class="input-hour" ng-model="startHour" ng-options="hour + '시' for hour in hours" ng-init="startHour=1"></select>
+                    <label>시작일</label><md-datepicker style="padding:0px;" ng-click="onClickStartDate()" md-is-open="openStartDate" ng-change="onChangeStartDate()" md-min-date="minStartDate" ng-model="startDate" md-placeholder="Enter date"></md-datepicker>
+                    <select class="input-hour" ng-model="startHour" ng-options="hour + '시' for hour in hours" ng-init="startHour=1" ng-disabled="startDate === undefined"></select>
                     <label style="margin-left:20px;">~</label>
                     <label style="margin-left:20px;">종료일</label>
-                    <md-datepicker ng-model="user.birthDate" md-placeholder="Enter date"></md-datepicker>
-                    <select class="input-hour" ng-model="startHour" ng-options="hour + '시' for hour in hours" ng-init="startHour=1">
+                    <md-datepicker ng-model="endDate" md-placeholder="Enter date" ng-click="onClickEndDate()" md-min-date="startDate" md-max-date="maxEndDate" md-is-open="openEndDate" ng-disabled="startDate === undefined"></md-datepicker>
+                    <select class="input-hour" ng-model="endHour" ng-options="hour + '시' for hour in hours" ng-init="startHour=1" ng-disabled="endDate === undefined">
                     </select>
                 </div>
             </td>
         </tr>
         <tr>
-            <td align="center" style="height:50px;">등록일</td> <td>2017.12.10</td> <td align="center">최종 수정일</td> <td>2017.12.20</td>
+            <td class="sort-weight-dialog-field" style="height:50px;">등록일</td> 
+            <td style="padding-left:10px;">
+                <div layout="row">
+                    <div>2017.12.10</div>
+                    <div style="padding-left:20px;" ng-show="mode==='EDIT'"><b>작업자이름#1</b></div>
+                </div>
+            </td> 
+            <td class="sort-weight-dialog-field">최종 수정일</td> 
+            <td style="padding-left:10px;">
+                <div layout="row">
+                    <div>2017.12.10</div>
+                    <div style="padding-left:20px;" ng-show="mode==='EDIT'"><b>작업자이름#2</b></div>
+                </div>
+            </td>
         </tr>
         </table>
         </div>
-        <div layout="row" width="100%" layout-align="center center" style="margin-bottom:20px;">
-            <div><md-button class="md-primary md-raised" ng-click="show2($event)">등록</md-button></div>
+        <div ng-show="mode === 'NEW'" layout="row" width="100%" layout-align="center center" style="margin-bottom:20px;">
+            <div><md-button class="md-primary md-raised" ng-click="onClickSave()">등록</md-button></div>
             <div><md-button class="md-raised" ng-click="answer('close')">취소</md-button></div>
+        </div>
+        <div ng-show="mode === 'EDIT'" layout="row" width="100%" layout-align="center center" style="margin-bottom:20px;">
+            <div><md-button class="md-primary md-raised" ng-click="onClickEdit()">수정</md-button></div>
+            <div><md-button class="md-raised" ng-click="answer('close')">닫기</md-button></div>
+            <div><md-button class="md-raised md-warn" ng-click="onClickDelete('close')">삭제</md-button></div>
         </div>
     </md-dialog-content>
     </form>
     </md-dialog>
 </script>
 
-<!-- End of 정렬 가중치 등록 -->
+<!-- End of 정렬 가중치 등록 / 수정 -->
 
-
-
-<script type="text/ng-template" id="deal.view.html">
+<!-- Start 딜 조회 시작  -->
+<script type="text/ng-template" id="deal.view.dialog">
     <md-dialog aria-label="DealViewDialog" flex="40">
     <form ng-cloak>
         <md-toolbar>
@@ -575,8 +920,8 @@ console.log('create SortWeightController scope.mode : ' + $scope.mode);
 
         <md-dialog-content >
             <div style="padding-left:20px;padding-right:20px;padding-top:10px;" layout="row">
-                <div><input type="number" ng-model="user.name"  style="width:180px;height:34px;margin-top:8px;"></div>
-                <div><md-button class="md-raised md-primary" style="height:20px;">조회</md-button></div>
+                <div><input type="number" ng-model="dealNumber"  style="width:180px;height:34px;margin-top:8px;"></div>
+                <div><md-button class="md-raised md-primary" style="height:20px;" ng-click="onClickSearch(dealNumber)">조회</md-button></div>
             </div>
 
             <div style="padding-left:20px;padding-right:20px;padding-top:10px;" layout="row">
@@ -586,7 +931,7 @@ console.log('create SortWeightController scope.mode : ' + $scope.mode);
                 </thead>
                 <tbody>
                 <tr>
-                    <td align="center"><md-button class="md-raised show-log-button" style="background: #5bc0de;"  ng-click="clickShowLog(item.number);">선택</md-button> </td><td>123456</td><td>포타이</td>
+                    <td align="center"><md-button class="md-raised show-log-button" style="background: #5bc0de;"  ng-click="onClickSelect(dealNumber);">선택</md-button> </td><td>123456</td><td>포타이</td>
                 </tr>
                 </tbody>
             </table>
@@ -602,15 +947,122 @@ console.log('create SortWeightController scope.mode : ' + $scope.mode);
     </md-dialog>
 </script>
 
+<!-- End of 딜 조회 종료  -->
 
-    </div>
 
-<!--
-    <div ng-controller="ChipCtrl" layout="column" ng-cloak="">
+<style>
 
-        
-    </div>
-    -->
+.log-view-table th {
+    padding: 10px;
+    text-align: center;
+    font-weight: bolder;
+}
+
+.log-view-table td {
+    padding: 10px;
+}
+    
+.log-view-dialog-field {
+    background: lightgray;
+    width: 100px;
+    text-align : center;
+    font-weight: bolder;
+    min-height: 50px;
+}
+
+/*
+style="width:100px;" align="center"
+*/
+
+</style>
+
+
+<!-- 로그 보기 다이얼로그 시작  -->
+<script type="text/ng-template" id="log.view.dialog">
+    <md-dialog aria-label="LogViewDialog" flex="80">
+    <form ng-cloak>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>정렬가중치 작업로그</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()"><md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon></md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div style="padding:20px;" layout="row">
+            <table class="log-view-table" border="1" width="100%">
+                <thead>
+                <th class="log-view-dialog-field" style="width:15%;">시간</th><th class="log-view-dialog-field" style="width:10%;">작업자</th><th class="log-view-dialog-field" style="width:70%;">작업내용</th>
+                </thead>
+            
+                <tbody ng-repeat="log in logList">
+                    <tr>
+                        <td>{{log.createDate}}</td>
+                        <td>{{log.userName}}</td>
+                        <td>{{log.content}}</td>
+                    </tr>
+                </tbody>
+
+            
+            </table>
+            </div>
+        </md-dialog-content>
+    </form>
+    </md-dialog>
+</script>
+
+<!-- 로그 보기 다이얼로그 종료  -->
+
+<!-- Start of 알림 Dialog -->
+<script type="text/ng-template" id="alert.dialog">
+    <md-dialog aria-label="AlertDialog" flex="40">
+    <form ng-cloak>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>알림</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()"><md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon></md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content >
+            <h2>알림</h2>
+            <h4>{{message}}</h4>
+            <div layout="row" width="100%" layout-align="center center" style="margin-bottom:20px;margin-top:20px;">
+                <div><md-button ng-click="answer('close')" class="md-raised md-primary" md-autofocus>닫기</md-button></div>
+            </div>
+        </md-dialog-content>
+    </form>
+    </md-dialog>
+</script>
+<!-- End of 알림 Dialog -->
+
+<!-- Start of Confirm Dialog -->
+<script type="text/ng-template" id="confirm.dialog">
+    <md-dialog aria-label="ConfirmDialog" flex="40">
+    <form ng-cloak>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>확인</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()"><md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon></md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content >
+            <h2>알림</h2>
+            <h4>{{message}}</h4>
+            <div layout="row" width="100%" layout-align="center center" style="margin-bottom:20px;margin-top:20px;">
+                <div><md-button ng-click="answer('ok')" class="md-raised md-primary" md-autofocus>확인</md-button></div>
+                <div><md-button ng-click="cancel()" class="md-raised md-primary" md-autofocus>닫기</md-button></div>
+            </div>
+        </md-dialog-content>
+    </form>
+    </md-dialog>
+</script>
+<!-- End of Confirm Dialog -->
+
 </body>
 </html>  
   

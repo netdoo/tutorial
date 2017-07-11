@@ -28,6 +28,32 @@
             });
         }
     }]);
+    
+    myApp.controller('PostController', ['$scope', '$http', function ($scope, $http) {
+        $scope.echo = {}; // 사용자 객체를 생성
+        $scope.echo.time = ''; // 빈 문자열로 초기화
+        $scope.echo.text = ''; // 빈 문자열로 초기화
+       
+        $scope.postEcho = function() {
+            // 서버에 IP 주소를 요청
+            $http({
+                method: 'POST',
+                url: 'http://127.0.0.1:9999/postecho',
+                data : $.param({
+                    text: 'hello world'
+                }),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                }
+            }).success(function (data, status, headers, config) {
+                var n = new Date();
+                $scope.echo.time = n.getHours() + "시" + n.getMinutes() + "분" + n.getSeconds() + "초";
+                $scope.echo.text = data.text;
+            }).error(function (data, status, headers, config) {
+                console.log('error');
+            });
+        }
+    }]);
 
     myApp.controller('HelloWorldController', ['$scope', function($scope) {
         $scope.showHelloWorld = function(msg) {
@@ -139,6 +165,12 @@
             </button>
             <p>{{ ip.time + ' My IP : ' + ip.text }}</p>
         </div>
+        <div ng-controller="PostController">
+            <button ng-click="postEcho()">
+                post echo
+            </button>
+            <p>{{ echo.time + ' Text : ' + echo.text }}</p>
+        </div>        
         <div ng-controller="HelloWorldController">
             <button ng-click="showHelloWorld('2017')">
                 show hello world

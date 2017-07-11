@@ -1,7 +1,10 @@
 package com.exmybatis;
 
 import com.exmybatis.dao.MyDAO;
+import com.exmybatis.domain.Echo;
 import com.exmybatis.domain.User;
+import com.exmybatis.request.UserParam;
+import com.exmybatis.request.UserParamValidator;
 import com.exmybatis.service.MyService;
 import com.exmybatis.util.Paging;
 import org.apache.log4j.Logger;
@@ -18,15 +21,15 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.awt.*;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.List;
@@ -51,6 +54,9 @@ public class MainController {
 
     @Value("${hello.msg:default}")
     private String helloMsg;
+
+    @Autowired
+    UserParamValidator userParamValidator;
 
     @RequestMapping(value = "/*", method = RequestMethod.GET)
     public ResponseEntity<String> pageNotFound() {
@@ -105,6 +111,14 @@ public class MainController {
         return superAdmin;
     }
 
+    @CrossOrigin
+    @RequestMapping(value = "/postecho", method = RequestMethod.POST, produces="application/json;charset=UTF-8")
+    public ResponseEntity<Echo> postEcho(
+            @RequestParam(value="text", required=false, defaultValue="") String text
+    ) throws SQLException {
+        return new ResponseEntity<Echo>(new Echo(text.toUpperCase()), HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/adminUserNameList", method = RequestMethod.GET, produces="application/json;charset=UTF-8")
     public @ResponseBody List<String> getAdminUserNameList() throws SQLException {
         List<String> adminUserNameList = myDAO.getAdminUserNameList();
@@ -151,6 +165,55 @@ public class MainController {
         myService.saveAdmins();
 
         return "err";
+    }
+
+    @RequestMapping(value = "/exception", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
+    public @ResponseBody String exception(
+            @ModelAttribute UserParam userParam,
+            BindingResult bindingResult,
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) throws Exception {
+
+        if (bindingResult.hasErrors()) {
+            logger.error("Parameter binding error.");
+            StringBuilder errMsgBuilder = new StringBuilder();
+
+            for (ObjectError error : bindingResult.getAllErrors()) {
+                logger.error("RestError: " + error.getCode());
+                logger.error("Message: " + error.getDefaultMessage());
+                errMsgBuilder.append(error.getDefaultMessage() + "\n");
+            }
+
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, errMsgBuilder.toString());
+        }
+
+        userParamValidator.validate(userParam, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            logger.error("Parameter binding error.");
+            StringBuilder errMsgBuilder = new StringBuilder();
+
+            for (ObjectError error : bindingResult.getAllErrors()) {
+                logger.error("RestError: " + error.getCode());
+                logger.error("Message: " + error.getDefaultMessage());
+                errMsgBuilder.append(error.getDefaultMessage() + "\n");
+            }
+
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, errMsgBuilder.toString());
+        }
+
+        throw new IllegalArgumentException("잘못된 요청입니다.");
+    }
+
+    @RequestMapping(value = "/ioexception", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
+    public @ResponseBody String ioException(
+            @ModelAttribute UserParam userParam,
+            BindingResult bindingResult,
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) throws Exception {
+        throw new IOException("io exception");
     }
 
     @RequestMapping(value = "/getAllUserCount", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
