@@ -127,6 +127,16 @@ public class MainController {
         return new ResponseEntity<Echo>(new Echo(echo.getText().toUpperCase(), echo.getName().toUpperCase()), HttpStatus.OK);
     }
 
+    @CrossOrigin
+    @RequestMapping(value = "/insertUser", method = RequestMethod.POST, produces="application/json;charset=UTF-8")
+    public ResponseEntity<Map> insertUser(
+            @RequestBody User user
+    ) throws SQLException {
+        Map<String, String> map = new HashMap<>();
+        map.put("result", String.valueOf(myDAO.insertUser(user)));
+        return new ResponseEntity<Map>(map, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/adminUserNameList", method = RequestMethod.GET, produces="application/json;charset=UTF-8")
     public @ResponseBody List<String> getAdminUserNameList() throws SQLException {
         List<String> adminUserNameList = myDAO.getAdminUserNameList();

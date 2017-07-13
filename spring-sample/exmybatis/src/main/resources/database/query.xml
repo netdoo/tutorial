@@ -100,6 +100,11 @@
         VALUES (#{user_id}, #{user_name}, #{user_email}, #{user_type})
     </insert>
 
+    <insert id="insertUser" parameterType="com.exmybatis.domain.User">
+        INSERT INTO users (user_id, user_name, user_email, user_type, user_memo)
+        VALUES (#{id}, #{name}, #{email, typeHandler=com.exmybatis.domain.typehandler.EmailTypeHandler}, #{type}, #{memo})
+    </insert>
+
     <select id="selectAllUserCount" resultType="int">
         SELECT count(*)
         FROM users;

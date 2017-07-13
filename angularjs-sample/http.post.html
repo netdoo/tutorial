@@ -15,6 +15,7 @@
         $scope.echo.time = ''; // 빈 문자열로 초기화
         $scope.echo.text = ''; // 빈 문자열로 초기화
         $scope.echo.name = '';
+        $scope.insertUserResult = {};
 
         $scope.postEcho = function() {
             // 서버에 IP 주소를 요청
@@ -59,6 +60,32 @@
                 console.log('error');
             });
         }
+
+        $scope.insertUser = function() {
+
+            var user = {
+                id: 'mark',
+                name: 'Mark',
+                email: ['mark@google.com', 'mark@gmail.com'],
+                type: 'GUEST',
+                memo: 'User,Guest'
+            };
+
+            $http({
+                method: 'POST',
+                url: 'http://127.0.0.1:9999/insertUser',
+                data : JSON.stringify(user),
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8'
+                }
+            }).success(function (data, status, headers, config) {
+                var n = new Date();
+                $scope.echo.time = n.getHours() + "시" + n.getMinutes() + "분" + n.getSeconds() + "초";
+                $scope.insertUserResult = data;
+            }).error(function (data, status, headers, config) {
+                console.log('error');
+            });
+        }
     }]);
 
 </script>
@@ -72,7 +99,11 @@
             <button ng-click="postJsonEcho()">
                 post json echo
             </button>
+            <button ng-click="insertUser()">
+                post insert user
+            </button>
             <p>{{ echo.time + ' Text : ' + echo.text + ' ' + echo.name }}</p>
+            <p>{{insertUserResult}}</p>
         </div>        
     </div>
 </body>

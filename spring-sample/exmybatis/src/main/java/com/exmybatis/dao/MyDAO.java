@@ -91,6 +91,10 @@ public class MyDAO {
         sqlSession.insert("db.insertAdmin", param);
     }
 
+    public int insertUser(User user) {
+        return sqlSession.insert("db.insertUser", user);
+    }
+
     public int selectBool(boolean value) throws SQLException {
         Map<String, Boolean> param = new HashMap<String, Boolean>();
         param.put("value", value);
