@@ -2,6 +2,7 @@ package com.exjackson;
 
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,8 @@ import java.util.List;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NON_PRIVATE)
 public class Portal {
 
+    @JsonDeserialize(using = CustomTextDeserializer.class)
+    List<String>    customText;
     List<PortalSite> portalSites = new ArrayList<>();
 
     public List<PortalSite> getPortalSites() {

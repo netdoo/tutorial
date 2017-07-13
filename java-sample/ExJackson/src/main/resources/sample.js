@@ -1,4 +1,5 @@
-{  
+{
+   "customText" : "",
    "portalSites":[
       {  
          "portal":"NAVER",
