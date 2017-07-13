@@ -25,6 +25,7 @@
         <result property="name" column="user_name"/>
         <result property="email" column="user_email"/>
         <result property="type" column="user_type"/>
+        <result property="someText" column="some_text"/>
     </resultMap>
 
     <select id="getAllUser" resultMap="user_result">

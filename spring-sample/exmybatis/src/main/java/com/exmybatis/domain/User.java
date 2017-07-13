@@ -1,12 +1,32 @@
 package com.exmybatis.domain;
 
-public class User {
+import com.exmybatis.domain.serialize.UserDeserializer;
+import com.exmybatis.domain.serialize.UserSerializer;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import java.io.Serializable;
+import java.util.List;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class User implements Serializable {
     int no;
+
     String email;
     String name;
     String type;
     String id;
     String password;
+    @JsonSerialize(using = UserSerializer.class)
+    String someText;
+
+    public void setSomeText(String someText) {
+        this.someText = someText;
+    }
+    public String getSomeText() {
+        return this.someText;
+    }
 
     public void setNo(int no) {
         this.no = no;
