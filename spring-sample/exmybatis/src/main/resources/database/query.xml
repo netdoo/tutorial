@@ -23,13 +23,18 @@
         <result property="no" column="user_no"/>
         <result property="id" column="user_id"/>
         <result property="name" column="user_name"/>
-        <result property="email" column="user_email"/>
+        <result property="email" column="user_email" jdbcType="VARCHAR" javaType="java.util.ArrayList" typeHandler="com.exmybatis.domain.typehandler.EmailTypeHandler" />
         <result property="type" column="user_type"/>
-        <result property="someText" column="some_text"/>
+        <result property="memo" column="user_memo"/>
     </resultMap>
 
     <select id="getAllUser" resultMap="user_result">
         SELECT *
+        FROM users
+    </select>
+
+    <select id="getAllUserEmailList" resultType="String">
+        SELECT user_email
         FROM users
     </select>
 

@@ -14,7 +14,8 @@
         $scope.echo = {}; // 사용자 객체를 생성
         $scope.echo.time = ''; // 빈 문자열로 초기화
         $scope.echo.text = ''; // 빈 문자열로 초기화
-       
+        $scope.echo.name = '';
+
         $scope.postEcho = function() {
             // 서버에 IP 주소를 요청
             $http({
@@ -34,6 +35,30 @@
                 console.log('error');
             });
         }
+
+        $scope.postJsonEcho = function() {
+
+            var echo = {
+                text: 'hello json',
+                name: 'i am angularjs'
+            };
+
+            $http({
+                method: 'POST',
+                url: 'http://127.0.0.1:9999/postjsonecho',
+                data : JSON.stringify(echo),
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8'
+                }
+            }).success(function (data, status, headers, config) {
+                var n = new Date();
+                $scope.echo.time = n.getHours() + "시" + n.getMinutes() + "분" + n.getSeconds() + "초";
+                $scope.echo.text = data.text;
+                $scope.echo.name = data.name;
+            }).error(function (data, status, headers, config) {
+                console.log('error');
+            });
+        }
     }]);
 
 </script>
@@ -44,7 +69,10 @@
             <button ng-click="postEcho()">
                 post echo
             </button>
-            <p>{{ echo.time + ' Text : ' + echo.text }}</p>
+            <button ng-click="postJsonEcho()">
+                post json echo
+            </button>
+            <p>{{ echo.time + ' Text : ' + echo.text + ' ' + echo.name }}</p>
         </div>        
     </div>
 </body>

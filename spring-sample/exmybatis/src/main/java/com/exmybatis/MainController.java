@@ -119,6 +119,14 @@ public class MainController {
         return new ResponseEntity<Echo>(new Echo(text.toUpperCase()), HttpStatus.OK);
     }
 
+    @CrossOrigin
+    @RequestMapping(value = "/postjsonecho", method = RequestMethod.POST, produces="application/json;charset=UTF-8")
+    public ResponseEntity<Echo> postJsonEcho(
+            @RequestBody Echo echo
+    ) throws SQLException {
+        return new ResponseEntity<Echo>(new Echo(echo.getText().toUpperCase(), echo.getName().toUpperCase()), HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/adminUserNameList", method = RequestMethod.GET, produces="application/json;charset=UTF-8")
     public @ResponseBody List<String> getAdminUserNameList() throws SQLException {
         List<String> adminUserNameList = myDAO.getAdminUserNameList();
@@ -130,6 +138,13 @@ public class MainController {
     public @ResponseBody List<String> getAllUserNameList() throws SQLException {
         List<String> allUserNameList = myDAO.getAllUserNameList();
         return allUserNameList;
+    }
+
+
+    @RequestMapping(value = "/allUserEmailList", method = RequestMethod.GET, produces="application/json;charset=UTF-8")
+    public @ResponseBody List<String> getAllUserEmailList() throws SQLException {
+        List<String> allUserEmailList = myDAO.getAllUserEmailList();
+        return allUserEmailList;
     }
 
     @RequestMapping(value = "/updateUserName", method = RequestMethod.GET, produces="application/json;charset=UTF-8")

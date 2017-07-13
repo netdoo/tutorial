@@ -62,6 +62,10 @@ public class MyDAO {
         return sqlSession.selectList("db.getAllUserNameList");
     }
 
+    public List<String> getAllUserEmailList() throws SQLException {
+        return sqlSession.selectList("db.getAllUserEmailList");
+    }
+
     public void updateAdminName() throws SQLException {
 
         Map<String, String> param = new HashMap<String, String>();

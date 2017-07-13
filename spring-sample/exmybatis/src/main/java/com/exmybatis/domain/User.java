@@ -13,19 +13,19 @@ import java.util.List;
 public class User implements Serializable {
     int no;
 
-    String email;
+    List<String> email;
     String name;
     String type;
     String id;
     String password;
     @JsonSerialize(using = UserSerializer.class)
-    String someText;
+    String memo;
 
-    public void setSomeText(String someText) {
-        this.someText = someText;
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
-    public String getSomeText() {
-        return this.someText;
+    public String getMemo() {
+        return this.memo;
     }
 
     public void setNo(int no) {
@@ -44,11 +44,11 @@ public class User implements Serializable {
         return this.id;
     }
 
-    public String getEmail() {
+    public List<String> getEmail() {
         return this.email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(List<String> email) {
         this.email = email;
     }
 
