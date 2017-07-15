@@ -1,0 +1,19 @@
+<html>
+<head>
+    <script src="head.min.js"></script>
+    <script type="text/javascript">
+        head.ready(function () {
+            if (head.browser.ie && head.browser.version === 11) {
+                head.load('ie11.css');
+            } else if (head.browser.ie) {
+                head.load('ie.css');
+            } else if (head.browser.chrome) {
+                head.load("chrome.css");
+            }                
+        });
+    </script>
+</head>
+<body>
+    <h1 id="greeting">Hello World</h1>    
+</body>
+</html>
