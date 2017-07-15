@@ -1,0 +1,20 @@
+<html>
+<head>
+    <script src="URI.min.js"></script>
+    <script type="text/javascript">
+        function onLoad() {
+            var uri = new URI(window.location);
+            var name = uri.search(true).name;
+            var phone = uri.search(true).phone;            
+            
+            var logger = document.getElementById('log');
+            logger.innerHTML = 'URL : ' + window.location + '<br/>';
+            logger.innerHTML += 'name : ' + name + "<br/>";
+            logger.innerHTML += 'phone : ' + phone + "<br/>";        
+        }
+    </script>
+</head>
+<body onload="onLoad()">
+    <div id="log"></div>
+</body>
+</html>
