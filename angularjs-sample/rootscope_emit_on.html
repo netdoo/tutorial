@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<title>AngularJS - rootScope</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.17/angular.min.js"></script>
+<script type="text/javascript">
+    var myApp = angular.module('myApp', []);
+    
+    myApp.controller('FirstCtrl', ['$scope', '$rootScope', function ($scope, $rootScope) {
+        
+        $scope.text = 'hello world';
+        
+        $scope.emitRootScope = function(text) {
+            $rootScope.$emit('sendmsg', text);
+        }
+        
+        $scope.broadcastRootScope = function(text) {
+            $rootScope.$broadcast('sendmsg', text);
+        }
+        
+        $scope.clear = function() {
+            $rootScope.$emit('clear', '');
+        }
+    }]);
+    
+    myApp.controller('SecondCtrl', ['$scope', '$rootScope', function ($scope, $rootScope) {
+        
+        $scope.recvText = '';
+        
+        $rootScope.$on('sendmsg', function(event, data) {
+            $scope.recvText = data;
+        });
+        
+        $rootScope.$on('clear', function(event, data) {
+            $scope.recvText = '';
+        });
+    }]);
+    
+    myApp.controller('ThirdCtrl', ['$scope', '$rootScope', function ($scope, $rootScope) {
+        
+        $scope.recvText = '';
+        
+        $rootScope.$on('sendmsg', function(event, data) {
+            $scope.recvText = data;
+        });        
+        
+        $rootScope.$on('clear', function(event, data) {
+            $scope.recvText = '';
+        });
+    }]);
+</script>
+</head>
+<body>
+    <div ng-app="myApp">
+        <div ng-controller="FirstCtrl">
+            <button ng-click="emitRootScope('some text')">
+                emit root scope
+            </button>
+            <button ng-click="clear()">
+                clear text
+            </button>
+            <button ng-click="broadcastRootScope('some broadcast text')">
+                broad cast root scope
+            </button>
+        </div>
+        <div ng-controller="SecondCtrl">
+            <p>{{recvText}}
+        </div>
+        <div ng-controller="ThirdCtrl">
+            <p>{{recvText}}
+        </div>
+    </div>
+</body>
+</html>
