@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<title>Elasticsearch Monitoring</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="css/bootstrap/v3.1.1/bootstrap.min.css">
+<script src="js/jquery/v1.11.1/jquery.min.js"></script>
+<script src="js/bootstrap/v3.1.1/bootstrap.min.js"></script>
+<script src="js/angularjs/v1.4.9/angular.min.js"></script>
+<script type="text/javascript">
+    var myApp = angular.module('myApp', []);
+    myApp.config(['$httpProvider', function($httpProvider) {
+
+        $httpProvider.defaults.useXDomain = true;
+
+        delete $httpProvider.defaults.headers.common['X-Requested-With'];
+
+    }
+
+    ]);
+    
+    
+    myApp.controller('ElasticController', ['$scope', '$http', function ($scope, $http) {
+       
+        $scope.nodes = {};
+       
+        function getNodesStatus() {
+            return new Promise(function(resolve, reject) { 
+                $http({
+                    method: 'POST',
+                    url: 'http://192.168.0.2:9200/_nodes/node-2,node-3/stats/os,process'
+                }).success(function (data, status, headers, config) {
+                    resolve(data);
+                }).error(function (data, status, headers, config) {
+                    reject(data);
+                });
+            }); 
+        }
+                    
+        $scope.showNodeStatus = function() {
+            getNodesStatus().then(function(data) {
+                var nodes = [];
+                
+                angular.forEach(data.nodes, function(node) {
+                    nodes.push({
+                        name : node.name,
+                        cpu: node.os.cpu.percent,
+                        mem: node.os.mem.used_percent 
+                    });                    
+                });
+                
+                $scope.nodes = nodes;
+                $scope.$apply();
+            }).catch(function(err) {
+                console.log('exception : ' + err);
+            });
+        }
+    }]);
+   
+
+</script>
+</head>
+<body>
+    <div ng-app="myApp">
+        <div ng-controller="ElasticController">
+            <button ng-click="showNodeStatus()">
+                show node status
+            </button>
+            <p ng-repeat="node in nodes">{{ node }}</p>
+        </div>
+    </div>
+</body>
+</html>
