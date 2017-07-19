@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+<title>Elasticsearch Monitoring</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="css/bootstrap/v3.1.1/bootstrap.min.css">
+<script src="js/jquery/v1.11.1/jquery.min.js"></script>
+<script src="js/bootstrap/v3.1.1/bootstrap.min.js"></script>
+<script src="js/angularjs/v1.4.9/angular.min.js"></script>
+<script type="text/javascript">
+    var myApp = angular.module('myApp', []);
+
+    myApp.controller('ElasticController', ['$scope', '$http', function ($scope, $http) {       
+        $scope.jsonpRequest = function() {
+            var url = "http://public-api.wordpress.com/rest/v1/sites/wtmpeachtest.wordpress.com/posts?callback=JSON_CALLBACK";
+            $http.jsonp(url).success(function (data, status, headers, config) {
+                $scope.response = {
+                    found: data.found,
+                    status: status
+                };
+            })
+            .error(function (data, status, headers, config) {
+                $scope.statcode = status;
+            });
+        }
+    }]);
+   
+
+</script>
+</head>
+<body>
+    <div ng-app="myApp">
+        <div ng-controller="ElasticController">
+            <button ng-click="jsonpRequest()">
+                request jsonp style
+            </button>
+            <p>{{response}}</p>
+        </div>
+    </div>
+</body>
+</html>
