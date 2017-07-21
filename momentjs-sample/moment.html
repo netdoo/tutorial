@@ -8,26 +8,14 @@
             alert(moment().format('YYYY/MM/DD hh:mm:ss'));
         }
                
-        function onClickSuccessAlert() {
+        function onClickDiff() {
+            /// 2017년 10월 10일 ~ 2017년 10월 20일 까지의 일자 계산
+            alert(moment('2017/10/20').diff(moment('2017-10-10'), 'days'));
         }
-             
-        function onClickInfoAlert() {
-        }
-        
-        function onClickWarnAlert() {
-        }
-        
-        
-        function onClickError() {
-        }
-        
-        function onClickAutoCloseAlert() {
-        }
-        
-        function onClickCustomIconAlert() {
-        }
-        
-        function onClickHtmlAlert() {
+
+        function onClickFormat() {
+            var date = new Date();
+            alert(moment(date).format('YYYY-MM-DD'));
         }
         
         function onLoad() {
@@ -37,13 +25,8 @@
 </head>
 <body onload="onLoad()">
     <button onclick="onClickNow()">현재시각</button><br/>
-    <button onclick="onClickInfoAlert()">info alert</button><br/>
-    <button onclick="onClickWarnAlert()">warnning alert</button><br/>
-    <button onclick="onClickSuccessAlert()">success alert</button><br/>
-    <button onclick="onClickError()">error alert</button><br/>
-    <button onclick="onClickAutoCloseAlert()">auto close alert</button><br/>
-    <button onclick="onClickCustomIconAlert()">custom icon alert</button><br/>
-    <button onclick="onClickHtmlAlert()">html alert</button><br/>
+    <button onclick="onClickDiff()">날짜계산</button><br/>
+    <button onclick="onClickFormat()">날짜포멧</button><br/>
 </body>
 </html>
 
