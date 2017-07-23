@@ -9,17 +9,7 @@
 <script src="js/angularjs/v1.4.9/angular.min.js"></script>
 <script type="text/javascript">
     var myApp = angular.module('myApp', []);
-    myApp.config(['$httpProvider', function($httpProvider) {
-
-        $httpProvider.defaults.useXDomain = true;
-
-        delete $httpProvider.defaults.headers.common['X-Requested-With'];
-
-    }
-
-    ]);
-    
-    
+   
     myApp.controller('ElasticController', ['$scope', '$http', function ($scope, $http) {
        
         $scope.nodes = {};
@@ -27,7 +17,7 @@
         function getNodesStatus() {
             return new Promise(function(resolve, reject) { 
                 $http({
-                    method: 'POST',
+                    method: 'GET',
                     url: 'http://192.168.0.2:9200/_nodes/node-2,node-3/stats/os,process'
                 }).success(function (data, status, headers, config) {
                     resolve(data);

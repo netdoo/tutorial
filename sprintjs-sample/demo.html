@@ -1,0 +1,30 @@
+<html>
+<head>
+    <script src="sprintf.js"></script>
+    <script type="text/javascript">
+        function onLoad() {
+            
+            var logger = document.getElementById('log');
+            
+            /// string, number arguments, support formatting
+            logger.innerHTML = sprintf('Hello %s %d <br/>', 'World', 2017);
+            logger.innerHTML += sprintf('Number  %02d <br/>', 1);
+            logger.innerHTML += sprintf('Number  %02d <br/>', 12);
+            logger.innerHTML += sprintf('Number  %02d%% <br/>', 75);            
+            
+            
+            /// named arguments
+            var spy = {name: 'james bond', code: 7};
+            logger.innerHTML += sprintf('%(name)s %(code)d <br/>', spy);
+            logger.innerHTML += sprintf('%(name)s %(code)03d <br/>', spy);
+            
+            
+            /// json arguments
+            logger.innerHTML += sprintf('%j <br/>', spy);
+        }
+    </script>
+</head>
+<body onload="onLoad()">
+    <div id="log"></div>
+</body>
+</html>
