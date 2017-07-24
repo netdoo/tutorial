@@ -3,12 +3,14 @@ package com.extime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 
 public class App {
     final static Logger logger = LoggerFactory.getLogger(App.class);
@@ -39,40 +41,18 @@ public class App {
         logger.info("now {}", now);
     }
 
+    public static void parseTime() throws Exception {
+        String time = "2017/07/24 13:55:00";
 
-    public static String getMainSep() {
-        return ";";
-    }
-
-    public static String getUserSep() {
-        return "/";
-    }
-
-    public static String getActionSep() {
-        return "●";
-    }
-
-    public static void foo() {
-        StringBuffer log = new StringBuffer();
-        User user = new User();
-        DealSearchWeight dealSearchWeight = new DealSearchWeight();
-
-        log.append(user.getMemberId()).append(getUserSep()).append(user.getUsername())
-                .append(getMainSep())
-                .append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-                .append(getMainSep())
-                .append("정렬 가중치 추가 (")
-                .append("키워드 : ").append(String.join(";", dealSearchWeight.getKeyword())).append(",")
-                .append("가중치 : ").append(dealSearchWeight.getKeywordWeight()).append(")");
-
-        dealSearchWeight.setUpdateHistory(log.toString());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime dateTime = LocalDateTime.parse(time, formatter);
+        logger.info("parse {}", dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
     }
 
     public static void main( String[] args ) throws Exception {
         diffSecs();
         diffDays();
         getTimestamp();
-        foo();
-        System.out.println( "Hello World!" );
+        parseTime();
     }
 }
