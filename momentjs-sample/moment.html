@@ -18,6 +18,10 @@
             alert(moment(date).format('YYYY-MM-DD'));
         }
         
+        function onClickAddDays() {
+            alert(moment(new Date()).add('days', 5).format('YYYY-MM-DD'));
+        }
+        
         function onLoad() {
         
         }
@@ -27,6 +31,7 @@
     <button onclick="onClickNow()">현재시각</button><br/>
     <button onclick="onClickDiff()">날짜계산</button><br/>
     <button onclick="onClickFormat()">날짜포멧</button><br/>
+    <button onclick="onClickAddDays()">날짜 더하기</button><br/>
 </body>
 </html>
 
