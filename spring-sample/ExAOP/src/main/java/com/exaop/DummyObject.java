@@ -21,6 +21,10 @@ public class DummyObject {
         logger.info("DummyObject => name {}", this.name);
     }
 
+    public void printName(String name) {
+        logger.info("DummyObject => name 2 {}", name);
+    }
+
     public void close() {
         logger.info("DummyObject => close");
     }

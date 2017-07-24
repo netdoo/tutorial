@@ -3,9 +3,12 @@ package com.exaop;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import java.lang.reflect.Method;
 
 @Aspect
 @Component
@@ -55,10 +58,25 @@ public class AspectObject {
     @Around("execution(* com.exaop.DummyObject.printName(..))")
     public Object onDummyObjectPrintNameMethod(final ProceedingJoinPoint joinPoint) {
 
+        /// AOP 내에서, 전달된 Method Name는 다음과 같이 조회함.
+        MethodSignature signature = (MethodSignature)joinPoint.getSignature();
+        Method method = signature.getMethod();
+        String methodName = method.getName();
+
+        logger.info("method name {}", methodName);
+
         Object obj = null;
 
         try {
             logger.info("onDummyObjectPrintNameMethod {} 실행 전 ", joinPoint.getSignature().getName());
+
+            /// AOP 내에서, 전달된 arguments 는 다음과 같이 조회함.
+            Object args[] = joinPoint.getArgs();
+
+            for (Object arg : args) {
+                logger.info("arg {}", arg.toString());
+            }
+
             obj = joinPoint.proceed();
             logger.info("onDummyObjectPrintNameMethod {} 실행 후 ", joinPoint.getSignature().getName());
         } catch (Throwable throwable) {

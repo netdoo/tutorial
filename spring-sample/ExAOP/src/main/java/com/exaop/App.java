@@ -20,5 +20,6 @@ public class App {
 
         someObject.doSomething();
         dummyObject.printName();
+        dummyObject.printName("james dean");
     }
 }
