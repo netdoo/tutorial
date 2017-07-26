@@ -27,10 +27,14 @@
         };
 
         $scope.bbsList = ['MBC', 'EBS', 'KBS', 'SBS'];
-        $scope.hours =  _.range(0, 23);
-        $scope.selectedHour = 0;
-        $scope.setHour = function(hour) {
-            $scope.selectedHour = hour;
+        $scope.hours =   [];
+        
+        for (var i = 0; i < 24; i++) {
+            $scope.hours.push({ value: i, label: i + '시' });
+        }
+        
+        $scope.selectHour = function() {
+            $scope.selectedHour = 10;
         }
     }]);
   </script>
@@ -52,14 +56,14 @@
 
         <div layout="row">
             <md-input-container>
-            <select ng-model="selectedHour" ng-options="hour + '시' for hour in hours" ng-init="selectedHour">
+            <select ng-model="selectedHour" ng-options="hour.value as hour.label for hour in hours" >
             </select>
             <span>선택한 시간 : {{selectedHour}}</span>
             </md-input-container>
         </div>
         
-        <button ng-click="setHour(7)">
-            set 7 hour 
+        <button ng-click="selectHour()">
+                select Hour
         </button>
     </div>
 </body>
