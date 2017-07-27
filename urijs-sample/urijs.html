@@ -12,9 +12,18 @@
             logger.innerHTML += 'name : ' + name + "<br/>";
             logger.innerHTML += 'phone : ' + phone + "<br/>";        
         }
+        
+        function makeUrl() {
+            var uri = new URI('/my/url/path');
+            uri.addSearch('foo', 10);
+            uri.addSearch('bar', '한글AB');
+            
+            alert(uri.toString());
+        }
     </script>
 </head>
 <body onload="onLoad()">
     <div id="log"></div>
+    <button onclick="makeUrl()">makeUrl</button>
 </body>
 </html>
