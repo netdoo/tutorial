@@ -1,0 +1,450 @@
+2017-07-31 14:57:37 INFO  App:27 - GET cafe/menu/_search 
+{
+  "query" : {
+    "span_first" : {
+      "match" : {
+        "span_term" : {
+          "name" : {
+            "value" : "black",
+            "boost" : 1.0
+          }
+        }
+      },
+      "end" : 3,
+      "boost" : 1.0
+    }
+  },
+  "ext" : { }
+}
+2017-07-31 14:57:37 INFO  App:31 - 
+
+응답 
+{
+    "name" : "mango magic black tea"
+}
+
+2017-07-31 14:57:37 INFO  App:27 - GET cafe/menu/_search 
+{
+  "query" : {
+    "span_or" : {
+      "clauses" : [
+        {
+          "span_term" : {
+            "name" : {
+              "value" : "mango",
+              "boost" : 1.0
+            }
+          }
+        },
+        {
+          "span_term" : {
+            "name" : {
+              "value" : "herb",
+              "boost" : 1.0
+            }
+          }
+        }
+      ],
+      "boost" : 1.0
+    }
+  },
+  "ext" : { }
+}
+2017-07-31 14:57:37 INFO  App:31 - 
+
+응답 
+{
+    "name" : "mango magic black tea"
+}
+
+2017-07-31 14:57:37 INFO  App:31 - 
+
+응답 
+{
+    "name" : "herb magic light green tea"
+}
+
+2017-07-31 14:57:37 INFO  App:27 - GET cafe/menu/_search 
+{
+  "query" : {
+    "span_near" : {
+      "clauses" : [
+        {
+          "span_term" : {
+            "name" : {
+              "value" : "magic",
+              "boost" : 1.0
+            }
+          }
+        },
+        {
+          "span_term" : {
+            "name" : {
+              "value" : "tea",
+              "boost" : 1.0
+            }
+          }
+        }
+      ],
+      "slop" : 1,
+      "in_order" : true,
+      "boost" : 1.0
+    }
+  },
+  "ext" : { }
+}
+2017-07-31 14:57:37 INFO  App:31 - 
+
+응답 
+{
+    "name" : "mango magic black tea"
+}
+
+2017-07-31 14:57:37 INFO  App:31 - 
+
+응답 
+{
+    "name" : "water melon magic fresh tea"
+}
+
+2017-07-31 15:48:51 INFO  App:31 - GET cafe/menu/_search 
+{
+  "query" : {
+    "function_score" : {
+      "query" : {
+        "match_all" : {
+          "boost" : 1.0
+        }
+      },
+      "functions" : [
+        {
+          "filter" : {
+            "term" : {
+              "name" : {
+                "value" : "green",
+                "boost" : 1.0
+              }
+            }
+          },
+          "weight" : 23.0
+        },
+        {
+          "filter" : {
+            "term" : {
+              "name" : {
+                "value" : "black",
+                "boost" : 1.0
+              }
+            }
+          },
+          "weight" : 50.0
+        }
+      ],
+      "score_mode" : "multiply",
+      "max_boost" : 3.4028235E38,
+      "boost" : 1.0
+    }
+  },
+  "ext" : { }
+}
+2017-07-31 15:48:51 INFO  App:35 - 
+
+응답 
+{
+    "name" : "mango magic black tea"
+}
+
+2017-07-31 15:48:51 INFO  App:35 - 
+
+응답 
+{
+    "name" : "herb magic light green tea"
+}
+
+2017-07-31 15:48:51 INFO  App:35 - 
+
+응답 
+{
+    "name" : "water melon magic fresh tea"
+}
+
+2017-07-31 15:50:34 INFO  App:32 - GET cafe/menu/_search 
+{
+  "query" : {
+    "function_score" : {
+      "query" : {
+        "match_all" : {
+          "boost" : 1.0
+        }
+      },
+      "functions" : [
+        {
+          "filter" : {
+            "term" : {
+              "name" : {
+                "value" : "green",
+                "boost" : 1.0
+              }
+            }
+          },
+          "weight" : 23.0
+        },
+        {
+          "filter" : {
+            "term" : {
+              "name" : {
+                "value" : "black",
+                "boost" : 1.0
+              }
+            }
+          },
+          "weight" : 50.0
+        }
+      ],
+      "score_mode" : "multiply",
+      "boost_mode" : "multiply",
+      "max_boost" : 100.0,
+      "boost" : 5.0
+    }
+  },
+  "ext" : { }
+}
+2017-07-31 15:50:34 INFO  App:36 - 
+
+응답 
+org.elasticsearch.search.internal.InternalSearchHit@751ae8a4
+2017-07-31 15:50:34 INFO  App:36 - 
+
+응답 
+org.elasticsearch.search.internal.InternalSearchHit@235d659c
+2017-07-31 15:50:34 INFO  App:36 - 
+
+응답 
+org.elasticsearch.search.internal.InternalSearchHit@4232b34a
+2017-07-31 15:52:39 INFO  App:33 - GET cafe/menu/_search 
+{
+  "query" : {
+    "function_score" : {
+      "query" : {
+        "match_all" : {
+          "boost" : 1.0
+        }
+      },
+      "functions" : [
+        {
+          "filter" : {
+            "term" : {
+              "name" : {
+                "value" : "green",
+                "boost" : 1.0
+              }
+            }
+          },
+          "weight" : 23.0
+        },
+        {
+          "filter" : {
+            "term" : {
+              "name" : {
+                "value" : "black",
+                "boost" : 1.0
+              }
+            }
+          },
+          "weight" : 50.0
+        }
+      ],
+      "score_mode" : "multiply",
+      "boost_mode" : "multiply",
+      "max_boost" : 100.0,
+      "boost" : 5.0
+    }
+  },
+  "ext" : { }
+}
+2017-07-31 15:52:39 INFO  App:37 - 
+
+응답 
+250.0 {
+    "name" : "mango magic black tea"
+}
+
+2017-07-31 15:52:39 INFO  App:37 - 
+
+응답 
+115.0 {
+    "name" : "herb magic light green tea"
+}
+
+2017-07-31 15:52:39 INFO  App:37 - 
+
+응답 
+5.0 {
+    "name" : "water melon magic fresh tea"
+}
+
+2017-07-31 15:54:38 INFO  App:33 - GET cafe/menu/_search 
+{
+  "query" : {
+    "function_score" : {
+      "query" : {
+        "match_all" : {
+          "boost" : 1.0
+        }
+      },
+      "functions" : [
+        {
+          "filter" : {
+            "term" : {
+              "name" : {
+                "value" : "green",
+                "boost" : 1.0
+              }
+            }
+          },
+          "weight" : 23.0
+        },
+        {
+          "filter" : {
+            "term" : {
+              "name" : {
+                "value" : "black",
+                "boost" : 1.0
+              }
+            }
+          },
+          "weight" : 50.0
+        }
+      ],
+      "score_mode" : "multiply",
+      "boost_mode" : "multiply",
+      "max_boost" : 100.0,
+      "boost" : 5.0
+    }
+  },
+  "ext" : { }
+}
+2017-07-31 15:54:39 INFO  App:37 - 
+
+응답 스코어
+250.0 
+{
+    "name" : "mango magic black tea"
+}
+
+2017-07-31 15:54:39 INFO  App:37 - 
+
+응답 스코어
+115.0 
+{
+    "name" : "herb magic light green tea"
+}
+
+2017-07-31 15:54:39 INFO  App:37 - 
+
+응답 스코어
+5.0 
+{
+    "name" : "water melon magic fresh tea"
+}
+
+2017-07-31 15:55:58 INFO  App:33 - GET cafe/menu/_search 
+{
+  "query" : {
+    "function_score" : {
+      "query" : {
+        "match_all" : {
+          "boost" : 1.0
+        }
+      },
+      "functions" : [
+        {
+          "filter" : {
+            "term" : {
+              "name" : {
+                "value" : "green",
+                "boost" : 1.0
+              }
+            }
+          },
+          "weight" : 23.0
+        },
+        {
+          "filter" : {
+            "term" : {
+              "name" : {
+                "value" : "black",
+                "boost" : 1.0
+              }
+            }
+          },
+          "weight" : 50.0
+        }
+      ],
+      "score_mode" : "multiply",
+      "boost_mode" : "multiply",
+      "max_boost" : 100.0,
+      "boost" : 5.0
+    }
+  },
+  "ext" : { }
+}
+2017-07-31 15:55:58 INFO  App:37 - 
+
+응답 스코어 250.0
+{
+    "name" : "mango magic black tea"
+}
+
+2017-07-31 15:55:58 INFO  App:37 - 
+
+응답 스코어 115.0
+{
+    "name" : "herb magic light green tea"
+}
+
+2017-07-31 15:55:58 INFO  App:37 - 
+
+응답 스코어 5.0
+{
+    "name" : "water melon magic fresh tea"
+}
+
+2017-07-31 15:57:18 INFO  App:33 - GET cafe/menu/_search 
+{
+  "query" : {
+    "function_score" : {
+      "query" : {
+        "match_all" : {
+          "boost" : 1.0
+        }
+      },
+      "functions" : [ ],
+      "score_mode" : "multiply",
+      "max_boost" : 3.4028235E38,
+      "boost" : 5.0
+    }
+  },
+  "ext" : { }
+}
+2017-07-31 15:57:18 INFO  App:37 - 
+
+응답 스코어 5.0
+{
+    "name" : "herb magic light green tea"
+}
+
+2017-07-31 15:57:18 INFO  App:37 - 
+
+응답 스코어 5.0
+{
+    "name" : "mango magic black tea"
+}
+
+2017-07-31 15:57:18 INFO  App:37 - 
+
+응답 스코어 5.0
+{
+    "name" : "water melon magic fresh tea"
+}
+
