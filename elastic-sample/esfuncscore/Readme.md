@@ -36,7 +36,7 @@ PUT cafe/menu/3
 ```
 
 
-# 
+# Elasticsearch Function Score Query
 
 모든 검색 결과의 score는 5가 됨. 
 
