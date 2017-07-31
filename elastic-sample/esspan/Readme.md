@@ -1,12 +1,13 @@
 # Elasticsearch Span 쿼리 종류
 
 
-span_first : end값 이전까지 token이 포함되어 있는지 검색
-span_or : or 형태의 token을 검색
-span_near : token과 token 사이의 끼인 toke의 허용갯수를 고려한 검색
+* span_first : end값 이전까지 token이 포함되어 있는지 검색
+* span_or : or 형태의 token을 검색
+* span_near : token과 token 사이의 끼인 toke의 허용갯수를 고려한 검색
 
 
-#샘플 색인
+
+# 샘플 색인
 ```
 PUT cafe
 {
@@ -57,7 +58,7 @@ GET cafe/_search
 }
 ```
 
-## 검색결과
+# span_first 검색결과
 ```
 {
    "took": 13,
@@ -91,7 +92,7 @@ GET cafe/_search
 
 
 
-#span_or 검색
+# span_or 검색
 
 mango 또는 herb 토큰에 대해서 or 검색
 
@@ -109,7 +110,7 @@ GET cafe/_search
 }
 ```
 
-## 검색결과
+# span_or 검색결과
 ```
 {
    "took": 15,
@@ -168,7 +169,7 @@ GET cafe/_search
 }
 ```
 
-## 검색결과
+# span_near 검색결과
 ```
 {
    "took": 6,
