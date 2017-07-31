@@ -17,3 +17,51 @@
 2017-06-08 15:29:53 INFO  AspectObject:63 - onDummyObjectPrintNameMethod printName 실행 후 
 2017-06-08 15:29:53 INFO  AspectObject:80 - onDummyObjectAllMethod printName 실행 후 
 2017-06-08 15:29:53 INFO  AspectObject:97 - onAllClassAllMethod printName 실행 후 
+2017-07-24 09:26:24 INFO  AnnotationConfigApplicationContext:582 - Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@76ccd017: startup date [Mon Jul 24 09:26:24 KST 2017]; root of context hierarchy
+2017-07-24 09:26:24 INFO  XmlBeanDefinitionReader:317 - Loading XML bean definitions from class path resource [app-config.xml]
+2017-07-24 09:26:28 INFO  AspectObject:17 - Create AspectObject
+2017-07-24 09:26:28 INFO  AspectObject:95 - onAllClassAllMethod someObject 실행 전 
+2017-07-24 09:26:28 INFO  AspectObject:97 - onAllClassAllMethod someObject 실행 후 
+2017-07-24 09:26:28 INFO  AspectObject:95 - onAllClassAllMethod doSomething 실행 전 
+2017-07-24 09:26:28 INFO  AspectObject:44 - onAroundDoSomeMethod doSomething 실행 전 
+2017-07-24 09:26:28 INFO  AspectObject:27 - onAroundDoSomeMethod doSomething 실행 전 
+2017-07-24 09:26:28 INFO  SomeObject:11 - SomeObject => do something
+2017-07-24 09:26:28 INFO  AspectObject:29 - onAroundDoSomeMethod doSomething 실행 후 
+2017-07-24 09:26:28 INFO  AspectObject:46 - onAroundDoSomeMethod doSomething 실행 후 
+2017-07-24 09:26:28 INFO  AspectObject:97 - onAllClassAllMethod doSomething 실행 후 
+2017-07-24 09:26:28 INFO  AspectObject:95 - onAllClassAllMethod printName 실행 전 
+2017-07-24 09:26:28 INFO  AspectObject:78 - onDummyObjectAllMethod printName 실행 전 
+2017-07-24 09:26:28 INFO  AspectObject:61 - onDummyObjectPrintNameMethod printName 실행 전 
+2017-07-24 09:26:28 INFO  DummyObject:21 - DummyObject => name james
+2017-07-24 09:26:28 INFO  AspectObject:63 - onDummyObjectPrintNameMethod printName 실행 후 
+2017-07-24 09:26:28 INFO  AspectObject:80 - onDummyObjectAllMethod printName 실행 후 
+2017-07-24 09:26:28 INFO  AspectObject:97 - onAllClassAllMethod printName 실행 후 
+2017-07-24 13:53:15 INFO  AnnotationConfigApplicationContext:582 - Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@5f9d02cb: startup date [Mon Jul 24 13:53:15 KST 2017]; root of context hierarchy
+2017-07-24 13:53:15 INFO  XmlBeanDefinitionReader:317 - Loading XML bean definitions from class path resource [app-config.xml]
+2017-07-24 13:53:18 INFO  AspectObject:20 - Create AspectObject
+2017-07-24 13:53:18 INFO  AspectObject:113 - onAllClassAllMethod someObject 실행 전 
+2017-07-24 13:53:18 INFO  AspectObject:115 - onAllClassAllMethod someObject 실행 후 
+2017-07-24 13:53:18 INFO  AspectObject:113 - onAllClassAllMethod doSomething 실행 전 
+2017-07-24 13:53:18 INFO  AspectObject:47 - onAroundDoSomeMethod doSomething 실행 전 
+2017-07-24 13:53:18 INFO  AspectObject:30 - onAroundDoSomeMethod doSomething 실행 전 
+2017-07-24 13:53:18 INFO  SomeObject:11 - SomeObject => do something
+2017-07-24 13:53:18 INFO  AspectObject:32 - onAroundDoSomeMethod doSomething 실행 후 
+2017-07-24 13:53:18 INFO  AspectObject:49 - onAroundDoSomeMethod doSomething 실행 후 
+2017-07-24 13:53:18 INFO  AspectObject:115 - onAllClassAllMethod doSomething 실행 후 
+2017-07-24 13:53:18 INFO  AspectObject:113 - onAllClassAllMethod printName 실행 전 
+2017-07-24 13:53:18 INFO  AspectObject:96 - onDummyObjectAllMethod printName 실행 전 
+2017-07-24 13:53:18 INFO  AspectObject:66 - method name printName
+2017-07-24 13:53:18 INFO  AspectObject:71 - onDummyObjectPrintNameMethod printName 실행 전 
+2017-07-24 13:53:18 INFO  DummyObject:21 - DummyObject => name james
+2017-07-24 13:53:18 INFO  AspectObject:81 - onDummyObjectPrintNameMethod printName 실행 후 
+2017-07-24 13:53:18 INFO  AspectObject:98 - onDummyObjectAllMethod printName 실행 후 
+2017-07-24 13:53:18 INFO  AspectObject:115 - onAllClassAllMethod printName 실행 후 
+2017-07-24 13:53:18 INFO  AspectObject:113 - onAllClassAllMethod printName 실행 전 
+2017-07-24 13:53:18 INFO  AspectObject:96 - onDummyObjectAllMethod printName 실행 전 
+2017-07-24 13:53:18 INFO  AspectObject:66 - method name printName
+2017-07-24 13:53:18 INFO  AspectObject:71 - onDummyObjectPrintNameMethod printName 실행 전 
+2017-07-24 13:53:22 INFO  AspectObject:77 - arg james dean
+2017-07-24 13:53:22 INFO  DummyObject:25 - DummyObject => name 2 james dean
+2017-07-24 13:53:22 INFO  AspectObject:81 - onDummyObjectPrintNameMethod printName 실행 후 
+2017-07-24 13:53:22 INFO  AspectObject:98 - onDummyObjectAllMethod printName 실행 후 
+2017-07-24 13:53:22 INFO  AspectObject:115 - onAllClassAllMethod printName 실행 후 
