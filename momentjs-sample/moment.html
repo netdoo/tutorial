@@ -28,6 +28,11 @@
             );
         }
         
+        function onClickParseDate() {
+            var date = new Date('2017-08-03 00:00:00');
+            alert(date);
+        }
+        
         function onLoad() {
         
         }
@@ -39,6 +44,7 @@
     <button onclick="onClickFormat()">날짜포멧</button><br/>
     <button onclick="onClickAddDays()">날짜 더하기</button><br/>
     <button onclick="onClickAddMinutes()">분 더하기</button><br/>
+    <button onclick="onClickParseDate()">날짜파싱</button><br/>
 </body>
 </html>
 

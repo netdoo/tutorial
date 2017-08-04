@@ -62,13 +62,21 @@
             return out;                
         }
     });
+    
+    myApp.filter('foo', function() {
+        return function(input) {
+            return input + '1111';
+        }
+    });
+    
+    
 
 </script>
 </head>
 <body>
     <div ng-app="myApp">
         <div ng-controller="MainCtrl">
-            <p>{{ result }}</p>
+            <p>{{ result | foo }}</p>
             <p>No Filter : {{ greeting }}</p>
             <p>With reverse filter : {{ greeting | reverse | uppercase }} </p>
         </div>
