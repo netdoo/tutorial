@@ -18,6 +18,14 @@
             uri.addSearch('foo', 10);
             uri.addSearch('bar', '한글AB');
             
+            var cars = new Array();
+            cars.push('Saab');
+            cars.push('BMW');
+            cars.push('Volvo');
+            
+            uri.addSearch('cars', cars.join());
+            
+            console.log(uri.toString());
             alert(uri.toString());
         }
     </script>
