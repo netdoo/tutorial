@@ -79,6 +79,20 @@
             </div>
             </md-card-content>
         </md-card>
+       
+        
+        <table border="1px" style="width:100%;border-color:gray;">
+            <thead>
+                <th>선택</th>
+                <th>이미지</th>
+            </thead>
+            <tbody ng-repeat="item in imageList">
+                <tr>
+                    <td><md-checkbox ng-model="item.selected" ng-change="isChecked(item)" aria-label="item.name">{{item.name}}</md-checkbox></td>
+                    <td>{{item.name}}</td>
+                </tr>
+            </tbody>
+        </table>
 
 
         <div class="check-element animate-show-hide" ng-show="showImage('iu')">
