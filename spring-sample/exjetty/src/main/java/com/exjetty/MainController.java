@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
 import java.util.Random;
 
 @Controller
@@ -35,7 +36,10 @@ public class MainController {
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     @ResponseBody
-    public String hello() {
+    public String hello(
+            @RequestParam(value="values", required=false) List<String> values
+    ) {
+        logger.info("values {}", values);
         return "Hello hello";
     }
 

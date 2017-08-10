@@ -809,7 +809,7 @@ public class App {
             app.bulkInsertDocumentObject(students);
             app.deleteDocumentByQuery();
 
-            app.insertDocument("1", "Tomas", "10", "Hello Tomas 2017",
+            app.insertDocument("1", "토마스", "10", "Hello Tomas 2017",
                     Arrays.asList("mbc", "sbs", "ebs", "kbs"),
                     Arrays.asList(new Comment("Jonh Smith", "2017"), new Comment("Alice White", "2018")));
 
@@ -819,7 +819,7 @@ public class App {
 
             app.insertDocument("3", "Lukas", "30", "Hello Lukas 2019", Arrays.asList("sbs", "ebs", "kbs"), null);
             app.insertDocument("4", "Tomas", "40", "Hello Tomas 2020", Arrays.asList("ebs", "kbs"), null);
-            app.insertDocument("5", "Tomas", "10", "10I Am Tomas 2020", Arrays.asList("ebs"), null);
+            app.insertDocument("5", "토머스", "10", "10I Am Tomas 2020", Arrays.asList("ebs"), null);
 
             Student student = new Student("6", "Suzi", "25", "Hello Suzi 2017",
                     Arrays.asList("mbc", "sbs", "ebs", "kbs", "jtbc"),
