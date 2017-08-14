@@ -30,7 +30,8 @@ public class ExjpaApplication {
 		InitializingBean initializingBean = new InitializingBean() {
 			@Override
 			public void afterPropertiesSet() throws Exception {
-
+				/// 스프링 엔진이 인스턴스 생성후, 초기화할 때 항상 호출됨.
+				/// 이곳에 초기화가 필요한 코드를 추가함.
 				memoRepository.save(new Memo("안녕"));
 				memoRepository.save(new Memo("스프링"));
 				memoRepository.save(new Memo("부트"));
@@ -39,7 +40,6 @@ public class ExjpaApplication {
 
 		return initializingBean;
 	}
-
 
 	public static void main(String[] args) {
 		SpringApplication app = new SpringApplication(ExjpaApplication.class);
