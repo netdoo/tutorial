@@ -14,8 +14,8 @@
 		<put-attribute name="body" value="/views/jsp/view/world.jsp" />
 	</definition>
 
-	<definition name="dashboard" extends="mainLayout">
-		<put-attribute name="body" value="/views/jsp/view/dashboard.jsp" />
+	<definition name="users" extends="mainLayout">
+		<put-attribute name="body" value="/views/jsp/view/users.jsp" />
 	</definition>
 
 	<definition name="*/*" extends="mainLayout">
