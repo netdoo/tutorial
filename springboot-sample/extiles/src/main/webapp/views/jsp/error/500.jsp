@@ -1,1 +1,1 @@
-500: 500 err0r
+500: Internal server error
