@@ -49,9 +49,9 @@ public class MainControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
+        /// 단순히 test case가 해당 로직을 훑는게 목적이 아니라 해당 메소드의 응답에 대한 검증 코드가 필요합니다.
         ObjectMapper mapper = new ObjectMapper();
         Hello hello = mapper.readValue(result.getResponse().getContentAsString(), Hello.class);
-
         assertThat(hello.getResult(), is("hello world"));
     }
 

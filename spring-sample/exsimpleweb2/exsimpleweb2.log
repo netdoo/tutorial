@@ -424,3 +424,56 @@ Caused by: java.lang.ClassNotFoundException: javax.servlet.SessionCookieConfig
 2017-08-23 17:54:14 INFO  TestDispatcherServlet:508 - FrameworkServlet '': initialization completed in 2 ms
 2017-08-23 17:54:14 INFO  MainController:29 - Param com.exsimpleweb2.model.MainParam@75c9e76b
 2017-08-23 17:54:14 INFO  GenericWebApplicationContext:987 - Closing org.springframework.web.context.support.GenericWebApplicationContext@3cef309d: startup date [Wed Aug 23 17:54:12 KST 2017]; root of context hierarchy
+2017-08-24 15:35:49 INFO  ContextLoader:305 - Root WebApplicationContext: initialization started
+2017-08-24 15:35:50 INFO  XmlWebApplicationContext:582 - Refreshing Root WebApplicationContext: startup date [Thu Aug 24 15:35:50 KST 2017]; root of context hierarchy
+2017-08-24 15:35:51 INFO  XmlBeanDefinitionReader:317 - Loading XML bean definitions from ServletContext resource [/WEB-INF/applicationContext.xml]
+2017-08-24 15:35:51 INFO  ContextLoader:345 - Root WebApplicationContext: initialization completed in 2482 ms
+2017-08-24 15:35:52 INFO  DispatcherServlet:489 - FrameworkServlet 'action': initialization started
+2017-08-24 15:35:52 INFO  XmlWebApplicationContext:582 - Refreshing WebApplicationContext for namespace 'action-servlet': startup date [Thu Aug 24 15:35:52 KST 2017]; parent: Root WebApplicationContext
+2017-08-24 15:35:52 INFO  XmlBeanDefinitionReader:317 - Loading XML bean definitions from file [C:\Project\tutorial\spring-sample\exsimpleweb2\target\exsimpleweb2\WEB-INF\classes\spring\dispatcher-servlet.xml]
+2017-08-24 15:35:54 INFO  DefaultListableBeanFactory:821 - Overriding bean definition for bean 'mvcContentNegotiationManager' with a different definition: replacing [Root bean: class [org.springframework.web.accept.ContentNegotiationManagerFactoryBean]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null] with [Root bean: class [null]; scope=; abstract=false; lazyInit=false; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration; factoryMethodName=mvcContentNegotiationManager; initMethodName=null; destroyMethodName=(inferred); defined in class path resource [org/springframework/web/servlet/config/annotation/DelegatingWebMvcConfiguration.class]]
+2017-08-24 15:35:54 INFO  ConfigurationClassBeanDefinitionReader:298 - Skipping bean definition for [BeanMethod:name=mvcUriComponentsContributor,declaringClass=org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport]: a definition for bean 'mvcUriComponentsContributor' already exists. This top-level bean definition is considered as an override.
+2017-08-24 15:35:55 INFO  AutowiredAnnotationBeanPostProcessor:155 - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2017-08-24 15:35:57 INFO  RequestMappingHandlerMapping:543 - Mapped "{[/hello],methods=[GET],produces=[application/json]}" onto public com.exsimpleweb2.domain.Hello com.exsimpleweb2.controller.MainController.hello()
+2017-08-24 15:35:57 INFO  RequestMappingHandlerMapping:543 - Mapped "{[/myservice],methods=[GET],produces=[application/json]}" onto public org.springframework.http.ResponseEntity<java.lang.Object> com.exsimpleweb2.controller.MainController.myservice() throws java.lang.Exception
+2017-08-24 15:35:57 INFO  RequestMappingHandlerMapping:543 - Mapped "{[/world],methods=[GET]}" onto public java.lang.String com.exsimpleweb2.controller.MainController.world(com.exsimpleweb2.model.MainParam)
+2017-08-24 15:35:59 INFO  RequestMappingHandlerAdapter:534 - Looking for @ControllerAdvice: WebApplicationContext for namespace 'action-servlet': startup date [Thu Aug 24 15:35:52 KST 2017]; parent: Root WebApplicationContext
+2017-08-24 15:35:59 INFO  RequestMappingHandlerAdapter:534 - Looking for @ControllerAdvice: WebApplicationContext for namespace 'action-servlet': startup date [Thu Aug 24 15:35:52 KST 2017]; parent: Root WebApplicationContext
+2017-08-24 15:36:00 INFO  RequestMappingHandlerMapping:543 - Mapped "{[/hello],methods=[GET],produces=[application/json]}" onto public com.exsimpleweb2.domain.Hello com.exsimpleweb2.controller.MainController.hello()
+2017-08-24 15:36:00 INFO  RequestMappingHandlerMapping:543 - Mapped "{[/myservice],methods=[GET],produces=[application/json]}" onto public org.springframework.http.ResponseEntity<java.lang.Object> com.exsimpleweb2.controller.MainController.myservice() throws java.lang.Exception
+2017-08-24 15:36:00 INFO  RequestMappingHandlerMapping:543 - Mapped "{[/world],methods=[GET]}" onto public java.lang.String com.exsimpleweb2.controller.MainController.world(com.exsimpleweb2.model.MainParam)
+2017-08-24 15:36:00 INFO  RequestMappingHandlerAdapter:534 - Looking for @ControllerAdvice: WebApplicationContext for namespace 'action-servlet': startup date [Thu Aug 24 15:35:52 KST 2017]; parent: Root WebApplicationContext
+2017-08-24 15:36:00 INFO  DispatcherServlet:508 - FrameworkServlet 'action': initialization completed in 8297 ms
+2017-08-24 15:36:04 INFO  MyService:15 - Thread 16 Start foo
+2017-08-24 15:36:05 INFO  MyService:17 - Thread 16 Finish foo
+2017-08-24 15:36:05 INFO  MyService:22 - Thread 16 Start bar
+2017-08-24 15:36:07 INFO  MyService:24 - Thread 16 Finish bar
+2017-08-24 15:36:07 INFO  MyService:29 - Thread 16 Start zoo
+2017-08-24 15:36:07 INFO  MyService:31 - Thread 16 Finish zoo
+2017-08-24 15:37:11 INFO  ContextLoader:305 - Root WebApplicationContext: initialization started
+2017-08-24 15:37:12 INFO  XmlWebApplicationContext:582 - Refreshing Root WebApplicationContext: startup date [Thu Aug 24 15:37:12 KST 2017]; root of context hierarchy
+2017-08-24 15:37:12 INFO  XmlBeanDefinitionReader:317 - Loading XML bean definitions from ServletContext resource [/WEB-INF/applicationContext.xml]
+2017-08-24 15:37:13 INFO  ContextLoader:345 - Root WebApplicationContext: initialization completed in 2428 ms
+2017-08-24 15:37:14 INFO  DispatcherServlet:489 - FrameworkServlet 'action': initialization started
+2017-08-24 15:37:14 INFO  XmlWebApplicationContext:582 - Refreshing WebApplicationContext for namespace 'action-servlet': startup date [Thu Aug 24 15:37:14 KST 2017]; parent: Root WebApplicationContext
+2017-08-24 15:37:14 INFO  XmlBeanDefinitionReader:317 - Loading XML bean definitions from file [C:\Project\tutorial\spring-sample\exsimpleweb2\target\exsimpleweb2\WEB-INF\classes\spring\dispatcher-servlet.xml]
+2017-08-24 15:37:17 INFO  DefaultListableBeanFactory:821 - Overriding bean definition for bean 'mvcContentNegotiationManager' with a different definition: replacing [Root bean: class [org.springframework.web.accept.ContentNegotiationManagerFactoryBean]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null] with [Root bean: class [null]; scope=; abstract=false; lazyInit=false; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration; factoryMethodName=mvcContentNegotiationManager; initMethodName=null; destroyMethodName=(inferred); defined in class path resource [org/springframework/web/servlet/config/annotation/DelegatingWebMvcConfiguration.class]]
+2017-08-24 15:37:17 INFO  ConfigurationClassBeanDefinitionReader:298 - Skipping bean definition for [BeanMethod:name=mvcUriComponentsContributor,declaringClass=org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport]: a definition for bean 'mvcUriComponentsContributor' already exists. This top-level bean definition is considered as an override.
+2017-08-24 15:37:18 INFO  AutowiredAnnotationBeanPostProcessor:155 - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2017-08-24 15:37:20 INFO  RequestMappingHandlerMapping:543 - Mapped "{[/world],methods=[GET]}" onto public java.lang.String com.exsimpleweb2.controller.MainController.world(com.exsimpleweb2.model.MainParam)
+2017-08-24 15:37:20 INFO  RequestMappingHandlerMapping:543 - Mapped "{[/hello],methods=[GET],produces=[application/json]}" onto public com.exsimpleweb2.domain.Hello com.exsimpleweb2.controller.MainController.hello()
+2017-08-24 15:37:20 INFO  RequestMappingHandlerMapping:543 - Mapped "{[/myservice],methods=[GET],produces=[application/json]}" onto public org.springframework.http.ResponseEntity<java.lang.Object> com.exsimpleweb2.controller.MainController.myservice() throws java.lang.Exception
+2017-08-24 15:37:23 INFO  RequestMappingHandlerAdapter:534 - Looking for @ControllerAdvice: WebApplicationContext for namespace 'action-servlet': startup date [Thu Aug 24 15:37:14 KST 2017]; parent: Root WebApplicationContext
+2017-08-24 15:37:23 INFO  RequestMappingHandlerAdapter:534 - Looking for @ControllerAdvice: WebApplicationContext for namespace 'action-servlet': startup date [Thu Aug 24 15:37:14 KST 2017]; parent: Root WebApplicationContext
+2017-08-24 15:37:23 INFO  RequestMappingHandlerMapping:543 - Mapped "{[/world],methods=[GET]}" onto public java.lang.String com.exsimpleweb2.controller.MainController.world(com.exsimpleweb2.model.MainParam)
+2017-08-24 15:37:23 INFO  RequestMappingHandlerMapping:543 - Mapped "{[/hello],methods=[GET],produces=[application/json]}" onto public com.exsimpleweb2.domain.Hello com.exsimpleweb2.controller.MainController.hello()
+2017-08-24 15:37:23 INFO  RequestMappingHandlerMapping:543 - Mapped "{[/myservice],methods=[GET],produces=[application/json]}" onto public org.springframework.http.ResponseEntity<java.lang.Object> com.exsimpleweb2.controller.MainController.myservice() throws java.lang.Exception
+2017-08-24 15:37:24 INFO  RequestMappingHandlerAdapter:534 - Looking for @ControllerAdvice: WebApplicationContext for namespace 'action-servlet': startup date [Thu Aug 24 15:37:14 KST 2017]; parent: Root WebApplicationContext
+2017-08-24 15:37:24 INFO  DispatcherServlet:508 - FrameworkServlet 'action': initialization completed in 10250 ms
+2017-08-24 15:37:33 INFO  AnnotationAsyncExecutionInterceptor:245 - No TaskExecutor bean found for async processing
+2017-08-24 15:37:34 INFO  MyService:15 - Thread 32 Start foo
+2017-08-24 15:37:34 INFO  MyService:22 - Thread 33 Start bar
+2017-08-24 15:37:34 INFO  MyService:29 - Thread 34 Start zoo
+2017-08-24 15:37:34 INFO  MyService:31 - Thread 34 Finish zoo
+2017-08-24 15:37:35 INFO  MyService:17 - Thread 32 Finish foo
+2017-08-24 15:37:35 INFO  MyService:24 - Thread 33 Finish bar
