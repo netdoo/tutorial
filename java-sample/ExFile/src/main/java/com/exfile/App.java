@@ -1,12 +1,13 @@
 package com.exfile;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import org.apache.commons.io.FileUtils;
+
+import java.io.*;
 import java.io.IOException;
+import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,8 +38,36 @@ public class App {
         return true;
     }
 
+    public static boolean appendFile(String readPath, String appendPath) {
+        int readSize = 0;
+        byte buff[] = new byte[8096];
+
+        /// append 할 파일이 없으면 생성함.
+        try {
+            FileUtils.touch(new File(appendPath));
+        } catch (IOException e) { }
+
+        try (InputStream in =  new BufferedInputStream(Files.newInputStream(Paths.get(readPath)));
+             OutputStream out = new BufferedOutputStream(Files.newOutputStream(Paths.get(appendPath), StandardOpenOption.APPEND))) {
+
+            while ((readSize = in.read(buff)) > 0) {
+                out.write(buff, 0, readSize);
+            }
+        } catch (IOException e) { return false; }
+
+        return true;
+    }
+
+    /// C:\Temp>fc /b out.txt big.7z
+    /// 파일을 비교합니다: out.txt - BIG.7Z
+    /// FC: 다른 점이 없습니다.
+
     public static void main( String[] args ) {
-        removeLine("c://temp//some.json", Pattern.compile("(\"bbsCode\":\"D\")", Pattern.CASE_INSENSITIVE));
+        //removeLine("c://temp//some.json", Pattern.compile("(\"bbsCode\":\"D\")", Pattern.CASE_INSENSITIVE));
+        long start = System.currentTimeMillis();
+        appendFile("c:\\temp\\big.7z", "c:\\temp\\out.txt");
+        appendFile("c:\\temp\\eee.zip", "c:\\temp\\out.txt");
+        System.out.println("elapsed time : " + (System.currentTimeMillis() - start) + " (ms)");
     }
 }
 
