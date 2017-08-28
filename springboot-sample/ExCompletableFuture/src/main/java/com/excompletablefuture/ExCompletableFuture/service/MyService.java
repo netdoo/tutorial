@@ -11,27 +11,32 @@ import java.util.concurrent.CompletableFuture;
 public class MyService {
     final static Logger logger = LoggerFactory.getLogger(MyService.class);
 
-    String foo() throws Exception {
+
+    public String foo() throws Exception {
         logger.info("Thread {} Start foo", Thread.currentThread().getId());
         Thread.sleep(1000);
         logger.info("Thread {} Finish foo", Thread.currentThread().getId());
         return "foo";
     }
 
-    String bar() throws Exception {
+
+    public String bar() throws Exception {
         logger.info("Thread {} Start bar", Thread.currentThread().getId());
         Thread.sleep(1500);
         logger.info("Thread {} Finish bar", Thread.currentThread().getId());
         return "bar";
     }
 
-    String zoo() throws Exception {
+
+    public String zoo() throws Exception {
         logger.info("Thread {} Start zoo", Thread.currentThread().getId());
         Thread.sleep(700);
         logger.info("Thread {} Finish zoo", Thread.currentThread().getId());
         return "zoo";
     }
 
+    /// CompletableFuture.completedFuture 의 인자로 동기함수를 설정하고,
+    /// @Async 어노테이션을 추가하면 동기함수가 비동기 처리됨.
     @Async
     public CompletableFuture<String> getFoo() throws Exception {
         return CompletableFuture.completedFuture(foo());

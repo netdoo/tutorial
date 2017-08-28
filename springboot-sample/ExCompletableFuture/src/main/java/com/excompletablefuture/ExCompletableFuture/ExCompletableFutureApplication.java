@@ -10,6 +10,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 import java.util.Arrays;
@@ -31,6 +32,11 @@ public class ExCompletableFutureApplication {
 	}
 
 	@Bean
+	SimpleAsyncTaskExecutor taskExecutor() {
+		return new SimpleAsyncTaskExecutor();
+	}
+
+	@Bean
 	CommandLineRunner myMethod() {
 		return new CommandLineRunner() {
 
@@ -48,7 +54,13 @@ public class ExCompletableFutureApplication {
 
 				CompletableFuture.allOf(foo, bar, zoo).join();
 
-				logger.info("foo {} bar {} zoo {}", foo.get(), bar.get(), zoo.get());
+				logger.info("#1 foo {} bar {} zoo {}", foo.get(), bar.get(), zoo.get());
+
+				/// 각각의 쓰레드에서 동기함수가 순서대로 실행됨.
+				logger.info("#2 foo {} bar {} zoo {}", myService.getFoo().get(), myService.getBar().get(), myService.getZoo().get());
+
+				/// 메인쓰레드에서, 동기함수가 순서대로 실행됨.
+				logger.info("#3 foo {} bar {} zoo {}", myService.foo(), myService.bar(), myService.zoo());
 			}
 		};
 	}
