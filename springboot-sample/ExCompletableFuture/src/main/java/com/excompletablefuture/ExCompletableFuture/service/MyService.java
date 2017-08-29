@@ -11,26 +11,31 @@ import java.util.concurrent.CompletableFuture;
 public class MyService {
     final static Logger logger = LoggerFactory.getLogger(MyService.class);
 
+    private void sleepMillSec(int millisecs) {
+        try {
+            Thread.sleep(millisecs);
+        } catch (Exception e) {}
+    }
 
-    public String foo() throws Exception {
+    public String foo() {
         logger.info("Thread {} Start foo", Thread.currentThread().getId());
-        Thread.sleep(1000);
+        sleepMillSec(1_000);
         logger.info("Thread {} Finish foo", Thread.currentThread().getId());
         return "foo";
     }
 
 
-    public String bar() throws Exception {
+    public String bar() {
         logger.info("Thread {} Start bar", Thread.currentThread().getId());
-        Thread.sleep(1500);
+        sleepMillSec(1_500);
         logger.info("Thread {} Finish bar", Thread.currentThread().getId());
         return "bar";
     }
 
 
-    public String zoo() throws Exception {
+    public String zoo() {
         logger.info("Thread {} Start zoo", Thread.currentThread().getId());
-        Thread.sleep(700);
+        sleepMillSec(700);
         logger.info("Thread {} Finish zoo", Thread.currentThread().getId());
         return "zoo";
     }
@@ -38,17 +43,17 @@ public class MyService {
     /// CompletableFuture.completedFuture 의 인자로 동기함수를 설정하고,
     /// @Async 어노테이션을 추가하면 동기함수가 비동기 처리됨.
     @Async
-    public CompletableFuture<String> getFoo() throws Exception {
+    public CompletableFuture<String> getFoo() {
         return CompletableFuture.completedFuture(foo());
     }
 
     @Async
-    public CompletableFuture<String> getBar() throws Exception {
+    public CompletableFuture<String> getBar() {
         return CompletableFuture.completedFuture(bar());
     }
 
     @Async
-    public CompletableFuture<String> getZoo() throws Exception {
+    public CompletableFuture<String> getZoo() {
         return CompletableFuture.completedFuture(zoo());
     }
 }
