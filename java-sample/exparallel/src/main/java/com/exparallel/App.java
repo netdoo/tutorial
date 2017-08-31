@@ -18,19 +18,27 @@ public class App {
         } catch (Exception e) {}
     }
 
+    /// 병렬처리 스레드풀을 OS 기본값으로 사용하는 예제 (코어수 갯수만큼 병렬처리가 됨.)
     static void parallel() {
-        IntStream.range(0, 10).parallel().forEach(index -> {
-            logger.info("Starting {}, index {}", Thread.currentThread().getName(), index);
+
+        logger.info("{} 개의 스레드에서 병렬로 처리됨.", Runtime.getRuntime().availableProcessors());
+
+        IntStream.range(0, 5).parallel().forEach(index -> {
+            logger.info("start {}, index {}", Thread.currentThread().getName(), index);
             sleep(5);
+            logger.info("done {}, index {}", Thread.currentThread().getName(), index);
         });
     }
 
+    /// 병렬처리 스레드풀을 별도로 정의하여 사용하는 예제
     static void parallelWithCustomPool() throws Exception {
-        ForkJoinPool myPool = new ForkJoinPool(10);
+        ForkJoinPool myPool = new ForkJoinPool(5);
+        logger.info("{} 개의 스레드에서 병렬로 처리됨.", myPool.getParallelism());
+
         ForkJoinTask forkJoinTask = myPool.submit(new Runnable() {
             @Override
             public void run() {
-                IntStream.range(0, 10).parallel().forEach(index -> {
+                IntStream.range(0, 5).parallel().forEach(index -> {
                     logger.info("start {}, index {}", Thread.currentThread().getName(), index);
                     sleep(5);
                     logger.info("done {}, index {}", Thread.currentThread().getName(), index);
@@ -46,6 +54,7 @@ public class App {
 
     public static void main( String[] args) throws Exception {
         parallel();
+        logger.info("===========================================================================");
         parallelWithCustomPool();
     }
 }
