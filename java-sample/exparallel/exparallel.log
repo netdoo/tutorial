@@ -1,0 +1,123 @@
+2017-08-31 17:08:53.223 INFO  App:14 - Starting main, index 6
+2017-08-31 17:08:53.229 INFO  App:14 - Starting ForkJoinPool.commonPool-worker-1, index 1
+2017-08-31 17:08:53.223 INFO  App:14 - Starting ForkJoinPool.commonPool-worker-2, index 2
+2017-08-31 17:08:53.236 INFO  App:14 - Starting ForkJoinPool.commonPool-worker-3, index 0
+2017-08-31 17:08:58.233 INFO  App:14 - Starting main, index 5
+2017-08-31 17:08:58.234 INFO  App:14 - Starting ForkJoinPool.commonPool-worker-1, index 4
+2017-08-31 17:08:58.237 INFO  App:14 - Starting ForkJoinPool.commonPool-worker-2, index 3
+2017-08-31 17:08:58.238 INFO  App:14 - Starting ForkJoinPool.commonPool-worker-3, index 8
+2017-08-31 17:09:03.234 INFO  App:14 - Starting main, index 7
+2017-08-31 17:09:03.235 INFO  App:14 - Starting ForkJoinPool.commonPool-worker-1, index 9
+2017-08-31 17:12:54.338 INFO  App:33 - Starting ForkJoinPool-1-worker-9, index 6
+2017-08-31 17:12:54.339 INFO  App:33 - Starting ForkJoinPool-1-worker-10, index 3
+2017-08-31 17:12:54.339 INFO  App:33 - Starting ForkJoinPool-1-worker-6, index 1
+2017-08-31 17:12:54.339 INFO  App:33 - Starting ForkJoinPool-1-worker-15, index 4
+2017-08-31 17:12:54.338 INFO  App:33 - Starting ForkJoinPool-1-worker-8, index 5
+2017-08-31 17:12:54.338 INFO  App:33 - Starting ForkJoinPool-1-worker-11, index 2
+2017-08-31 17:12:54.338 INFO  App:33 - Starting ForkJoinPool-1-worker-4, index 7
+2017-08-31 17:12:54.338 INFO  App:33 - Starting ForkJoinPool-1-worker-2, index 8
+2017-08-31 17:12:54.372 INFO  App:33 - Starting ForkJoinPool-1-worker-13, index 9
+2017-08-31 17:12:54.379 INFO  App:33 - Starting ForkJoinPool-1-worker-1, index 0
+2017-08-31 17:14:47.048 INFO  App:33 - Starting ForkJoinPool-1-worker-15, index 1
+2017-08-31 17:14:47.049 INFO  App:33 - Starting ForkJoinPool-1-worker-2, index 8
+2017-08-31 17:14:47.049 INFO  App:33 - Starting ForkJoinPool-1-worker-9, index 6
+2017-08-31 17:14:47.048 INFO  App:33 - Starting ForkJoinPool-1-worker-6, index 4
+2017-08-31 17:14:47.048 INFO  App:33 - Starting ForkJoinPool-1-worker-1, index 7
+2017-08-31 17:14:47.048 INFO  App:33 - Starting ForkJoinPool-1-worker-11, index 2
+2017-08-31 17:14:47.048 INFO  App:33 - Starting ForkJoinPool-1-worker-10, index 0
+2017-08-31 17:14:47.048 INFO  App:33 - Starting ForkJoinPool-1-worker-13, index 5
+2017-08-31 17:14:47.071 INFO  App:33 - Starting ForkJoinPool-1-worker-4, index 9
+2017-08-31 17:14:47.072 INFO  App:33 - Starting ForkJoinPool-1-worker-8, index 3
+2017-08-31 17:15:35.093 INFO  App:33 - Starting ForkJoinPool-1-worker-9, index 6
+2017-08-31 17:15:35.096 INFO  App:33 - Starting ForkJoinPool-1-worker-8, index 7
+2017-08-31 17:15:35.096 INFO  App:33 - Starting ForkJoinPool-1-worker-1, index 9
+2017-08-31 17:15:35.096 INFO  App:33 - Starting ForkJoinPool-1-worker-4, index 8
+2017-08-31 17:15:35.096 INFO  App:33 - Starting ForkJoinPool-1-worker-15, index 1
+2017-08-31 17:15:35.094 INFO  App:33 - Starting ForkJoinPool-1-worker-11, index 2
+2017-08-31 17:15:35.094 INFO  App:33 - Starting ForkJoinPool-1-worker-13, index 5
+2017-08-31 17:15:35.107 INFO  App:33 - Starting ForkJoinPool-1-worker-2, index 4
+2017-08-31 17:15:35.111 INFO  App:33 - Starting ForkJoinPool-1-worker-6, index 0
+2017-08-31 17:15:35.115 INFO  App:33 - Starting ForkJoinPool-1-worker-10, index 3
+2017-08-31 17:15:40.119 INFO  App:40 - call shutdown
+2017-08-31 17:15:40.121 INFO  App:44 - progress ....
+2017-08-31 17:15:40.122 INFO  App:46 - done
+2017-08-31 17:16:46.202 INFO  App:34 - Starting ForkJoinPool-1-worker-1, index 0
+2017-08-31 17:16:46.203 INFO  App:34 - Starting ForkJoinPool-1-worker-15, index 9
+2017-08-31 17:16:46.203 INFO  App:34 - Starting ForkJoinPool-1-worker-9, index 6
+2017-08-31 17:16:46.203 INFO  App:34 - Starting ForkJoinPool-1-worker-13, index 4
+2017-08-31 17:16:46.203 INFO  App:34 - Starting ForkJoinPool-1-worker-11, index 8
+2017-08-31 17:16:46.202 INFO  App:34 - Starting ForkJoinPool-1-worker-4, index 1
+2017-08-31 17:16:46.202 INFO  App:34 - Starting ForkJoinPool-1-worker-6, index 7
+2017-08-31 17:16:46.202 INFO  App:34 - Starting ForkJoinPool-1-worker-2, index 2
+2017-08-31 17:16:46.202 INFO  App:34 - Starting ForkJoinPool-1-worker-8, index 5
+2017-08-31 17:16:46.202 INFO  App:34 - Starting ForkJoinPool-1-worker-10, index 3
+2017-08-31 17:17:02.764 INFO  App:43 - call shutdown
+2017-08-31 17:17:03.799 INFO  App:47 - progress ....
+2017-08-31 17:17:06.497 INFO  App:49 - done
+2017-08-31 17:18:49.845 INFO  App:43 - call shutdown
+2017-08-31 17:18:53.835 INFO  App:47 - progress ....
+2017-08-31 17:18:54.346 INFO  App:34 - Starting ForkJoinPool-1-worker-13, index 0
+2017-08-31 17:18:54.347 INFO  App:34 - Starting ForkJoinPool-1-worker-10, index 4
+2017-08-31 17:18:54.347 INFO  App:34 - Starting ForkJoinPool-1-worker-1, index 3
+2017-08-31 17:18:54.347 INFO  App:34 - Starting ForkJoinPool-1-worker-15, index 5
+2017-08-31 17:18:54.347 INFO  App:34 - Starting ForkJoinPool-1-worker-11, index 8
+2017-08-31 17:18:54.347 INFO  App:34 - Starting ForkJoinPool-1-worker-4, index 1
+2017-08-31 17:18:54.347 INFO  App:34 - Starting ForkJoinPool-1-worker-6, index 7
+2017-08-31 17:18:54.347 INFO  App:34 - Starting ForkJoinPool-1-worker-2, index 2
+2017-08-31 17:18:54.347 INFO  App:34 - Starting ForkJoinPool-1-worker-9, index 6
+2017-08-31 17:18:54.347 INFO  App:34 - Starting ForkJoinPool-1-worker-8, index 9
+2017-08-31 17:20:20.443 INFO  App:49 - done
+2017-08-31 17:20:25.022 INFO  App:44 - call shutdown
+2017-08-31 17:20:29.231 INFO  App:48 - progress ....
+2017-08-31 17:20:30.220 INFO  App:34 - start ForkJoinPool-1-worker-9, index 6
+2017-08-31 17:20:30.224 INFO  App:34 - start ForkJoinPool-1-worker-8, index 4
+2017-08-31 17:20:30.223 INFO  App:34 - start ForkJoinPool-1-worker-1, index 9
+2017-08-31 17:20:30.223 INFO  App:34 - start ForkJoinPool-1-worker-13, index 7
+2017-08-31 17:20:30.222 INFO  App:34 - start ForkJoinPool-1-worker-11, index 2
+2017-08-31 17:20:30.227 INFO  App:34 - start ForkJoinPool-1-worker-6, index 0
+2017-08-31 17:20:30.221 INFO  App:34 - start ForkJoinPool-1-worker-15, index 1
+2017-08-31 17:20:30.221 INFO  App:34 - start ForkJoinPool-1-worker-4, index 8
+2017-08-31 17:20:30.230 INFO  App:34 - start ForkJoinPool-1-worker-10, index 3
+2017-08-31 17:20:30.226 INFO  App:34 - start ForkJoinPool-1-worker-2, index 5
+2017-08-31 17:20:35.224 INFO  App:36 - done ForkJoinPool-1-worker-9, index 6
+2017-08-31 17:20:35.226 INFO  App:36 - done ForkJoinPool-1-worker-1, index 9
+2017-08-31 17:20:35.227 INFO  App:36 - done ForkJoinPool-1-worker-11, index 2
+2017-08-31 17:20:35.226 INFO  App:36 - done ForkJoinPool-1-worker-8, index 4
+2017-08-31 17:20:35.230 INFO  App:36 - done ForkJoinPool-1-worker-13, index 7
+2017-08-31 17:20:35.231 INFO  App:36 - done ForkJoinPool-1-worker-6, index 0
+2017-08-31 17:20:35.232 INFO  App:36 - done ForkJoinPool-1-worker-15, index 1
+2017-08-31 17:20:35.234 INFO  App:36 - done ForkJoinPool-1-worker-4, index 8
+2017-08-31 17:20:35.235 INFO  App:36 - done ForkJoinPool-1-worker-10, index 3
+2017-08-31 17:20:35.237 INFO  App:36 - done ForkJoinPool-1-worker-2, index 5
+2017-08-31 17:20:46.238 INFO  App:50 - done
+2017-08-31 17:21:17.225 INFO  App:23 - Starting main, index 6
+2017-08-31 17:21:17.327 INFO  App:23 - Starting ForkJoinPool.commonPool-worker-2, index 8
+2017-08-31 17:21:17.341 INFO  App:23 - Starting ForkJoinPool.commonPool-worker-1, index 2
+2017-08-31 17:21:17.342 INFO  App:23 - Starting ForkJoinPool.commonPool-worker-3, index 1
+2017-08-31 17:21:22.273 INFO  App:23 - Starting main, index 5
+2017-08-31 17:21:22.331 INFO  App:23 - Starting ForkJoinPool.commonPool-worker-2, index 9
+2017-08-31 17:21:22.343 INFO  App:23 - Starting ForkJoinPool.commonPool-worker-1, index 4
+2017-08-31 17:21:22.344 INFO  App:23 - Starting ForkJoinPool.commonPool-worker-3, index 0
+2017-08-31 17:21:27.275 INFO  App:23 - Starting main, index 3
+2017-08-31 17:21:27.331 INFO  App:23 - Starting ForkJoinPool.commonPool-worker-2, index 7
+2017-08-31 17:21:32.469 INFO  App:34 - start ForkJoinPool-1-worker-9, index 6
+2017-08-31 17:21:32.476 INFO  App:34 - start ForkJoinPool-1-worker-11, index 2
+2017-08-31 17:21:38.766 INFO  App:36 - done ForkJoinPool-1-worker-9, index 6
+2017-08-31 17:21:38.797 INFO  App:34 - start ForkJoinPool-1-worker-9, index 0
+2017-08-31 17:21:38.797 INFO  App:34 - start ForkJoinPool-1-worker-6, index 1
+2017-08-31 17:21:38.796 INFO  App:34 - start ForkJoinPool-1-worker-1, index 9
+2017-08-31 17:21:38.796 INFO  App:34 - start ForkJoinPool-1-worker-13, index 3
+2017-08-31 17:21:38.796 INFO  App:34 - start ForkJoinPool-1-worker-2, index 8
+2017-08-31 17:21:38.768 INFO  App:36 - done ForkJoinPool-1-worker-11, index 2
+2017-08-31 17:21:38.767 INFO  App:34 - start ForkJoinPool-1-worker-4, index 7
+2017-08-31 17:21:38.766 INFO  App:34 - start ForkJoinPool-1-worker-15, index 4
+2017-08-31 17:21:38.766 INFO  App:34 - start ForkJoinPool-1-worker-8, index 5
+2017-08-31 17:21:43.798 INFO  App:36 - done ForkJoinPool-1-worker-9, index 0
+2017-08-31 17:21:43.802 INFO  App:36 - done ForkJoinPool-1-worker-6, index 1
+2017-08-31 17:21:44.496 INFO  App:36 - done ForkJoinPool-1-worker-13, index 3
+2017-08-31 17:21:44.496 INFO  App:36 - done ForkJoinPool-1-worker-1, index 9
+2017-08-31 17:21:44.498 INFO  App:36 - done ForkJoinPool-1-worker-2, index 8
+2017-08-31 17:21:44.499 INFO  App:36 - done ForkJoinPool-1-worker-4, index 7
+2017-08-31 17:21:44.500 INFO  App:36 - done ForkJoinPool-1-worker-8, index 5
+2017-08-31 17:21:44.500 INFO  App:36 - done ForkJoinPool-1-worker-15, index 4
+2017-08-31 17:21:48.162 INFO  App:44 - done
