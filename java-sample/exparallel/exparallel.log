@@ -221,3 +221,27 @@
 2017-08-31 17:27:07.620 INFO  App:43 - done ForkJoinPool-1-worker-5, index 3
 2017-08-31 17:27:07.623 INFO  App:43 - done ForkJoinPool-1-worker-4, index 0
 2017-08-31 17:27:07.626 INFO  App:51 - done
+2017-08-31 19:00:39.802 INFO  App:24 - 4 개의 스레드에서 병렬로 처리됨.
+2017-08-31 19:00:39.945 INFO  App:27 - start main, index 2
+2017-08-31 19:00:39.951 INFO  App:27 - start ForkJoinPool.commonPool-worker-1, index 1
+2017-08-31 19:00:39.995 INFO  App:27 - start ForkJoinPool.commonPool-worker-3, index 0
+2017-08-31 19:00:40.016 INFO  App:27 - start ForkJoinPool.commonPool-worker-2, index 4
+2017-08-31 19:00:44.952 INFO  App:29 - done main, index 2
+2017-08-31 19:00:44.953 INFO  App:27 - start main, index 3
+2017-08-31 19:00:44.954 INFO  App:29 - done ForkJoinPool.commonPool-worker-1, index 1
+2017-08-31 19:00:44.997 INFO  App:29 - done ForkJoinPool.commonPool-worker-3, index 0
+2017-08-31 19:00:45.017 INFO  App:29 - done ForkJoinPool.commonPool-worker-2, index 4
+2017-08-31 19:00:49.953 INFO  App:29 - done main, index 3
+2017-08-31 19:00:49.954 INFO  App:57 - ===========================================================================
+2017-08-31 19:00:49.954 INFO  App:36 - 5 개의 스레드에서 병렬로 처리됨.
+2017-08-31 19:00:49.968 INFO  App:42 - start ForkJoinPool-1-worker-1, index 2
+2017-08-31 19:00:49.969 INFO  App:42 - start ForkJoinPool-1-worker-4, index 0
+2017-08-31 19:00:49.970 INFO  App:42 - start ForkJoinPool-1-worker-2, index 1
+2017-08-31 19:00:49.974 INFO  App:42 - start ForkJoinPool-1-worker-3, index 4
+2017-08-31 19:00:49.995 INFO  App:42 - start ForkJoinPool-1-worker-5, index 3
+2017-08-31 19:00:54.969 INFO  App:44 - done ForkJoinPool-1-worker-1, index 2
+2017-08-31 19:00:54.971 INFO  App:44 - done ForkJoinPool-1-worker-4, index 0
+2017-08-31 19:00:54.972 INFO  App:44 - done ForkJoinPool-1-worker-2, index 1
+2017-08-31 19:00:54.977 INFO  App:44 - done ForkJoinPool-1-worker-3, index 4
+2017-08-31 19:00:54.996 INFO  App:44 - done ForkJoinPool-1-worker-5, index 3
+2017-08-31 19:00:54.999 INFO  App:52 - done
