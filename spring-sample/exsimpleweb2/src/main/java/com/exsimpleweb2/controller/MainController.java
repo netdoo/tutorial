@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -36,6 +37,20 @@ public class MainController {
     public String world(MainParam mainParam) {
         logger.info("Param {}", mainParam);
         return mainParam.getName();
+    }
+
+    @RequestMapping(value = "/site1/{q}", method = RequestMethod.GET)
+    @ResponseBody
+    public String site1(@PathVariable("q") String q) {
+        logger.info("Site1 : query : {}", q);
+        return q;
+    }
+
+    @RequestMapping(value = "/site2/{q:.+}", method = RequestMethod.GET)
+    @ResponseBody
+    public String site2(@PathVariable("q") String q) {
+        logger.info("Site2 : query : {}", q);
+        return q;
     }
 
     @RequestMapping(value = "/myservice", method = RequestMethod.GET, produces = "application/json")
