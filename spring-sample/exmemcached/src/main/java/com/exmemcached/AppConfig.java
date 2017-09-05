@@ -17,13 +17,9 @@ import com.google.code.ssm.spring.SSMCacheManager;
 @Configuration
 @EnableCaching(proxyTargetClass = true)
 @EnableAspectJAutoProxy
+@ComponentScan(basePackages = {"com.exmemcached"})
 @ImportResource("classpath:simplesm-context.xml")
 public class AppConfig extends CachingConfigurerSupport {
-
-    @Bean
-    App app() {
-        return new App();
-    }
 
     @Bean
     @Override

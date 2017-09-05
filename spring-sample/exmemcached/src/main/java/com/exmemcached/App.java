@@ -1,19 +1,35 @@
 package com.exmemcached;
 
 import com.google.code.ssm.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Service;
 import org.apache.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class App {
     final String MEMCACHE_NAMESPACE = "MyCacheSpace";
     public static final Logger logger = Logger.getLogger(App.class);
 
+    @Autowired
+    SomeDB someDB;
+
     @ReadThroughSingleCache(namespace = MEMCACHE_NAMESPACE, expiration = 1000)
     public SomeData getSomeData(@ParameterValueKeyProvider long id) throws Exception {
+        SomeData result = this.someDB.find(id);
         logger.info("캐쉬에 추가됨 ID : " + id);
-        return new SomeData(id, "james");
+        return result;
+    }
+
+    @ReadThroughMultiCache(namespace = MEMCACHE_NAMESPACE, expiration = 1000)
+    public List<SomeData> getSomeDataList(@ParameterValueKeyProvider List<Long> ids) throws Exception {
+        List<SomeData> resultList = this.someDB.find(ids);
+        logger.info("캐쉬에 여러개가 추가됨 ID : " + ids);
+        return resultList;
     }
 
     @InvalidateSingleCache(namespace = MEMCACHE_NAMESPACE)
@@ -32,8 +48,19 @@ public class App {
         App app = context.getBean(App.class);
 
         /// #1. 캐쉬 읽기
-        SomeData data1 = app.getSomeData(1);
-        SomeData data2 = app.getSomeData(1);
+        for (int i = 0; i < 4; i++) {
+            SomeData data1 = app.getSomeData(i);
+        }
+
+        SomeData someData = app.getSomeData(1);
+        List<SomeData> someDataList1 = app.getSomeDataList(new ArrayList<Long>(Arrays.asList(4L,5L,6L)));
+        List<SomeData> someDataList2 = app.getSomeDataList(new ArrayList<Long>(Arrays.asList(4L,5L,6L)));
+
+        try {
+            SomeData noSuchData = app.getSomeData(123);
+        } catch(Exception e) {
+            logger.error("no such cache ", e);
+        }
 
         /// #2. 캐쉬 제거
         app.removeCache(1);
