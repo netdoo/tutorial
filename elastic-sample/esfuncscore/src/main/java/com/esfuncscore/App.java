@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
+import static org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders.randomFunction;
 import static org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders.weightFactorFunction;
 
 public class App {
@@ -53,7 +54,10 @@ public class App {
                         weightFactorFunction(23)),
                 new FunctionScoreQueryBuilder.FilterFunctionBuilder(
                         termQuery("name", "black"),
-                        weightFactorFunction(50))
+                        weightFactorFunction(50)),
+                new FunctionScoreQueryBuilder.FilterFunctionBuilder(
+                        randomFunction(123)
+                )
         };
 
         MatchAllQueryBuilder matchAllQueryBuilder = QueryBuilders.matchAllQuery();
