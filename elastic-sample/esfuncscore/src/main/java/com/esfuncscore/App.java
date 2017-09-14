@@ -59,7 +59,7 @@ public class App {
                         randomFunction(123)
                 )
         };
-aaaaaaabbbb--local mine
+aaaaaaabbbb-- local another
         MatchAllQueryBuilder matchAllQueryBuilder = QueryBuilders.matchAllQuery();
         QueryBuilder queryBuilder = QueryBuilders.functionScoreQuery(matchAllQueryBuilder, functions)
                 .boost(5)
