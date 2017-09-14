@@ -40,3 +40,15 @@
 2017-07-31 15:57:00.208 [main] INFO  PluginsService:177 - loaded plugin [org.elasticsearch.script.mustache.MustachePlugin]
 2017-07-31 15:57:00.208 [main] INFO  PluginsService:177 - loaded plugin [org.elasticsearch.transport.Netty3Plugin]
 2017-07-31 15:57:00.209 [main] INFO  PluginsService:177 - loaded plugin [org.elasticsearch.transport.Netty4Plugin]
+2017-09-12 17:56:03.355 [main] INFO  PluginsService:174 - no modules loaded
+2017-09-12 17:56:03.366 [main] INFO  PluginsService:177 - loaded plugin [org.elasticsearch.index.reindex.ReindexPlugin]
+2017-09-12 17:56:03.370 [main] INFO  PluginsService:177 - loaded plugin [org.elasticsearch.percolator.PercolatorPlugin]
+2017-09-12 17:56:03.371 [main] INFO  PluginsService:177 - loaded plugin [org.elasticsearch.script.mustache.MustachePlugin]
+2017-09-12 17:56:03.372 [main] INFO  PluginsService:177 - loaded plugin [org.elasticsearch.transport.Netty3Plugin]
+2017-09-12 17:56:03.372 [main] INFO  PluginsService:177 - loaded plugin [org.elasticsearch.transport.Netty4Plugin]
+2017-09-12 18:08:36.612 [main] INFO  PluginsService:174 - no modules loaded
+2017-09-12 18:08:36.620 [main] INFO  PluginsService:177 - loaded plugin [org.elasticsearch.index.reindex.ReindexPlugin]
+2017-09-12 18:08:36.620 [main] INFO  PluginsService:177 - loaded plugin [org.elasticsearch.percolator.PercolatorPlugin]
+2017-09-12 18:08:36.621 [main] INFO  PluginsService:177 - loaded plugin [org.elasticsearch.script.mustache.MustachePlugin]
+2017-09-12 18:08:36.622 [main] INFO  PluginsService:177 - loaded plugin [org.elasticsearch.transport.Netty3Plugin]
+2017-09-12 18:08:36.622 [main] INFO  PluginsService:177 - loaded plugin [org.elasticsearch.transport.Netty4Plugin]
