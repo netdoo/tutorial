@@ -55,7 +55,7 @@ public class App {
                         termQuery("name", "black"),
                         weightFactorFunction(50))
         };
-
+aaaaaaa
         MatchAllQueryBuilder matchAllQueryBuilder = QueryBuilders.matchAllQuery();
         QueryBuilder queryBuilder = QueryBuilders.functionScoreQuery(matchAllQueryBuilder, functions)
                 .boost(5)
