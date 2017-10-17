@@ -30,7 +30,7 @@ public class App {
     final static Logger logger = LoggerFactory.getLogger(App.class);
     static final String INDEX = "cafe";
     static final String TYPE = "menu";
-    static final String HOST = "127.0.0.1";
+    static final String HOST = "es-search-test1.tmonc.net";
     static final int PORT = 9300;
     static final String QUERY_JSON_FILE = "C:\\temp\\search.json";
     static final String CSV_OUT_FILE = "C:\\temp\\out.csv";
@@ -49,13 +49,18 @@ public class App {
 
         try (FileWriter csvWriter = new FileWriter(CSV_OUT_FILE)) {
 
-            TransportClient client = new PreBuiltTransportClient(Settings.EMPTY)
+            Settings settings = Settings.builder()
+                    .put("cluster.name", "my-elastic").build();
+
+            TransportClient client = new PreBuiltTransportClient(settings)
                     .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(HOST), PORT));
 
             SearchResponse r = client.prepareSearch(INDEX)
                     .setTypes(TYPE)
                     .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                     .setQuery(QueryBuilders.wrapperQuery(new String(Files.readAllBytes(Paths.get(QUERY_JSON_FILE)), StandardCharsets.UTF_8)))
+                    .setFrom(0)
+                    .setSize(10000)
                     .get();
 
             StringBuilder csv = new StringBuilder();

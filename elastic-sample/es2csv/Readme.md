@@ -25,19 +25,34 @@ PUT cafe
 PUT cafe/menu/1
 {
     "name" : "mango magic black tea",
-    "price" : 1000
+    "price" : 1000,
+    "comment" : {
+        "taste" : "sweet",
+        "season" : "summer",
+        "takeout" : true
+    }
 }
 
 PUT cafe/menu/2
 {
     "name" : "herb magic light green tea",
-    "price" : 2000
+    "price" : 2000,
+    "comment" : {
+        "taste" : "good sweet",
+        "season" : "summer",
+        "takeout" : true
+    }
 }
 
 PUT cafe/menu/3
 {
     "name" : "water melon magic fresh tea",
-    "price" : 3000
+    "price" : 3000,
+    "comment" : {
+        "taste" : "sweet",
+        "season" : "spring",
+        "takeout" : false
+    }
 }
 ```
 
@@ -64,7 +79,7 @@ GET cafe/_search
 # span_or 검색결과
 ```
 {
-   "took": 15,
+   "took": 34,
    "timed_out": false,
    "_shards": {
       "total": 5,
@@ -81,7 +96,13 @@ GET cafe/_search
             "_id": "1",
             "_score": 1.6739764,
             "_source": {
-               "name": "mango magic black tea"
+               "name": "mango magic black tea",
+               "price": 1000,
+               "comment": {
+                  "taste": "sweet",
+                  "season": "summer",
+                  "takeout": true
+               }
             }
          },
          {
@@ -90,7 +111,13 @@ GET cafe/_search
             "_id": "2",
             "_score": 1.6437844,
             "_source": {
-               "name": "herb magic light green tea"
+               "name": "herb magic light green tea",
+               "price": 2000,
+               "comment": {
+                  "taste": "good sweet",
+                  "season": "summer",
+                  "takeout": true
+               }
             }
          }
       ]
