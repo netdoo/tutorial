@@ -1,0 +1,8 @@
+{
+    "span_or": {
+        "clauses": [
+            {"span_term": {"name": "mango"}},
+            {"span_term": {"name": "herb"}}
+        ]
+    }
+}
