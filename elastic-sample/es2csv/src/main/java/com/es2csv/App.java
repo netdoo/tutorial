@@ -30,7 +30,7 @@ public class App {
     final static Logger logger = LoggerFactory.getLogger(App.class);
     static final String INDEX = "cafe";
     static final String TYPE = "menu";
-    static final String HOST = "es-search-test1.tmonc.net";
+    static final String HOST = "127.0.0.1";
     static final int PORT = 9300;
     static final String QUERY_JSON_FILE = "C:\\temp\\search.json";
     static final String CSV_OUT_FILE = "C:\\temp\\out.csv";
