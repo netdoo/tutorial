@@ -16,6 +16,14 @@ PUT cafe
                 "price" : {
                     "type" : "long",
                     "index" : "not_analyzed"
+                },
+                "comment"  : {
+                    "type" : "nested",
+                    "properties" : {
+                        "taste" : {"type" : "text"},
+                        "season" : {"type" : "text"},
+                        "takeout" : {"type" : "boolean"}
+                    }
                 }
             }
         }
