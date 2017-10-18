@@ -24,6 +24,12 @@ PUT cafe
                         "season" : {"type" : "text"},
                         "takeout" : {"type" : "boolean"}
                     }
+                },
+                "extra" : {
+                    "properties": {
+                        "size" : {"type": "text"},
+                        "sizeup" : {"type": "boolean"}
+                    }
                 }
             }
         }
@@ -38,6 +44,10 @@ PUT cafe/menu/1
         "taste" : "sweet",
         "season" : "summer",
         "takeout" : true
+    },
+    "extra" : {
+        "size" : ["small", "normal", "large"],
+        "sizeup" : false
     }
 }
 
@@ -49,6 +59,10 @@ PUT cafe/menu/2
         "taste" : "good sweet",
         "season" : "summer",
         "takeout" : true
+    },
+    "extra" : {
+        "size" : "small",
+        "sizeup" : false
     }
 }
 
@@ -60,8 +74,28 @@ PUT cafe/menu/3
         "taste" : "sweet",
         "season" : "spring",
         "takeout" : false
+    },
+    "extra" : {
+        "size" : ["small", "normal", "large", "xlarge"],
+        "sizeup" : true
     }
 }
+
+PUT cafe/menu/4
+{
+    "name" : "water melon magic fresh tea",
+    "price" : 4000,
+    "comment" : {
+        "taste" : "sweet",
+        "season" : "spring",
+        "takeout" : false
+    },
+    "extra" : {
+        "size" : "normal",
+        "sizeup" : true
+    }
+}
+
 ```
 
 
