@@ -3,6 +3,8 @@
 
 # 샘플 색인
 ```
+DELETE cafe
+
 PUT cafe
 {
     "mappings": {

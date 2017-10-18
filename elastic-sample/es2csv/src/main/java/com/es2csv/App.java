@@ -158,6 +158,7 @@ public class App {
                         csv.replace(csv.length()-1, csv.length(), "\r\n");
                         once = true;
                         csvWriter.append(csv.toString());
+                        logger.info("{}", csv.toString());
                     }
 
                     sumOfFetchCount++;
@@ -170,6 +171,7 @@ public class App {
                         map2csv(hit.getSource(), csv);
                     }
 
+                    logger.info("{}", csv.toString());
                     csvWriter.append(csv.replace(csv.length()-1, csv.length(), "\r\n").toString());
                 }
 
