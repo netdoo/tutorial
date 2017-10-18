@@ -73,16 +73,7 @@ public class App {
 
     public static void field2csv(Map<String, SearchHitField> map, StringBuilder csv) {
         for (Map.Entry<String, SearchHitField> entry : map.entrySet()) {
-            SearchHitField field = entry.getValue();
-            String valueText = (String)field.values().stream().map(Object::toString).collect(Collectors.joining(","));
-
-            if (field.values().size() > 1) {
-                // 값이 n개인 경우
-                csv.append('"').append(valueText).append('"').append(",");
-            } else {
-                // 값이 1개인 경우
-                csv.append(valueText).append(",");
-            }
+            csv.append('"').append(entry.getValue().values().stream().map(Object::toString).collect(Collectors.joining(","))).append('"').append(",");
         }
     }
 
