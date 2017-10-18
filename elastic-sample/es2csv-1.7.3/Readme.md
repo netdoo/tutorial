@@ -19,12 +19,18 @@ PUT cafe
                 },
                 "comment"  : {
                     "type" : "nested",
-                        "properties" : {
-                            "taste" : {"type" : "string"},
-                            "season" : {"type" : "string"},
-                            "takeout" : {"type" : "boolean"}
-                        }
+                    "properties" : {
+                        "taste" : {"type" : "string"},
+                        "season" : {"type" : "string"},
+                        "takeout" : {"type" : "boolean"}
                     }
+                },
+                "extra" : {
+                    "properties": {
+                        "size" : {"type": "string"},
+                        "sizeup" : {"type": "boolean"}
+                    }
+                }
             }
         }
     }
@@ -38,6 +44,10 @@ PUT cafe/menu/1
         "taste" : "sweet",
         "season" : "summer",
         "takeout" : true
+    },
+    "extra" : {
+        "size" : "normal",
+        "sizeup" : false
     }
 }
 
@@ -49,6 +59,10 @@ PUT cafe/menu/2
         "taste" : "good sweet",
         "season" : "summer",
         "takeout" : true
+    },
+    "extra" : {
+        "size" : "small",
+        "sizeup" : false
     }
 }
 
@@ -60,18 +74,10 @@ PUT cafe/menu/3
         "taste" : "sweet",
         "season" : "spring",
         "takeout" : false
-    }
-}
-
-
-PUT cafe/menu/4
-{
-    "name" : "water melon magic fresh tea",
-    "price" : 4000,
-    "comment" : {
-        "taste" : "sweet",
-        "season" : "spring",
-        "takeout" : false
+    },
+    "extra" : {
+        "size" : "big",
+        "sizeup" : true
     }
 }
 ```
@@ -99,7 +105,7 @@ GET cafe/_search
 # span_or 검색결과
 ```
 {
-   "took": 34,
+   "took": 122,
    "timed_out": false,
    "_shards": {
       "total": 5,
@@ -108,13 +114,13 @@ GET cafe/_search
    },
    "hits": {
       "total": 2,
-      "max_score": 1.6739764,
+      "max_score": 0.9521713,
       "hits": [
          {
             "_index": "cafe",
             "_type": "menu",
             "_id": "1",
-            "_score": 1.6739764,
+            "_score": 0.9521713,
             "_source": {
                "name": "mango magic black tea",
                "price": 1000,
@@ -122,6 +128,10 @@ GET cafe/_search
                   "taste": "sweet",
                   "season": "summer",
                   "takeout": true
+               },
+               "extra": {
+                  "size": "normal",
+                  "sizeup": false
                }
             }
          },
@@ -129,7 +139,7 @@ GET cafe/_search
             "_index": "cafe",
             "_type": "menu",
             "_id": "2",
-            "_score": 1.6437844,
+            "_score": 0.8331499,
             "_source": {
                "name": "herb magic light green tea",
                "price": 2000,
@@ -137,6 +147,10 @@ GET cafe/_search
                   "taste": "good sweet",
                   "season": "summer",
                   "takeout": true
+               },
+               "extra": {
+                  "size": "small",
+                  "sizeup": false
                }
             }
          }
