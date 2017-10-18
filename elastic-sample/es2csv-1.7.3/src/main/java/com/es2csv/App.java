@@ -24,6 +24,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class App {
     final static Logger logger = LoggerFactory.getLogger(App.class);
@@ -57,6 +58,39 @@ public class App {
         }
     }
 
+    public static void makeHeader(SearchHit hit, StringBuilder header) {
+        header.append("_uid,");
+        map2title(hit.getSource(), header, "");
+        header.replace(header.length()-1, header.length(), "\n");
+    }
+
+    public static void list2title(List list, StringBuilder header, String parent) {
+        list.forEach(item -> {
+            if (item instanceof Map) {
+                map2title((Map) item, header, parent);
+            } else {
+                header.append(item.toString()).append(",");
+            }
+        });
+    }
+
+    static String concatName(String parent, String child) {
+        return Optional.ofNullable(parent).orElse("").isEmpty() ? child : parent + "." + child;
+    }
+
+    public static void map2title(Map<String, Object> map, StringBuilder header, String parent) {
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            Object v = entry.getValue();
+            if (v instanceof Map) {
+                map2title((Map<String, Object>)v, header, concatName(parent, entry.getKey()));    // nested object 인 경우, 재귀로 csv 덤프
+            } else if (v instanceof ArrayList) {
+                list2title((List)v, header, concatName(parent, entry.getKey()));
+            } else {
+                header.append(concatName(parent, entry.getKey())).append(",");
+            }
+        }
+    }
+
     public static void main(String[] args) {
 
         try (FileWriter csvWriter = new FileWriter(CSV_OUT_FILE)) {
@@ -79,10 +113,17 @@ public class App {
                     .get();
 
             int sumOfFetchCount = 0;
+            boolean once = false;
             StringBuilder csv = new StringBuilder();
             // Scroll until no hits are returned
             do {
                 for (SearchHit hit : r.getHits().getHits()) {
+                    if (!once) {
+                        makeHeader(hit, csv);
+                        once = true;
+                        csvWriter.append(csv.toString());
+                    }
+
                     sumOfFetchCount++;
                     csv.setLength(0);
                     csv.append(hit.getId()).append(",");
