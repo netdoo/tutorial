@@ -1,5 +1,6 @@
 package com.es2csv;
 
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.transport.TransportClient;
@@ -10,6 +11,7 @@ import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 
+import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
@@ -25,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class App {
     final static Logger logger = LoggerFactory.getLogger(App.class);
@@ -35,14 +39,23 @@ public class App {
     static final String QUERY_JSON_FILE = "C:\\temp\\search.json";
     static final String CSV_OUT_FILE = "C:\\temp\\out.csv";
 
+    static long getNestedObjCnt(List list) {
+        return list.stream().filter(item -> item instanceof Map).count();
+    }
+
     public static void list2csv(List list, StringBuilder csv) {
-        list.forEach(item -> {
-            if (item instanceof Map) {
-                map2csv((Map) item, csv);
-            } else {
-                csv.append(item.toString()).append(",");
-            }
-        });
+        if (getNestedObjCnt(list) > 0) {
+            list.forEach(item -> {
+                if (item instanceof Map) {
+                    map2csv((Map) item, csv);
+                } else {
+                    csv.append(item.toString()).append(",");
+                }
+            });
+        } else {
+            String s = (String) list.stream().map(Object::toString).collect(Collectors.joining(","));
+            csv.append("[").append(s).append("]").append(",");
+        }
     }
 
     public static void map2csv(Map<String, Object> map, StringBuilder csv) {
@@ -58,20 +71,42 @@ public class App {
         }
     }
 
+    public static void field2csv(Map<String, SearchHitField> map, StringBuilder csv) {
+        for (Map.Entry<String, SearchHitField> entry : map.entrySet()) {
+            SearchHitField field = entry.getValue();
+            String valueText = (String)field.values().stream().map(Object::toString).collect(Collectors.joining(","));
+
+            if (field.values().size() > 1) {
+                // 값이 n개인 경우
+                csv.append('"').append(valueText).append('"').append(",");
+            } else {
+                // 값이 1개인 경우
+                csv.append(valueText).append(",");
+            }
+        }
+    }
+
     public static void makeHeader(SearchHit hit, StringBuilder header) {
         header.append("_uid,");
         map2title(hit.getSource(), header, "");
-        header.replace(header.length()-1, header.length(), "\n");
+    }
+
+    public static void makeHeader(Map<String, SearchHitField> fields, StringBuilder header) {
+        fields.forEach((k, v) -> {
+            header.append(k).append(",");
+        });
     }
 
     public static void list2title(List list, StringBuilder header, String parent) {
-        list.forEach(item -> {
-            if (item instanceof Map) {
-                map2title((Map) item, header, parent);
-            } else {
-                header.append(item.toString()).append(",");
-            }
-        });
+        if (getNestedObjCnt(list) > 0) {
+            list.forEach(item -> {
+                if (item instanceof Map) {
+                    map2title((Map) item, header, parent);
+                }
+            });
+        } else {
+            header.append(parent).append(",");
+        }
     }
 
     static String concatName(String parent, String child) {
@@ -103,23 +138,36 @@ public class App {
 
             FieldSortBuilder sortBuilder = SortBuilders.fieldSort("_id").order(SortOrder.ASC);
 
-            SearchResponse r = client.prepareSearch(INDEX)
+            SearchRequestBuilder builder = client.prepareSearch(INDEX)
                     .setTypes(TYPE)
                     .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                     .addSort("_uid", SortOrder.ASC)
                     .setQuery(QueryBuilders.wrapperQuery(new String(Files.readAllBytes(Paths.get(QUERY_JSON_FILE)), StandardCharsets.UTF_8)))
                     .setScroll(new TimeValue(60000))
-                    .setSize(2) //max of 2 hits will be returned for each scroll
-                    .get();
+                    .setSize(2); //max of 20 hits will be returned for each scroll
 
+
+            builder.addFields("name", "price", "extra.size");
+
+            SearchResponse r = builder.execute().get();
             int sumOfFetchCount = 0;
             boolean once = false;
             StringBuilder csv = new StringBuilder();
             // Scroll until no hits are returned
             do {
                 for (SearchHit hit : r.getHits().getHits()) {
+
                     if (!once) {
-                        makeHeader(hit, csv);
+
+                        csv.append("_uid,");
+
+                        if (hit.fields().size() > 0) {
+                            makeHeader(hit.fields(), csv);
+                        } else {
+                            makeHeader(hit, csv);
+                        }
+
+                        csv.replace(csv.length()-1, csv.length(), "\r\n");
                         once = true;
                         csvWriter.append(csv.toString());
                     }
@@ -127,8 +175,14 @@ public class App {
                     sumOfFetchCount++;
                     csv.setLength(0);
                     csv.append(hit.getId()).append(",");
-                    map2csv(hit.getSource(), csv);
-                    csvWriter.append(csv.replace(csv.length()-1, csv.length(), "\n").toString());
+
+                    if (hit.fields().size() > 0) {
+                        field2csv(hit.fields(), csv);
+                    } else {
+                        map2csv(hit.getSource(), csv);
+                    }
+
+                    csvWriter.append(csv.replace(csv.length()-1, csv.length(), "\r\n").toString());
                 }
 
                 logger.info("fetch {}", sumOfFetchCount);

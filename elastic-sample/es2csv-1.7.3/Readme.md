@@ -46,7 +46,7 @@ PUT cafe/menu/1
         "takeout" : true
     },
     "extra" : {
-        "size" : "normal",
+        "size" : ["small", "normal", "large"],
         "sizeup" : false
     }
 }
@@ -76,10 +76,26 @@ PUT cafe/menu/3
         "takeout" : false
     },
     "extra" : {
-        "size" : "big",
+        "size" : ["small", "normal", "large", "xlarge"],
         "sizeup" : true
     }
 }
+
+PUT cafe/menu/4
+{
+    "name" : "water melon magic fresh tea",
+    "price" : 4000,
+    "comment" : {
+        "taste" : "sweet",
+        "season" : "spring",
+        "takeout" : false
+    },
+    "extra" : {
+        "size" : "normal",
+        "sizeup" : true
+    }
+}
+
 ```
 
 
@@ -105,7 +121,7 @@ GET cafe/_search
 # span_or 검색결과
 ```
 {
-   "took": 122,
+   "took": 34,
    "timed_out": false,
    "_shards": {
       "total": 5,
@@ -130,7 +146,11 @@ GET cafe/_search
                   "takeout": true
                },
                "extra": {
-                  "size": "normal",
+                  "size": [
+                     "small",
+                     "normal",
+                     "large"
+                  ],
                   "sizeup": false
                }
             }
