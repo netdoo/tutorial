@@ -26,6 +26,8 @@ import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -39,12 +41,25 @@ public class ScrollApp {
     static final String QUERY_JSON_FILE = "C:\\temp\\search.json";
     static final String CSV_OUT_FILE = "C:\\temp\\out.csv";
 
+    public static void list2csv(List list, StringBuilder csv) {
+        list.forEach(item -> {
+            if (item instanceof Map) {
+                map2csv((Map) item, csv);
+            } else {
+                csv.append(item.toString()).append(",");
+            }
+        });
+    }
+
     public static void map2csv(Map<String, Object> map, StringBuilder csv) {
         for (Map.Entry<String, Object> entry : map.entrySet()) {
-            if (entry.getValue() instanceof Map)  {
-                map2csv((Map<String, Object>)entry.getValue(), csv);    // nested object 인 경우, 재귀로 csv 덤프
+            Object v = entry.getValue();
+            if (v instanceof Map) {
+                map2csv((Map<String, Object>)v, csv);    // nested object 인 경우, 재귀로 csv 덤프
+            } else if (v instanceof ArrayList) {
+                list2csv((List)v, csv);
             } else {
-                csv.append(entry.getValue().toString()).append(",");
+                csv.append(v.toString()).append(",");
             }
         }
     }
