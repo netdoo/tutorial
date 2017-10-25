@@ -49,12 +49,12 @@ public class App {
                 if (item instanceof Map) {
                     map2csv((Map) item, csv);
                 } else {
-                    csv.append(item.toString()).append(",");
+                    csv.append('"').append(item.toString()).append('"').append(",");
                 }
             });
         } else {
             String s = (String) list.stream().map(Object::toString).collect(Collectors.joining(","));
-            csv.append("[").append(s).append("]").append(",");
+            csv.append('"').append(s).append('"').append(",");
         }
     }
 
@@ -66,7 +66,7 @@ public class App {
             } else if (v instanceof ArrayList) {
                 list2csv((List)v, csv);
             } else {
-                csv.append(v.toString()).append(",");
+                csv.append('"').append(v.toString()).append('"').append(",");
             }
         }
     }
@@ -137,8 +137,7 @@ public class App {
                     .setScroll(new TimeValue(60000))
                     .setSize(2); //max of 20 hits will be returned for each scroll
 
-
-            builder.addFields("name", "price", "extra.size");
+            builder.setFetchSource(new String[]{"name", "price", "extra.size"}, null);
 
             SearchResponse r = builder.execute().get();
             int sumOfFetchCount = 0;
@@ -147,9 +146,7 @@ public class App {
             // Scroll until no hits are returned
             do {
                 for (SearchHit hit : r.getHits().getHits()) {
-
                     if (!once) {
-
                         csv.append("_uid,");
 
                         if (hit.fields().size() > 0) {
@@ -165,7 +162,7 @@ public class App {
 
                     sumOfFetchCount++;
                     csv.setLength(0);
-                    csv.append(hit.getId()).append(",");
+                    csv.append('"').append(hit.getId()).append('"').append(",");
 
                     if (hit.fields().size() > 0) {
                         field2csv(hit.fields(), csv);
