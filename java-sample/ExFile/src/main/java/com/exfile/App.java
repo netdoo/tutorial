@@ -38,6 +38,25 @@ public class App {
         return true;
     }
 
+    public static boolean appendLineFile(String readPath, String appendPath) {
+
+        String line = null;
+
+        try (BufferedReader in = Files.newBufferedReader(Paths.get(readPath), StandardCharsets.UTF_8);
+             BufferedWriter out = Files.newBufferedWriter(Paths.get(appendPath), StandardCharsets.UTF_8)) {
+
+            while ((line=in.readLine()) != null) {
+                line = line.trim();
+
+                if (!line.isEmpty()) {
+                    out.write(line + "\n");
+                }
+            }
+        } catch (IOException e) { return false; }
+
+        return true;
+    }
+
     public static boolean appendFile(String readPath, String appendPath) {
         int readSize = 0;
         byte buff[] = new byte[8096];
@@ -67,6 +86,7 @@ public class App {
         long start = System.currentTimeMillis();
         appendFile("c:\\temp\\big.7z", "c:\\temp\\out.txt");
         appendFile("c:\\temp\\eee.zip", "c:\\temp\\out.txt");
+        appendLineFile("c:\\temp\\aaa.txt", "c:\\temp\\out.txt");
         System.out.println("elapsed time : " + (System.currentTimeMillis() - start) + " (ms)");
     }
 }
