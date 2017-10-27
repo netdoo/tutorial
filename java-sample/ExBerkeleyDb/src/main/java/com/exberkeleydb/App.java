@@ -1,129 +1,180 @@
 package com.exberkeleydb;
 
+import com.exberkeleydb.domain.Box;
+import com.sleepycat.bind.EntryBinding;
+import com.sleepycat.bind.serial.SerialBinding;
+import com.sleepycat.bind.serial.StoredClassCatalog;
 import com.sleepycat.bind.tuple.StringBinding;
 import com.sleepycat.je.*;
+import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.sleepycat.bind.EntryBinding;
-import com.sleepycat.bind.serial.StoredClassCatalog;
-import com.sleepycat.bind.serial.SerialBinding;
+import sun.invoke.util.VerifyAccess;
+import sun.util.locale.provider.TimeZoneNameUtility;
 
 import java.io.File;
-
+import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 public class App {
-
     final static Logger logger = LoggerFactory.getLogger(App.class);
+    final static File homeDir = new File("C:\\temp\\dbEnv");
+    final static String dbName = "testDB";
 
+    static void cleanUp(File homeDir) {
+        if (homeDir.exists()) {
+            Arrays.stream(homeDir.listFiles()).forEach(File::delete);
+        } else {
+            homeDir.mkdir();
+        }
+    }
 
-    public static void main( String[] args ) {
+    static Environment createEnvironment(File homeDir) throws Exception {
+        EnvironmentConfig environmentConfig = new EnvironmentConfig();
+        environmentConfig.setAllowCreate(true);
+        environmentConfig.setTransactional(true);
+        return new Environment(homeDir, environmentConfig);
+    }
 
-        Environment myDbEnvironment = null;
-        Database myDatabase = null;
-        String key = "myKey";
-        String data = "myData";
-        Cursor myCursor = null;
+    static Database createDatabase(Environment environment, String dbName) throws Exception {
+        DatabaseConfig databaseConfig = new DatabaseConfig();
+        databaseConfig.setAllowCreate(true);
+        databaseConfig.setTransactional(true);
+
+        return environment.openDatabase(null, dbName, databaseConfig);
+    }
+
+    static OperationStatus put(Database database, String key, Box value) throws Exception {
+        return database.put(null, new DatabaseEntry(key.getBytes("UTF-8")),
+                new DatabaseEntry(SerializationUtils.serialize(value)));
+    }
+
+    static OperationStatus put(Database database, Transaction transaction, String key, Box value) throws Exception {
+        return database.put(transaction, new DatabaseEntry(key.getBytes("UTF-8")),
+                new DatabaseEntry(SerializationUtils.serialize(value)));
+    }
+
+    static OperationStatus del(Database database, String key) throws Exception {
+        return database.delete(null, new DatabaseEntry(key.getBytes("UTF-8")));
+    }
+
+    static Box get(Database database, String key) throws Exception {
+        DatabaseEntry value = new DatabaseEntry();
+
+        if (database.get(null, new DatabaseEntry(key.getBytes("UTF-8")), value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+            return (Box)SerializationUtils.deserialize(value.getData());
+        }
+
+        return new Box();
+    }
+
+    static void printAll(Cursor cursor) throws Exception {
+        DatabaseEntry key = new DatabaseEntry();
+        DatabaseEntry value = new DatabaseEntry();
+
+        // Moves the cursor to the first key/data pair of the database.
+        if (cursor.getFirst(key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+            do {
+                logger.info("{} / {}", new String(key.getData(), "UTF-8"), SerializationUtils.deserialize(value.getData()));
+            } while (cursor.getNext(key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS);
+        }
+    }
+
+    static void reversePrintAll(Cursor cursor) throws Exception {
+        DatabaseEntry key = new DatabaseEntry();
+        DatabaseEntry value = new DatabaseEntry();
+
+        // Moves the cursor to the first key/data pair of the database.
+        if (cursor.getLast(key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+            do {
+                logger.info("{} / {}", new String(key.getData(), "UTF-8"), SerializationUtils.deserialize(value.getData()));
+            } while (cursor.getPrev(key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS);
+        }
+    }
+
+    public static void main( String[] args ) throws Exception {
+        Environment environment = null;
+        Database database = null;
+        Cursor cursor = null;
 
         try {
-            // Open the environment, creating one if it does not exist
-            EnvironmentConfig envConfig = new EnvironmentConfig();
-            envConfig.setAllowCreate(true);
-            envConfig.setTransactional(true);
-            myDbEnvironment = new Environment(new File("C:\\temp\\dbEnv"),
-                    envConfig);
+            cleanUp(homeDir);
+            environment = createEnvironment(homeDir);
+            database = createDatabase(environment, dbName);
 
-            // Open the database, creating one if it does not exist
-            DatabaseConfig dbConfig = new DatabaseConfig();
-            dbConfig.setAllowCreate(true);
-            dbConfig.setTransactional(true);
+            logger.info("=== put ===");
+            put(database, "1", new Box("a01", "red"));
+            put(database, "2", new Box("a02", "green"));
+            put(database, "3", new Box("a03", "blue"));
 
-            //dbConfig.setType(DatabaseType.BTREE);
-            //dbConfig.setSortedDuplicates(true);
-            //dbConfig.setReadUncommitted(true);
+            logger.info("=== get ===");
+            logger.info("{}", get(database, "1"));
+            logger.info("{}", get(database, "2"));
+            logger.info("{}", get(database, "3"));
 
-            myDatabase = myDbEnvironment.openDatabase(null,
-                    "TestDatabase", dbConfig);
+            logger.info("=== update ===");
+            logger.info("{}", put(database, "1", new Box("a01", "darkred")));
 
+            logger.info("=== delete ===");
+            logger.info("{}", del(database, "2"));
 
-            DatabaseEntry theKey = new DatabaseEntry(key.getBytes("UTF-8"));
-            DatabaseEntry theData = new DatabaseEntry(data.getBytes("UTF-8"));
-            myDatabase.put(null, theKey, theData);
+            logger.info("=== count ===");
+            logger.info("{}", database.count());
 
+            logger.info("=== iterate ===");
+            cursor = database.openCursor(null, null);
+            printAll(cursor);
 
-//            EntryBinding dataBinding = new SerialBinding(scc, String.class);
+            logger.info("=== reverse iterate ===");
+            reversePrintAll(cursor);
 
+            StopWatch stopWatch = new StopWatch();
 
-            // Call get() to query the database
-            if (myDatabase.get(null, theKey, theData, LockMode.DEFAULT) ==
-                    OperationStatus.SUCCESS) {
+            logger.info("=== bulk put (slow) ===");
+            stopWatch.start();
 
-                // Translate theData into a String.
-                byte[] retData = theData.getData();
-                String foundData = new String(retData, "UTF-8");
-                System.out.println("key: '" + key + "' data: '" + foundData + "'.");
-            } else {
-                System.out.println("No record found with key '" + key + "'.");
+            for (int i=0; i<5; i++) {
+                put(database, "slow"+i, new Box("slow"+i, String.valueOf(i)));
             }
 
+            stopWatch.stop();
+            logger.info("bulk put (slow) elapsed time {} (ms)", stopWatch.getTime(TimeUnit.MILLISECONDS));
 
+            logger.info("=== bulk put (fast)");
 
-            // Delete the entry (or entries) with the given key
-            myDatabase.delete(null, theKey);
+            stopWatch.reset();
+            stopWatch.start();
 
+            Transaction transaction = environment.beginTransaction(null, null);
 
-
-            Transaction txn = null;
-            // Get a transaction
-            txn = myDbEnvironment.beginTransaction(null, null);
-            // Perform 50 transactions
-            for (int i=0; i<50; i++) {
-                // Do the put
-                StringBinding.stringToEntry("k"+i, theKey);
-                StringBinding.stringToEntry("v"+i, theData);
-                myDatabase.put(txn, theKey, theData);
+            for (int i=0; i<5; i++) {
+                put(database, transaction, "fast"+i, new Box("fast"+i, String.valueOf(i)));
             }
 
+            transaction.commitSync();
+            stopWatch.stop();
+            logger.info("bulk put (fast) elapsed time {} (ms)", stopWatch.getTime(TimeUnit.MILLISECONDS));
 
-            txn.commit();
-
-
-                myCursor = myDatabase.openCursor(null, null);
-
-            // Cursors returns records as pairs of DatabaseEntry objects
-            DatabaseEntry foundKey = new DatabaseEntry();
-            DatabaseEntry foundData = new DatabaseEntry();
-
-            // Retrieve records with calls to getNext() until the
-            // return status is not OperationStatus.SUCCESS
-            while (myCursor.getNext(foundKey, foundData, LockMode.DEFAULT) ==
-                    OperationStatus.SUCCESS) {
-                String keyString = new String(foundKey.getData(), "UTF-8");
-                String dataString = new String(foundData.getData(), "UTF-8");
-                System.out.println("Key| Data : " + keyString + " | " +
-                        dataString + "");
-            }
-
+            printAll(cursor);
 
         } catch (Exception e) {
-            //  Exception handling
-            System.out.println(e);
+            logger.info("", e);
         }
 
         try {
-            if (myCursor != null) {
-                myCursor.close();
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (database != null) {
+                database.close();
             }
 
-            if (myDatabase != null) {
-                myDatabase.close();
+            if (environment != null) {
+                environment.close();
             }
-
-            if (myDbEnvironment != null) {
-                myDbEnvironment.close();
-            }
-        }catch (Exception e) {
-
+        } catch (Exception e) {
+            logger.info("", e);
         }
-
     }
 }
