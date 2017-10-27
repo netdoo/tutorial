@@ -21,6 +21,7 @@ public class App {
     final static Logger logger = LoggerFactory.getLogger(App.class);
     final static File homeDir = new File("C:\\temp\\dbEnv");
     final static String dbName = "testDB";
+    final static int MAX_COUNT = 5;
 
     static void cleanUp(File homeDir) {
         if (homeDir.exists()) {
@@ -123,7 +124,9 @@ public class App {
             logger.info("{}", database.count());
 
             logger.info("=== iterate ===");
-            cursor = database.openCursor(null, null);
+            CursorConfig cursorConfig = new CursorConfig();
+            cursorConfig.setReadUncommitted(true);
+            cursor = database.openCursor(null, cursorConfig);
             printAll(cursor);
 
             logger.info("=== reverse iterate ===");
@@ -134,7 +137,7 @@ public class App {
             logger.info("=== bulk put (slow) ===");
             stopWatch.start();
 
-            for (int i=0; i<5; i++) {
+            for (int i = 0; i < MAX_COUNT; i++) {
                 put(database, "slow"+i, new Box("slow"+i, String.valueOf(i)));
             }
 
@@ -148,7 +151,7 @@ public class App {
 
             Transaction transaction = environment.beginTransaction(null, null);
 
-            for (int i=0; i<5; i++) {
+            for (int i = 0; i < MAX_COUNT; i++) {
                 put(database, transaction, "fast"+i, new Box("fast"+i, String.valueOf(i)));
             }
 
