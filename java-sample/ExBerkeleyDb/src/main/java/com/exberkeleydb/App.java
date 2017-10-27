@@ -132,6 +132,19 @@ public class App {
             logger.info("=== reverse iterate ===");
             reversePrintAll(cursor);
 
+            logger.info("=== transaction commit ===");
+
+            Transaction transaction = environment.beginTransaction(null, null);
+            put(database, transaction, "trans1", new Box("trans1", "white"));
+            transaction.commitSync();
+
+            logger.info("=== transaction abort ===");
+            transaction = environment.beginTransaction(null, null);
+            put(database, transaction, "trans2", new Box("trans2", "black"));
+            transaction.abort();
+
+            printAll(cursor);
+
             StopWatch stopWatch = new StopWatch();
 
             logger.info("=== bulk put (slow) ===");
@@ -149,7 +162,7 @@ public class App {
             stopWatch.reset();
             stopWatch.start();
 
-            Transaction transaction = environment.beginTransaction(null, null);
+            transaction = environment.beginTransaction(null, null);
 
             for (int i = 0; i < MAX_COUNT; i++) {
                 put(database, transaction, "fast"+i, new Box("fast"+i, String.valueOf(i)));
