@@ -1,0 +1,33 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thymeleaf Template Example</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<p th:text="${date}">The date</p>
+
+<div>
+    <p>code : <span th:text="${redBox.code}">code</span></p>
+    <p>color : <span th:text="${redBox.color}">color</span></p>
+</div>
+
+<div th:object="${greenBox}">
+    <p>code : <span th:text="*{code}">code</span></p>
+    <p>color : <span th:text="*{color}">color</span></p>
+</div>
+
+<table th:if="${not #lists.isEmpty(boxList)}">
+    <tr>
+        <th>code</th>
+        <th>color</th>
+    </tr>
+    <tr th:each="box : ${boxList}">
+        <td th:text="${box.code}">code</td>
+        <td th:text="${box.color}">color</td>
+    </tr>
+</table>
+
+</body>
+</html>
