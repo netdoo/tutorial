@@ -13,7 +13,10 @@ public class AppConfig {
 
     public static TransportClient create() throws Exception {
 
-        TransportClient client = new PreBuiltTransportClient(Settings.EMPTY)
+        Settings settings = Settings.builder()
+                .put("cluster.name", "my-elastic").build();
+
+        TransportClient client = new PreBuiltTransportClient(settings)
                 .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"), 9300));
 
         return client;

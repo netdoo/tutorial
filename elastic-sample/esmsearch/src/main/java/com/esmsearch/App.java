@@ -1,9 +1,6 @@
 package com.esmsearch;
 
-import org.elasticsearch.action.search.MultiSearchResponse;
-import org.elasticsearch.action.search.SearchRequestBuilder;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.action.search.*;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -45,14 +42,25 @@ public class App {
     */
     public static void msearchSample(TransportClient client) throws Exception {
         SearchRequestBuilder srb1 = client
-                .prepareSearch().setQuery(QueryBuilders.termQuery("name", "black"));
-        SearchRequestBuilder srb2 = client
-                .prepareSearch().setQuery(QueryBuilders.termQuery("name", "green"));
+                .prepareSearch()
+                .setIndices("cafe")
+                .setTypes("menu")
+                .setQuery(QueryBuilders.termQuery("name", "black"));
 
-        MultiSearchResponse sr = client.prepareMultiSearch()
+        SearchRequestBuilder srb2 = client
+                .prepareSearch()
+                .setIndices("cafe")
+                .setTypes("menu")
+                .setQuery(QueryBuilders.termQuery("name", "green"));
+
+        logger.info("query1 {}", srb1.toString());
+        logger.info("query2 {}", srb2.toString());
+
+        MultiSearchRequestBuilder multiSearchRequestBuilder = client.prepareMultiSearch()
                 .add(srb1)
-                .add(srb2)
-                .get();
+                .add(srb2);
+
+        MultiSearchResponse sr = multiSearchRequestBuilder.get();
 
         for (MultiSearchResponse.Item item : sr.getResponses()) {
             SearchResponse response = item.getResponse();
