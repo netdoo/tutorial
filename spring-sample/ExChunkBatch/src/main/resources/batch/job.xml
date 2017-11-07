@@ -13,7 +13,7 @@
     <import resource="../applicationContext.xml"/>
 
     <bean id="customReader" class="com.exchunkbatch.CustomItemReader" >
-        <property name="alphabetList" >
+        <property name="alphabetList">
             <list>
                 <value>aaa</value>
                 <value>bbb</value>
@@ -27,10 +27,19 @@
     <bean id="customWriter" class="com.exchunkbatch.CustomItemWriter" />
 
     <batch:job id="myBatchJob" job-repository="jobRepository" parent="simpleJob">
-        <batch:step id="step1">
+        <batch:step id="step1" next="step2">
             <batch:tasklet transaction-manager="transactionManager">
                 <batch:chunk reader="customReader" processor="customProcessor" writer="customWriter" commit-interval="1"/>
             </batch:tasklet>
         </batch:step>
+
+        <batch:step id="step2">
+            <batch:tasklet ref="printTasklet" transaction-manager="transactionManager"/>
+        </batch:step>
+
     </batch:job>
+
+    <bean id="printTasklet" class="com.exchunkbatch.PrintTasklet" scope="step">
+        <property name="message" value="Hello Batch"/>
+    </bean>
 </beans>
