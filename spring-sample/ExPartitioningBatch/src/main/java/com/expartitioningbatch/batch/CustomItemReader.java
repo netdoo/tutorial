@@ -1,6 +1,8 @@
 package com.expartitioningbatch.batch;
 
+import com.expartitioningbatch.domain.ExecutionContextParam;
 import com.expartitioningbatch.repository.AlphabetDB;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemReader;
@@ -8,7 +10,7 @@ import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class CustomItemReader implements ItemReader<List<String>> {
@@ -18,41 +20,30 @@ public class CustomItemReader implements ItemReader<List<String>> {
     @Autowired
     AlphabetDB alphabetDB;
 
-    private int from;
-    private int to;
-    boolean readDone;
+    final int maxReadCount = 3;
+    ExecutionContextParam param;
+    List<List<String>> targetGroupList;
+    Iterator<List<String>> targetGroupListIterator;
 
     @Override
     public List<String> read() throws Exception, UnexpectedInputException, ParseException {
 
-        if (readDone)
+        if (!targetGroupListIterator.hasNext())
             return null;
 
-        logger.info("CustomItemReader ThreadId {}, from {}, to {} ", Thread.currentThread().getId(), from, to);
-        List<String> readList = new ArrayList<>();
-
-        for (int i = from; i <= to; i++) {
-            readList.add(alphabetDB.get(i));
-        }
-
-        readDone = true;
-        return readList;
+        List<String> targetList = targetGroupListIterator.next();
+        logger.info("CustomItemReader ThreadId {}, targetList {} ", Thread.currentThread().getId(), targetList);
+        return targetList;
     }
 
-    public void setFrom(int from) {
-        this.from = from;
+    public void setParam(ExecutionContextParam param) {
+        this.param = param;
+        targetGroupList = Lists.partition(param.getTargetList(), maxReadCount);
+        targetGroupListIterator = targetGroupList.iterator();
     }
 
-    public int getFrom() {
-        return this.from;
-    }
-
-    public void setTo(int to) {
-        this.to = to;
-    }
-
-    public int getTo() {
-        return this.to;
+    public ExecutionContextParam getParam() {
+        return this.param;
     }
 }
 

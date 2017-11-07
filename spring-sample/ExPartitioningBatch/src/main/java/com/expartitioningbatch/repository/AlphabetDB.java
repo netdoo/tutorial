@@ -11,5 +11,10 @@ public class AlphabetDB extends ArrayList<String> {
         this.add("ddd");
         this.add("eee");
         this.add("fff");
+        this.add("ggg");
+        this.add("hhh");
+        this.add("iii");
+        this.add("jjj");
+        this.add("kkk");
     }
 }

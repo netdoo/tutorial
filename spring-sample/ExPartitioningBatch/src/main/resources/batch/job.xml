@@ -10,28 +10,36 @@
 
     <import resource="../applicationContext.xml"/>
 
-    <bean id="customReader" class="com.expartitioningbatch.batch.CustomItemReader" scope="step">
-        <property name="from" value="#{stepExecutionContext[fromId]}" />
-        <property name="to" value="#{stepExecutionContext[toId]}" />
-    </bean>
-
-    <bean id="customProcessor" class="com.expartitioningbatch.batch.CustomItemProcessor" />
-    <bean id="customWriter" class="com.expartitioningbatch.batch.CustomItemWriter" />
-
-    <batch:job id="myBatchJob" job-repository="jobRepository" parent="simpleJob">
-        <batch:step id="step1">
-           <partition step="slave" partitioner="rangePartitioner">
+    <batch:job id="mainBatchJob" job-repository="jobRepository" parent="simpleJob">
+        <batch:step id="mainBatchStep">
+            <!--
+                한개의 Step 작업을 n개의 Sub Slave 스레드로 동시에 수행시킬때, 파티셔닝을 사용함.
+                이 때, grid-size는 Sub Slave의 카운트임.
+            -->
+            <partition step="mainBatchParallelStep" partitioner="rangePartitioner">
                 <handler grid-size="2" task-executor="taskExecutor" />
             </partition>
         </batch:step>
     </batch:job>
 
-    <batch:step id="slave">
+    <batch:step id="mainBatchParallelStep">
         <batch:tasklet transaction-manager="transactionManager">
             <batch:chunk reader="customReader" processor="customProcessor" writer="customWriter" commit-interval="1"/>
         </batch:tasklet>
     </batch:step>
 
-    <bean id="rangePartitioner" class="com.expartitioningbatch.batch.RangePartitioner" />
+    <bean id="rangePartitioner" class="com.expartitioningbatch.batch.RangePartitioner" scope="step">
+        <property name="fileName" value="/var/test.dat"></property>
+        <property name="data" value="#{jobParameters[data]}"/>
+    </bean>
+
     <bean id="taskExecutor" class="org.springframework.core.task.SimpleAsyncTaskExecutor" />
+
+    <bean id="customReader" class="com.expartitioningbatch.batch.CustomItemReader" scope="step">
+        <property name="param" value="#{stepExecutionContext[param]}" />
+    </bean>
+
+    <bean id="customProcessor" class="com.expartitioningbatch.batch.CustomItemProcessor" />
+    <bean id="customWriter" class="com.expartitioningbatch.batch.CustomItemWriter" />
+
 </beans>

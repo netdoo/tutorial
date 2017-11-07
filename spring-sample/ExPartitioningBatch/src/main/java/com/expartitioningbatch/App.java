@@ -6,8 +6,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class App {
     static final Logger logger = LoggerFactory.getLogger(App.class);
@@ -18,10 +22,18 @@ public class App {
         try {
             context = new AnnotationConfigApplicationContext(AppConfig.class);
             JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
-            Job job = (Job) context.getBean("myBatchJob");
+            Job job = (Job) context.getBean("mainBatchJob");
 
             try {
-                JobExecution execution = jobLauncher.run(job, new JobParameters());
+
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                JobParameters jobParameters = new JobParametersBuilder()
+                        .addString("data", "mydata")
+                        .addString("date", simpleDateFormat.format(new Date()))
+                        .addString("fileName", "/var/test.dat")
+                        .toJobParameters();
+
+                JobExecution execution = jobLauncher.run(job, jobParameters);
                 logger.info("Exit Status {} ", execution.getStatus());
             } catch (Exception e) {
                 e.printStackTrace();

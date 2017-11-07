@@ -1,38 +1,48 @@
 package com.expartitioningbatch;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import com.expartitioningbatch.config.AppConfig;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.ImportResource;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-/**
- * Unit test for simple App.
- */
-public class AppTest 
-    extends TestCase
-{
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public AppTest( String testName )
-    {
-        super( testName );
-    }
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( AppTest.class );
-    }
+@ContextConfiguration(classes = {AppConfig.class})
+@ImportResource({"classpath:applicationContext.xml", "classpath:batch/job.xml"})
+@RunWith(SpringJUnit4ClassRunner.class)
+public class AppTest {
 
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
+    @Autowired
+    private JobLauncher jobLauncher;
+
+    @Autowired
+    @Qualifier("mainBatchJob")
+    private Job job;
+
+    static final Logger logger = LoggerFactory.getLogger(AppTest.class);
+
+    @Test
+    public void testLaunchJob() throws Exception {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addString("data", "mydata")
+                .addString("date", simpleDateFormat.format(new Date()))
+                .addString("fileName", "/var/test.dat")
+                .toJobParameters();
+
+        JobExecution execution = jobLauncher.run(job, jobParameters);
+        logger.info("Exit Status {} ", execution.getStatus());
     }
 }

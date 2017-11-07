@@ -1,13 +1,18 @@
 package com.expartitioningbatch.batch;
 
+import com.expartitioningbatch.domain.ExecutionContextParam;
 import com.expartitioningbatch.repository.AlphabetDB;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.partition.support.Partitioner;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RangePartitioner implements Partitioner{
@@ -15,34 +20,55 @@ public class RangePartitioner implements Partitioner{
     @Autowired
     AlphabetDB alphabetDB;
 
+    String fileName;
+    String data;
+    String date;
+
     static final Logger logger = LoggerFactory.getLogger(RangePartitioner.class);
+
+    @Value("#{jobParameters['fileName']}")
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+    public String getFileName() {
+        return this.fileName;
+    }
+
+    @Value("#{jobParameters['date']}")
+    public void setDate(String date) {
+        this.date = date;
+    }
+    public String getDate() {
+        return this.date;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+    public String getData() {
+        return this.data;
+    }
+
     @Override
-    public Map<String, ExecutionContext> partition(int threadCount) {
+    public Map<String, ExecutionContext> partition(int slaveThreadCount) {
         Map<String, ExecutionContext> result = new HashMap<String, ExecutionContext>();
+        int partitionSize = Math.round(this.alphabetDB.size() / slaveThreadCount) + 1;
+        List<List<String>> slaveDataGroupList = Lists.partition(this.alphabetDB, partitionSize);
 
-        int range = 3;
-        int fromId = 0;
-        int toId = range;
+        for (int i = 0; i < slaveDataGroupList.size(); i++) {
+            ExecutionContext executionContext = new ExecutionContext();
 
-        for (int i = 0; i < threadCount; i++) {
-            ExecutionContext value = new ExecutionContext();
+            ExecutionContextParam executionContextParam = new ExecutionContextParam();
+            executionContextParam.setName("partition" + i);
 
-            logger.info("fromId {}, toId {} ", fromId, toId);
+            ArrayList<String> targetList = new ArrayList<>();
+            targetList.addAll(slaveDataGroupList.get(i));
+            executionContextParam.setTargetList(targetList);
 
-            value.putInt("fromId", fromId);
-            value.putInt("toId", toId);
+            executionContext.put("name", "partition." + i);
+            executionContext.put("param", executionContextParam);
 
-            // give each thread a name, thread 1,2,3
-            value.putString("name", "Thread" + i);
-
-            result.put("partition" + i, value);
-
-            fromId = toId + 1;
-            toId += range;
-
-            if (toId >= alphabetDB.size()) {
-                toId = alphabetDB.size()-1;
-            }
+            result.put("partition." + i, executionContext);
         }
 
         return result;
