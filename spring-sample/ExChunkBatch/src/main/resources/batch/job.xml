@@ -27,19 +27,22 @@
     <bean id="customWriter" class="com.exchunkbatch.CustomItemWriter" />
 
     <batch:job id="myBatchJob" job-repository="jobRepository" parent="simpleJob">
-        <batch:step id="step1" next="step2">
+        <batch:step id="makeDummyDataStep" next="processDummyDataStep">
             <batch:tasklet transaction-manager="transactionManager">
                 <batch:chunk reader="customReader" processor="customProcessor" writer="customWriter" commit-interval="1"/>
             </batch:tasklet>
         </batch:step>
 
-        <batch:step id="step2">
+        <batch:step id="processDummyDataStep" next="printDummyDataStep">
+            <batch:tasklet ref="processTasklet" transaction-manager="transactionManager"/>
+        </batch:step>
+
+        <batch:step id="printDummyDataStep">
             <batch:tasklet ref="printTasklet" transaction-manager="transactionManager"/>
         </batch:step>
 
     </batch:job>
 
-    <bean id="printTasklet" class="com.exchunkbatch.PrintTasklet" scope="step">
-        <property name="message" value="Hello Batch"/>
-    </bean>
+    <bean id="processTasklet" class="com.exchunkbatch.ProcessTasklet" scope="step"/>
+    <bean id="printTasklet" class="com.exchunkbatch.PrintTasklet" scope="step"/>
 </beans>
