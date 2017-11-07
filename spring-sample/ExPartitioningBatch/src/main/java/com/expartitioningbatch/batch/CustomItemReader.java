@@ -25,6 +25,12 @@ public class CustomItemReader implements ItemReader<List<String>> {
     List<List<String>> targetGroupList;
     Iterator<List<String>> targetGroupListIterator;
 
+    public CustomItemReader(ExecutionContextParam param) {
+        this.param = param;
+        targetGroupList = Lists.partition(param.getTargetList(), maxReadCount);
+        targetGroupListIterator = targetGroupList.iterator();
+    }
+
     @Override
     public List<String> read() throws Exception, UnexpectedInputException, ParseException {
 
@@ -34,16 +40,6 @@ public class CustomItemReader implements ItemReader<List<String>> {
         List<String> targetList = targetGroupListIterator.next();
         logger.info("CustomItemReader ThreadId {}, targetList {} ", Thread.currentThread().getId(), targetList);
         return targetList;
-    }
-
-    public void setParam(ExecutionContextParam param) {
-        this.param = param;
-        targetGroupList = Lists.partition(param.getTargetList(), maxReadCount);
-        targetGroupListIterator = targetGroupList.iterator();
-    }
-
-    public ExecutionContextParam getParam() {
-        return this.param;
     }
 }
 

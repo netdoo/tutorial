@@ -17,7 +17,7 @@
                 이 때, grid-size는 Sub Slave의 카운트임.
             -->
             <partition step="mainBatchParallelStep" partitioner="rangePartitioner">
-                <handler grid-size="2" task-executor="taskExecutor" />
+                <handler grid-size="4" task-executor="taskExecutor" />
             </partition>
         </batch:step>
     </batch:job>
@@ -33,10 +33,10 @@
         <property name="data" value="#{jobParameters[data]}"/>
     </bean>
 
-    <bean id="taskExecutor" class="org.springframework.core.task.SimpleAsyncTaskExecutor" />
+    <bean id="taskExecutor" class="org.springframework.core.task.SimpleAsyncTaskExecutor"/>
 
     <bean id="customReader" class="com.expartitioningbatch.batch.CustomItemReader" scope="step">
-        <property name="param" value="#{stepExecutionContext[param]}" />
+        <constructor-arg name="param" value="#{stepExecutionContext[param]}"/>
     </bean>
 
     <bean id="customProcessor" class="com.expartitioningbatch.batch.CustomItemProcessor" />
