@@ -21,7 +21,7 @@ public class App {
     final static Logger logger = LoggerFactory.getLogger(App.class);
     final static File homeDir = new File("C:\\temp\\dbEnv");
     final static String dbName = "testDB";
-    final static int MAX_COUNT = 5;
+    final static int MAX_COUNT = 1;
 
     static void cleanUp(File homeDir) {
         if (homeDir.exists()) {
@@ -51,6 +51,11 @@ public class App {
                 new DatabaseEntry(SerializationUtils.serialize(value)));
     }
 
+    static OperationStatus put(Database database, String key, String value) throws Exception {
+        return database.put(null, new DatabaseEntry(key.getBytes("UTF-8")),
+                new DatabaseEntry(value.getBytes("UTF-8")));
+    }
+
     static OperationStatus put(Database database, Transaction transaction, String key, Box value) throws Exception {
         return database.put(transaction, new DatabaseEntry(key.getBytes("UTF-8")),
                 new DatabaseEntry(SerializationUtils.serialize(value)));
@@ -68,6 +73,11 @@ public class App {
         }
 
         return new Box();
+    }
+
+    static boolean exist(Database database, String key) throws Exception {
+        DatabaseEntry value = new DatabaseEntry();
+        return (database.get(null, new DatabaseEntry(key.getBytes("UTF-8")), value, LockMode.DEFAULT) == OperationStatus.SUCCESS);
     }
 
     static void printAll(Cursor cursor) throws Exception {
@@ -98,6 +108,8 @@ public class App {
         Environment environment = null;
         Database database = null;
         Cursor cursor = null;
+        Transaction transaction;
+        StopWatch stopWatch = new StopWatch();
 
         try {
             cleanUp(homeDir);
@@ -134,7 +146,7 @@ public class App {
 
             logger.info("=== transaction commit ===");
 
-            Transaction transaction = environment.beginTransaction(null, null);
+            transaction = environment.beginTransaction(null, null);
             put(database, transaction, "trans1", new Box("trans1", "white"));
             transaction.commitSync();
 
@@ -145,7 +157,7 @@ public class App {
 
             printAll(cursor);
 
-            StopWatch stopWatch = new StopWatch();
+
 
             logger.info("=== bulk put (slow) ===");
             stopWatch.start();
@@ -173,6 +185,43 @@ public class App {
             logger.info("bulk put (fast) elapsed time {} (ms)", stopWatch.getTime(TimeUnit.MILLISECONDS));
 
             printAll(cursor);
+
+            logger.info("=== bulk put with transaction (fast)");
+
+            transaction = environment.beginTransaction(null, null);
+
+            put(database, transaction, "LightRed", new Box("111", "LightRed"));
+            put(database, transaction, "LightRed", new Box("1,111", "LightRed"));
+            put(database, transaction, "LightRed", new Box("11,111", "LightRed"));
+            put(database, transaction, "LightRed", new Box("111,111", "LightRed"));
+
+            transaction.commitSync();
+
+            printAll(cursor);
+
+            logger.info("exist LightRed {}", exist(database, "LightRed"));
+            logger.info("exist DarkRed {}", exist(database, "DarkRed"));
+
+            /*
+            logger.info("=== heavy bulk put (slow) ===");
+            stopWatch.reset();
+            stopWatch.start();
+
+            TransactionConfig transactionConfig = new TransactionConfig();
+            transactionConfig.setSync(false);
+            transactionConfig.setWriteNoSync(true);
+            transaction = environment.beginTransaction(null, transactionConfig);
+
+            for (int i = 0; i < 1_800_000; i++) {
+                put(database, "heavy"+i, "heavy"+i);
+                if (i % 100_000 == 0) {
+                    logger.info("insert {}", i);
+                }
+            }
+            transaction.commitSync();
+            stopWatch.stop();
+            logger.info("heavy bulk put (slow) elapsed time {} (secs)", stopWatch.getTime(TimeUnit.SECONDS));
+            */
 
         } catch (Exception e) {
             logger.info("", e);
