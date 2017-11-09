@@ -5,6 +5,8 @@ import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.web.client.AsyncRestTemplate;
@@ -19,11 +21,25 @@ public class AsyncGetSampleApp {
     final static Logger logger = LoggerFactory.getLogger(AsyncGetSampleApp.class);
     final static AsyncRestTemplate asyncRestTemplate = new AsyncRestTemplate();
 
+    static HttpEntity<?> httpEntity() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Accept", MediaType.APPLICATION_JSON_UTF8_VALUE);
+        headers.set("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE);
 
-    static HttpEntity<String> httpEntity() {
-        HttpHeaders requestHeaders = new HttpHeaders();
-        requestHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        return new HttpEntity<String>("parameters", requestHeaders);
+        return new HttpEntity<>(headers);
+    }
+
+    static void asyncGet(String url) throws Exception {
+
+        Future<ResponseEntity<String>> futureEntity = asyncRestTemplate.exchange(url, HttpMethod.GET, httpEntity(), String.class);
+
+        while (!futureEntity.isDone()) {
+            logger.info("waiting..");
+            Thread.sleep(500);
+        }
+
+        ResponseEntity<String> responseEntity = futureEntity.get();
+        logger.info("Response {}", responseEntity.getBody());
     }
 
     static void asyncFutureGet(String url) throws Exception {
@@ -120,7 +136,8 @@ public class AsyncGetSampleApp {
                 .toUri();                                       // Convert to URI
 
         String url = targetUrl.toString();
-        
+
+        asyncGet(url);
         asyncFutureGet(url);
         listenableFutureGet(url);
         listenableFutureGet2(url);
