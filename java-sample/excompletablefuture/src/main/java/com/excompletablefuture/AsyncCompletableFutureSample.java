@@ -77,7 +77,19 @@ public class AsyncCompletableFutureSample {
         logger.info("Thread {} 비동기방식 CompletableFuture 예제 종료", Thread.currentThread().getId());
     }
 
+    static void sample3() throws Exception {
+        logger.info("Thread {} 비동기방식 CompletableFuture 예제 시작", Thread.currentThread().getId());
+        CompletableFuture<String> fooFuture = CompletableFuture.supplyAsync(new TaskSupplier("foo", 5_000));
+
+        while (!fooFuture.isDone()) {
+            Thread.sleep(500);
+            logger.info("wait..");
+        }
+
+        logger.info("{}", fooFuture.get());
+    }
+
     public static void main(String[] args) throws Exception {
-        sample2();
+        sample3();
     }
 }
