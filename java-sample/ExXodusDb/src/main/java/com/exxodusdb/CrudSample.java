@@ -81,7 +81,7 @@ public class CrudSample {
 
         // 트랜잭션마다 처리할 수 있는 Capacity 를 고려하여,
         // 전체 입력 갯수를 n개의 트랜잭션으로 파티셔닝하여 입력함.
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             env.executeInTransaction(txn -> {
                 // 한 트랜잭션에서 10,000개의 데이터를 입력함.
                 for (int j = 0; j < 10_000; j++, mInt.increment()) {
