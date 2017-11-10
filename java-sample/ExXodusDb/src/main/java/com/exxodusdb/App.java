@@ -1,4 +1,4 @@
-package com.exrocksdb;
+package com.exxodusdb;
 
 
 import jetbrains.exodus.ByteIterable;
