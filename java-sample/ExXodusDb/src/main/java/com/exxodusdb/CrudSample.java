@@ -13,7 +13,7 @@ import static jetbrains.exodus.bindings.StringBinding.entryToString;
 import static jetbrains.exodus.bindings.StringBinding.stringToEntry;
 
 public class CrudSample {
-    final static Logger logger = LoggerFactory.getLogger(App.class);
+    final static Logger logger = LoggerFactory.getLogger(CrudSample.class);
     final static String dbPath = "C:\\Temp\\xodus.db";
 
     public static void main( String[] args ) throws Exception {
