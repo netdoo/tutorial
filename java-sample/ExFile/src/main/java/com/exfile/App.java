@@ -43,7 +43,7 @@ public class App {
         String line = null;
 
         try (BufferedReader in = Files.newBufferedReader(Paths.get(readPath), StandardCharsets.UTF_8);
-             BufferedWriter out = Files.newBufferedWriter(Paths.get(appendPath), StandardCharsets.UTF_8)) {
+             BufferedWriter out = Files.newBufferedWriter(Paths.get(appendPath), StandardCharsets.UTF_8, StandardOpenOption.APPEND)) {
 
             while ((line=in.readLine()) != null) {
                 line = line.trim();

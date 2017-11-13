@@ -2,12 +2,12 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.exfile</groupId>
-  <artifactId>ExFile</artifactId>
+  <groupId>com.exstring</groupId>
+  <artifactId>ExString</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>ExFile</name>
+  <name>ExString</name>
   <url>http://maven.apache.org</url>
 
   <properties>
@@ -63,7 +63,7 @@
   </dependencies>
 
   <build>
-    <finalName>ExFile</finalName>
+    <finalName>ExString</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
