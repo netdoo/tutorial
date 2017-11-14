@@ -26,6 +26,7 @@ public class PrintTasklet implements Tasklet, StepExecutionListener {
 
     @Override
     public void beforeStep(StepExecution stepExecution) {
+        String jobName = stepExecution.getJobExecution().getJobInstance().getJobName();
         this.message = stepExecution.getJobExecution().getExecutionContext().getString("message");
     }
 
