@@ -2,6 +2,7 @@ package com.exxodusdb;
 
 import jetbrains.exodus.ByteIterable;
 import jetbrains.exodus.env.*;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
@@ -19,8 +20,7 @@ public class CrudSample {
     public static void main( String[] args ) throws Exception {
 
         // 기존 embedded db file 지우기
-        Arrays.stream(new File(dbPath).listFiles()).forEach(File::delete);
-
+        FileUtils.deleteDirectory(new File(dbPath));
         Environment env = Environments.newInstance(dbPath);
 
         // Stores can be opened with and without duplicate keys
