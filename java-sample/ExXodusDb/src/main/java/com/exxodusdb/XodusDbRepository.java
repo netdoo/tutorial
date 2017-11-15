@@ -10,6 +10,7 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -27,6 +28,7 @@ import static jetbrains.exodus.bindings.StringBinding.stringToEntry;
 /**
  * Created by jhkwon78 on 2017-11-15.
  */
+@Repository
 public class XodusDbRepository {
     String homeDir = "C:\\Temp\\Xodus.DB";
     String dbPath;
