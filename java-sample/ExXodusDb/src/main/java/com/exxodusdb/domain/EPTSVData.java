@@ -12,14 +12,23 @@ public class EPTSVData {
     String namedValue;
     String title;
     String pcPrice;
+    String opClass;
 
-    public EPTSVData(String line) throws Exception {
+    public EPTSVData(String line, boolean isAllEP) throws Exception {
         String cols[] = line.split("\t");
         this.id = cols[0];
         this.title = cols[1];
         this.pcPrice = cols[2];
+
+        if (isAllEP == false && cols.length > 36) {
+            // 요약에만 클래스 타입이 있음.
+            this.opClass = cols[36];
+        }
+
         this.namedKey = this.title + "\t" + this.pcPrice;
         this.namedValue = this.id + "\t" + this.title + "\t" + this.pcPrice;
+
+        // 36번째 클래스
     }
 
     public void setNamedKey(String namedKey) {
@@ -76,5 +85,13 @@ public class EPTSVData {
 
     public long getTime() {
         return this.date.getTime();
+    }
+
+    public void setOpClass(String opClass) {
+        this.opClass = opClass;
+    }
+
+    public String getOpClass() {
+        return this.opClass;
     }
 }
