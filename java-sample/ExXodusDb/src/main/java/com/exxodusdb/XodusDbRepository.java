@@ -209,7 +209,7 @@ public class XodusDbRepository {
         append(Paths.get(tsvReadPath), Paths.get(tsvAppendPath));
     }
 
-    public static void removeDirs(String homeDir) {
+    public static void removeDirs(String homeDir, int daysAfter) {
 
         Collection<File> dirs = FileUtils.listFilesAndDirs(new File(homeDir), new NotFileFilter(TrueFileFilter.INSTANCE), DirectoryFileFilter.DIRECTORY);
 
@@ -217,7 +217,7 @@ public class XodusDbRepository {
         Calendar cal = Calendar.getInstance();
 
         cal.setTime(new Date());
-        cal.add(cal.DATE, -3);
+        cal.add(cal.DATE, daysAfter);
         long expireTimestamp = cal.getTime().getTime();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
 

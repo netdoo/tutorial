@@ -19,7 +19,8 @@ public class PrintTasklet implements Tasklet, StepExecutionListener {
         this.message = message;
     }
 
-    public RepeatStatus execute(StepContribution arg0, ChunkContext arg1) throws Exception {
+    public RepeatStatus execute(StepContribution arg0, ChunkContext chunkContext) throws Exception {
+        String jobName = chunkContext.getStepContext().getJobName();
         logger.info("ThreadId {}, Message {}", Thread.currentThread().getId(), message);
         return RepeatStatus.FINISHED;
     }

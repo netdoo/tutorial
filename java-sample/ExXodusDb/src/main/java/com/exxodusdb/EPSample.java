@@ -30,31 +30,30 @@ import static jetbrains.exodus.bindings.StringBinding.entryToString;
 import static jetbrains.exodus.bindings.StringBinding.stringToEntry;
 
 public class EPSample {
-    final static Logger logger = LoggerFactory.getLogger(EPSample.class);
+    final static Logger LOGGER = LoggerFactory.getLogger(EPSample.class);
     final static String dbPath = "C:\\Temp\\xodus.db";
 
     static void print(Environment env, Store store, String title) {
-        logger.info("======================== {} =====================", title);
+        LOGGER.info("======================== {} =====================", title);
         env.executeInReadonlyTransaction(txn -> {
             try (Cursor cursor = store.openCursor(txn)) {
                 while (cursor.getNext()) {
-                    logger.info("{} \t\t=> {}", entryToString(cursor.getKey()), entryToString(cursor.getValue()));
+                    LOGGER.info("{} \t\t=> {}", entryToString(cursor.getKey()), entryToString(cursor.getValue()));
                 }
             }
         });
-        logger.info("===============================================================");
+        LOGGER.info("===============================================================");
     }
 
     static void printEP(List<String> epList, String title) {
-        logger.info("======================== {} =====================", title);
+        LOGGER.info("======================== {} =====================", title);
         epList.forEach(ep -> {
-            logger.info("[내보냄] {}", ep);
+            LOGGER.info("[내보냄] {}", ep);
         });
-        logger.info("===============================================================");
+        LOGGER.info("===============================================================");
     }
 
-    public static void main( String[] args ) throws Exception {
-
+    static void testAllEP() throws Exception {
         String readPath = "C:\\temp\\test_all.txt";
         String appendPath = "C:\\temp\\test_all_unique.txt";
 
@@ -65,13 +64,29 @@ public class EPSample {
         stopWatch.start();
 
         XodusDbRepository xodusDbRepository = new XodusDbRepository();
-        xodusDbRepository.open(dbPath, true);
+
+        if (!xodusDbRepository.isOpen()) {
+            xodusDbRepository.open(dbPath, true);
+        }
+
         xodusDbRepository.append(readPath, appendPath);
 
         xodusDbRepository.close();
-        XodusDbRepository.removeDirs(dbPath);
+
+        // 3일 이전에 생성된 폴더 삭제.
+        XodusDbRepository.removeDirs(dbPath, -3);
 
         stopWatch.stop();
-        logger.info("elapsed time {} (secs)", stopWatch.getTime(TimeUnit.SECONDS));
+        LOGGER.info("elapsed time {} (secs)", stopWatch.getTime(TimeUnit.SECONDS));
+    }
+
+    static void testRemoveDirs() {
+        // 3일 이전에 생성된 폴더 삭제.
+        String path = "C:\\Temp\\EP";
+        XodusDbRepository.removeDirs(path, -3);
+    }
+
+    public static void main( String[] args ) throws Exception {
+        testRemoveDirs();
     }
 }
