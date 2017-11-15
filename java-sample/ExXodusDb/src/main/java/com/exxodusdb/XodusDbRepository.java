@@ -198,7 +198,7 @@ public class XodusDbRepository {
                     }
                 }
 
-                LOGGER.info("process {} lines", lineCount);
+                LOGGER.info("process path {} lines {}", readPath, lineCount);
             } catch (Exception e) {
                 LOGGER.error("IO Error ",  e);
             }
