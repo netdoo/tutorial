@@ -11,10 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,19 +32,29 @@ public class XodusDbRepository {
     String dbPath;
     Environment env = null;
     Store store = null;
+    boolean isAllEP = false;
 
     public XodusDbRepository() {
     }
 
-    public void open(String homeDir) {
+    public void open(String homeDir, boolean isAllEP) throws Exception {
         if (homeDir.charAt(homeDir.length()-1) != File.separatorChar) {
             this.homeDir = homeDir + File.separatorChar;
         } else {
             this.homeDir = homeDir;
         }
 
+        this.isAllEP = isAllEP;
+
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
         this.dbPath = this.homeDir + simpleDateFormat.format(new Date());
+
+        if (this.isAllEP) {
+            // 전체 EP 재 생성시에, 기존에 누적된 EP 데이터를 삭제함.
+            FileUtils.deleteDirectory(new File(this.dbPath));
+            LOGGER.info("Delete Dir {}", this.dbPath);
+        }
+
         this.env = Environments.newInstance(this.dbPath);
         this.store = env.computeInTransaction(txn ->
                 env.openStore("EP", StoreConfig.WITHOUT_DUPLICATES, txn));
@@ -82,17 +89,9 @@ public class XodusDbRepository {
         return this.dbPath;
     }
 
-    long getExpireTimestamp(int deadLineDate) {
-        Calendar cal = Calendar.getInstance();
+    private boolean isUpsertDeal(Transaction txn, EPTSVData curr) throws Exception {
 
-        cal.setTime(new Date());
-        cal.add(cal.DATE, deadLineDate);
-        return cal.getTime().getTime();
-    }
-
-    private boolean isUpsertDeal(Transaction txn, Store store, EPTSVData curr, boolean isAllEP) throws Exception {
-
-        ByteIterable existData = store.get(txn, stringToEntry(curr.getNamedKey()));
+        ByteIterable existData = this.store.get(txn, stringToEntry(curr.getNamedKey()));
 
         if (null == existData) {
             // 중복된 딜이 없는 경우.
@@ -100,9 +99,9 @@ public class XodusDbRepository {
         }
 
         // 중복된 딜이 발견된 경우
-        EPTSVData exist = new EPTSVData(entryToString(existData), isAllEP);
+        EPTSVData exist = new EPTSVData(entryToString(existData), this.isAllEP);
 
-        if (isAllEP) {
+        if (this.isAllEP) {
             // 전체 EP인 경우는 딜 아이디가 적은딜을 내보냄.
             if (Long.valueOf(curr.getId()) < Long.valueOf(exist.getId())) {
                 return true;
@@ -134,14 +133,24 @@ public class XodusDbRepository {
         return false;
     }
 
-    public void append(Path readPath, Path appendPath, boolean isAllEP) {
-        List<String> targetEPList = new ArrayList<>();
+    public void append(Path readPath, Path appendPath) throws Exception {
 
+        if (!isOpen()) {
+            LOGGER.error("not opened");
+            return;
+        }
 
-        LOGGER.debug("Append Start {}", appendPath.toAbsolutePath().toString());
+        LOGGER.debug("@@@ Start {} isAllEP {}", appendPath, this.isAllEP);
 
         /// append 할 파일이 없으면 생성함.
         try {
+
+            if (appendPath.toFile().exists()) {
+                if (this.isAllEP) {
+                    FileUtils.forceDelete(appendPath.toFile());
+                }
+            }
+
             FileUtils.touch(appendPath.toFile());
         } catch (IOException e) {
             LOGGER.error("append path {}", appendPath, e);
@@ -149,10 +158,14 @@ public class XodusDbRepository {
 
         this.env.executeInTransaction(txn -> {
             String line;
-            int lineCount = 0;
+            long lineCount = 0;
             try (BufferedReader in = Files.newBufferedReader(readPath, StandardCharsets.UTF_8);
-                 BufferedWriter out = Files.newBufferedWriter(appendPath, StandardCharsets.UTF_8, StandardOpenOption.APPEND);) {
+                 PrintWriter out = new PrintWriter(Files.newBufferedWriter(appendPath, StandardCharsets.UTF_8, StandardOpenOption.APPEND))) {
                 while ((line=in.readLine()) != null) {
+
+                    if (++lineCount % 10_000 == 0) {
+                        LOGGER.info("process {} tsv lines", lineCount);
+                    }
 
                     if (StringUtils.startsWithIgnoreCase(line, "id\t")) {
                         // 헤더 라인은 무시함.
@@ -163,47 +176,47 @@ public class XodusDbRepository {
                         EPTSVData curr = new EPTSVData(line, isAllEP);
 
                         if (StringUtils.equalsIgnoreCase(curr.getOpClass(), "D")) {
-                            // class가 D인 경우는 무조건 내보냄.
-                            out.write(line + "\n");
+                            // class가 D인 경우는 중복체크를 하지 않고, 무조건 내보냄.
+                            out.println(line);
                             LOGGER.debug("[내보냄] {}", line);
                             store.delete(txn, stringToEntry(curr.getNamedKey()));
                             continue;
                         }
 
-                        if (isUpsertDeal(txn, store, curr, isAllEP)) {
-                            out.write(line + "\n");
+                        if (isUpsertDeal(txn, curr)) {
+                            out.println(line);
                             LOGGER.debug("[내보냄] {}", line);
                             this.store.put(txn, stringToEntry(curr.getNamedKey()), stringToEntry(curr.getNamedValue()));
                         }
 
-                        if (++lineCount % 10_000 == 0) {
-                            LOGGER.info("process {} tsv lines", lineCount);
-                        }
-
                     } catch(Exception e) {
-                        LOGGER.error("", e);
+                        LOGGER.error("Error to process line {}", line, e);
                     }
                 }
+
+                LOGGER.info("process {} lines", lineCount);
             } catch (Exception e) {
-                LOGGER.error("", e);
+                LOGGER.error("IO Error ",  e);
             }
         });
+
+        LOGGER.debug("@@@ Finish {} isAllEP {}", appendPath, this.isAllEP);
     }
 
-    public void append(String tsvReadPath, String tsvAppendPath, Environment env, Store store, boolean isAllEP) {
-        append(Paths.get(tsvReadPath), Paths.get(tsvAppendPath), env, store, isAllEP);
+    public void append(String tsvReadPath, String tsvAppendPath) throws Exception {
+        append(Paths.get(tsvReadPath), Paths.get(tsvAppendPath));
     }
 
+    public static void removeDirs(String homeDir) {
 
-    public void removeDirs() {
-
-        if (this.homeDir == null)
-            return;
-
-        Collection<File> dirs = FileUtils.listFilesAndDirs(new File(this.homeDir), new NotFileFilter(TrueFileFilter.INSTANCE), DirectoryFileFilter.DIRECTORY);
+        Collection<File> dirs = FileUtils.listFilesAndDirs(new File(homeDir), new NotFileFilter(TrueFileFilter.INSTANCE), DirectoryFileFilter.DIRECTORY);
 
         // 3일 이전에 생성된 폴더 삭제
-        long expireTimestamp = getExpireTimestamp(-3);
+        Calendar cal = Calendar.getInstance();
+
+        cal.setTime(new Date());
+        cal.add(cal.DATE, -3);
+        long expireTimestamp = cal.getTime().getTime();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
 
         List<File> deleteTargetDirs = dirs.stream().filter(dir -> {
@@ -223,8 +236,7 @@ public class XodusDbRepository {
                 LOGGER.error("fail to delete dir {}", dir.getAbsolutePath());
             }
         });
-
     }
 
-    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(XodusDbRepository.class);
 }

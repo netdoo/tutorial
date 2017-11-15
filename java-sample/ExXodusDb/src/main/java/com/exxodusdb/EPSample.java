@@ -53,46 +53,25 @@ public class EPSample {
         logger.info("===============================================================");
     }
 
-
-
-
-
     public static void main( String[] args ) throws Exception {
-        // 기존 embedded db file 지우기
-        FileUtils.deleteDirectory(new File(dbPath));
 
+        String readPath = "C:\\temp\\test_all.txt";
+        String appendPath = "C:\\temp\\test_all_unique.txt";
 
+        readPath = "C:\\temp\\naver_all.txt";
+        appendPath = "C:\\temp\\naver_all_unique.txt";
 
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
         XodusDbRepository xodusDbRepository = new XodusDbRepository();
-        xodusDbRepository.removeDirs();
-        xodusDbRepository.open(dbPath);
-        xodusDbRepository.append("C:\\temp\\test_all.txt", "C:\\temp\\test_all_unique.txt", );
+        xodusDbRepository.open(dbPath, true);
+        xodusDbRepository.append(readPath, appendPath);
 
-        List<String> allEP = makeAllEp("C:\\RSS\\naver_all.txt", "C:\\RSS\\naver_all_unique.txt", env, store, true);
-        //List<String> allEP = makeAllEp("C:\\temp\\test_all.txt", "C:\\temp\\test_all_unique.txt", env, store);
+        xodusDbRepository.close();
+        XodusDbRepository.removeDirs(dbPath);
 
-
-
-
-        printEP(allEP, "전체EP");
-        print(env, store, "EPDB 상태");
         stopWatch.stop();
-
         logger.info("elapsed time {} (secs)", stopWatch.getTime(TimeUnit.SECONDS));
-
-        List<String> partEP = makeAllEp("C:\\temp\\test_update.txt", "C:\\temp\\test_update_unique.txt", env, store, false);
-        printEP(partEP, "요약EP");
-        print(env, store, "EPDB 상태");
-
-
-        /*
-        partEP = makeAllEp("C:\\temp\\tsv_ep_part_201711141021.txt", env, store);
-        printEP(partEP, "요약EP");
-        print(env, store, "EPDB 상태");
-*/
-        env.close();
     }
 }
