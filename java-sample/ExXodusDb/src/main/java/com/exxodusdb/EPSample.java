@@ -57,11 +57,19 @@ public class EPSample {
         String readPath = "C:\\temp\\test_all.txt";
         String appendPath = "C:\\temp\\test_all_unique.txt";
 
-        readPath = "C:\\temp\\naver_all.txt";
-        appendPath = "C:\\temp\\naver_all_unique.txt";
+        //readPath = "C:\\temp\\naver_all.txt";
+        //appendPath = "C:\\temp\\naver_all_unique.txt";
 
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
+
+        File appendFile = new File(appendPath);
+
+        if (appendFile.exists()) {
+            FileUtils.forceDelete(appendFile);
+        }
+
+        Files.write(appendFile.toPath(), "id\ttitle\tprice_pc\r\n".getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
 
         XodusDbRepository xodusDbRepository = new XodusDbRepository();
 
@@ -92,9 +100,15 @@ public class EPSample {
         LOGGER.info("result1 {} result2 {}", result_1, result_2);
     }
 
+    static void testFileSize() {
+        long fileSize = new File("C:\\temp\\out22.csv").length();
+        LOGGER.info("size {}", fileSize);
+    }
+
     public static void main( String[] args ) throws Exception {
         //testRemoveDirs();
-        //testAllEP();
-        testStartWith();
+        testAllEP();
+        //testStartWith();
+        //testFileSize();
     }
 }

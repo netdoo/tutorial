@@ -144,20 +144,6 @@ public class XodusDbRepository {
 
         LOGGER.debug("@@@ Start {} isAllEP {}", appendPath, this.isAllEP);
 
-        /// append 할 파일이 없으면 생성함.
-        try {
-
-            if (appendPath.toFile().exists()) {
-                if (this.isAllEP) {
-                    FileUtils.forceDelete(appendPath.toFile());
-                }
-            }
-
-            FileUtils.touch(appendPath.toFile());
-        } catch (IOException e) {
-            LOGGER.error("append path {}", appendPath, e);
-        }
-
         this.env.executeInTransaction(txn -> {
             String line;
             long lineCount = 0;
