@@ -197,6 +197,16 @@ public class XodusDbRepository {
         append(Paths.get(tsvReadPath), Paths.get(tsvAppendPath));
     }
 
+    public void print() {
+        this.env.executeInReadonlyTransaction(txn -> {
+            try (Cursor cursor = store.openCursor(txn)) {
+                while (cursor.getNext()) {
+                    LOGGER.info("{} \t\t=> {}", entryToString(cursor.getKey()), entryToString(cursor.getValue()));
+                }
+            }
+        });
+    }
+
     public static void removeDirs(String homeDir, int daysAfter) {
 
         Collection<File> dirs = FileUtils.listFilesAndDirs(new File(homeDir), new NotFileFilter(TrueFileFilter.INSTANCE), DirectoryFileFilter.DIRECTORY);

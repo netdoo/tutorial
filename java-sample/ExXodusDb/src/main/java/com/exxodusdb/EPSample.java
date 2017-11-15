@@ -2,6 +2,7 @@ package com.exxodusdb;
 
 import com.exxodusdb.domain.EPTSVData;
 import com.oracle.webservices.internal.api.databinding.DatabindingFactory;
+import com.sun.org.apache.xml.internal.dtm.ref.IncrementalSAXSource;
 import jetbrains.exodus.ByteIterable;
 import jetbrains.exodus.env.*;
 import org.apache.commons.io.FileUtils;
@@ -31,34 +32,18 @@ import static jetbrains.exodus.bindings.StringBinding.stringToEntry;
 
 public class EPSample {
     final static Logger LOGGER = LoggerFactory.getLogger(EPSample.class);
-    final static String dbPath = "C:\\Temp\\xodus.db";
+    final static String DB_HOME_DIR = "C:\\Temp\\xodus.db";
 
-    static void print(Environment env, Store store, String title) {
-        LOGGER.info("======================== {} =====================", title);
-        env.executeInReadonlyTransaction(txn -> {
-            try (Cursor cursor = store.openCursor(txn)) {
-                while (cursor.getNext()) {
-                    LOGGER.info("{} \t\t=> {}", entryToString(cursor.getKey()), entryToString(cursor.getValue()));
-                }
-            }
-        });
-        LOGGER.info("===============================================================");
-    }
-
-    static void printEP(List<String> epList, String title) {
-        LOGGER.info("======================== {} =====================", title);
-        epList.forEach(ep -> {
-            LOGGER.info("[내보냄] {}", ep);
-        });
-        LOGGER.info("===============================================================");
-    }
-
-    static void testAllEP() throws Exception {
+    static void testEP() throws Exception {
         String readPath = "C:\\temp\\test_all.txt";
+        String readPartPath = "C:\\temp\\test_part.txt";
         String appendPath = "C:\\temp\\test_all_unique.txt";
+        String appendPartPath = "C:\\temp\\test_part_unique.txt";
+        makeEP(readPath, appendPath, true);
+        makeEP(readPartPath, appendPartPath, false);
+    }
 
-        //readPath = "C:\\temp\\naver_all.txt";
-        //appendPath = "C:\\temp\\naver_all_unique.txt";
+    static void makeEP(String readPath, String appendPath, boolean isAllEP) throws Exception {
 
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -72,17 +57,12 @@ public class EPSample {
         Files.write(appendFile.toPath(), "id\ttitle\tprice_pc\r\n".getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
 
         XodusDbRepository xodusDbRepository = new XodusDbRepository();
-
-        if (!xodusDbRepository.isOpen()) {
-            xodusDbRepository.open(dbPath, true);
-        }
-
+        xodusDbRepository.open(DB_HOME_DIR, isAllEP);
         xodusDbRepository.append(readPath, appendPath);
-
+        xodusDbRepository.print();
         xodusDbRepository.close();
-
         // 3일 이전에 생성된 폴더 삭제.
-        XodusDbRepository.removeDirs(dbPath, -3);
+        XodusDbRepository.removeDirs(DB_HOME_DIR, -3);
 
         stopWatch.stop();
         LOGGER.info("elapsed time {} (secs)", stopWatch.getTime(TimeUnit.SECONDS));
@@ -107,7 +87,7 @@ public class EPSample {
 
     public static void main( String[] args ) throws Exception {
         //testRemoveDirs();
-        testAllEP();
+        testEP();
         //testStartWith();
         //testFileSize();
     }
