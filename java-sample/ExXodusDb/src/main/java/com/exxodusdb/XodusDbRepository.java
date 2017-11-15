@@ -180,15 +180,17 @@ public class XodusDbRepository {
                         if (StringUtils.equalsIgnoreCase(curr.getOpClass(), "D")) {
                             // class가 D인 경우는 중복체크를 하지 않고, 무조건 내보냄.
                             out.println(line);
-                            LOGGER.debug("[내보냄] {}", line);
+                            //LOGGER.debug("[내보냄] {}", line);
                             store.delete(txn, stringToEntry(curr.getNamedKey()));
                             continue;
                         }
 
                         if (isUpsertDeal(txn, curr)) {
                             out.println(line);
-                            LOGGER.debug("[내보냄] {}", line);
+                            //LOGGER.debug("[내보냄] {}", line);
                             this.store.put(txn, stringToEntry(curr.getNamedKey()), stringToEntry(curr.getNamedValue()));
+                        } else {
+                            LOGGER.debug("[중복딜] {}", line);
                         }
 
                     } catch(Exception e) {

@@ -57,8 +57,8 @@ public class EPSample {
         String readPath = "C:\\temp\\test_all.txt";
         String appendPath = "C:\\temp\\test_all_unique.txt";
 
-        //readPath = "C:\\temp\\naver_all.txt";
-        //appendPath = "C:\\temp\\naver_all_unique.txt";
+        readPath = "C:\\temp\\naver_all.txt";
+        appendPath = "C:\\temp\\naver_all_unique.txt";
 
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -86,7 +86,15 @@ public class EPSample {
         XodusDbRepository.removeDirs(path, -3);
     }
 
+    static void testStartWith() {
+        boolean result_1 = StringUtils.startsWithIgnoreCase("liveDealsFile", "liveDealsFile");
+        boolean result_2 = StringUtils.startsWithIgnoreCase("liveDealsFileTest", "liveDealsFile");
+        LOGGER.info("result1 {} result2 {}", result_1, result_2);
+    }
+
     public static void main( String[] args ) throws Exception {
-        testRemoveDirs();
+        //testRemoveDirs();
+        //testAllEP();
+        testStartWith();
     }
 }
