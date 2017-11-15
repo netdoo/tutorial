@@ -1,25 +1,28 @@
 package com.exxodusdb;
 
-import com.exxodusdb.domain.EPDbRow;
-import com.exxodusdb.domain.EPTSVRow;
+import com.exxodusdb.domain.EPTSVData;
 import com.oracle.webservices.internal.api.databinding.DatabindingFactory;
 import jetbrains.exodus.ByteIterable;
 import jetbrains.exodus.env.*;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static jetbrains.exodus.bindings.StringBinding.entryToString;
 import static jetbrains.exodus.bindings.StringBinding.stringToEntry;
@@ -48,7 +51,7 @@ public class EPSample {
         logger.info("===============================================================");
     }
 
-    static boolean isUpsertDeal(Transaction txn, Store store, EPTSVRow curr) throws Exception {
+    static boolean isUpsertDeal(Transaction txn, Store store, EPTSVData curr) throws Exception {
 
         ByteIterable existData = store.get(txn, stringToEntry(curr.getNamedKey()));
 
@@ -58,8 +61,14 @@ public class EPSample {
         }
 
         // 중복된 딜이 발견된 경우
-        EPDbRow exist = new EPDbRow(existData);
+        EPTSVData exist = new EPTSVData(entryToString(existData));
 
+        // 딜 아이디가 적은딜을 내보냄
+        if (Long.valueOf(curr.getId()) < Long.valueOf(exist.getId())) {
+            return true;
+        }
+
+        /*
         if (curr.getTime() == exist.getTime()) {
             // 시간이 같은 경우 딜 아이디가 적은딜을 내보냄.
             if (Long.valueOf(curr.getId()) < Long.valueOf(exist.getId())) {
@@ -71,25 +80,49 @@ public class EPSample {
                 return true;
             }
         }
+        */
 
         // 그 외 경우는 무시함.
         return false;
     }
 
-    static List<String> makeAllEp(String tsvPath, Environment env, Store store) {
+    static List<String> makeAllEp(String tsvPath, String tsvUniquePath, Environment env, Store store) {
         List<String> targetEPList = new ArrayList<>();
+
+        /// append 할 파일이 없으면 생성함.
+        try {
+            FileUtils.touch(new File(tsvUniquePath));
+        } catch (IOException e) {
+            logger.error("append path {}", tsvUniquePath, e);
+        }
 
         env.executeInTransaction(txn -> {
             String line;
-            try (BufferedReader in = Files.newBufferedReader(Paths.get(tsvPath), StandardCharsets.UTF_8)) {
+            int lineCount = 0;
+            try (BufferedReader in = Files.newBufferedReader(Paths.get(tsvPath), StandardCharsets.UTF_8);
+                 BufferedWriter out = Files.newBufferedWriter(Paths.get(tsvUniquePath), StandardCharsets.UTF_8, StandardOpenOption.APPEND);) {
                 while ((line=in.readLine()) != null) {
+
+                    if (lineCount == 0) {
+                        // 헤더라인은 무시함.
+                        lineCount++;
+                        continue;
+                    }
+
                     try {
-                        EPTSVRow curr = new EPTSVRow(line);
+                        EPTSVData curr = new EPTSVData(line);
 
                         if (isUpsertDeal(txn, store, curr)) {
-                            targetEPList.add(line);
+                            out.write(line + "\n");
+                            //targetEPList.add(line);
                             store.put(txn, stringToEntry(curr.getNamedKey()), stringToEntry(curr.getNamedValue()));
                         }
+
+                        lineCount++;
+                        if (lineCount % 10_000 == 0) {
+                            logger.info("process {} tsv lines", lineCount);
+                        }
+
                     } catch(Exception e) {
                         logger.error("", e);
                     }
@@ -102,19 +135,30 @@ public class EPSample {
         return targetEPList;
     }
 
+
+
     public static void main( String[] args ) throws Exception {
         // 기존 embedded db file 지우기
-        //FileUtils.deleteDirectory(new File(dbPath));
+        FileUtils.deleteDirectory(new File(dbPath));
         Environment env = Environments.newInstance(dbPath);
 
         // Stores can be opened with and without duplicate keys
         Store store = env.computeInTransaction(txn ->
                 env.openStore("EP", StoreConfig.WITHOUT_DUPLICATES, txn));
 
-        List<String> allEP = makeAllEp("C:\\temp\\tsv_ep_all.txt", env, store);
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        //List<String> allEP = makeAllEp("C:\\RSS\\naver_all.txt", "C:\\RSS\\naver_all_unique.txt", env, store);
+        List<String> allEP = makeAllEp("C:\\temp\\tsv_ep_all.txt", "C:\\temp\\tsv_ep_unique.txt", env, store);
+
+
+
         printEP(allEP, "전체EP");
         print(env, store, "EPDB 상태");
+        stopWatch.stop();
 
+        logger.info("elapsed time {} (secs)", stopWatch.getTime(TimeUnit.SECONDS));
+/*
         List<String> partEP = makeAllEp("C:\\temp\\tsv_ep_part_201711141020.txt", env, store);
         printEP(partEP, "요약EP");
         print(env, store, "EPDB 상태");
@@ -122,7 +166,7 @@ public class EPSample {
         partEP = makeAllEp("C:\\temp\\tsv_ep_part_201711141021.txt", env, store);
         printEP(partEP, "요약EP");
         print(env, store, "EPDB 상태");
-
+*/
         env.close();
     }
 }
