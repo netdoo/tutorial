@@ -11,20 +11,14 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Formatter;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static jetbrains.exodus.bindings.StringBinding.entryToString;
@@ -36,11 +30,15 @@ public class EPSample {
 
     static void testEP() throws Exception {
         String readPath = "C:\\temp\\test_all.txt";
-        String readPartPath = "C:\\temp\\test_part.txt";
-        String appendPath = "C:\\temp\\test_all_unique.txt";
-        String appendPartPath = "C:\\temp\\test_part_unique.txt";
+         String appendPath = "C:\\temp\\test_all_unique.txt";
+        //String readPartPath = "C:\\temp\\test_part.txt";
+        // String appendPartPath = "C:\\temp\\test_part_unique.txt";
+
+        readPath = "C:\\RSS\\naver_ep_update_sample.txt";
+        readPath = "C:\\temp\\sample.txt";
+
         makeEP(readPath, appendPath, true);
-        makeEP(readPartPath, appendPartPath, false);
+       // makeEP(readPartPath, appendPartPath, false);
     }
 
     static void makeEP(String readPath, String appendPath, boolean isAllEP) throws Exception {
@@ -57,8 +55,8 @@ public class EPSample {
         Files.write(appendFile.toPath(), "id\ttitle\tprice_pc\r\n".getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
 
         XodusDbRepository xodusDbRepository = new XodusDbRepository();
-        xodusDbRepository.open(DB_HOME_DIR, isAllEP);
-        xodusDbRepository.append(readPath, appendPath);
+        xodusDbRepository.open(DB_HOME_DIR, isAllEP, appendPath);
+        xodusDbRepository.append(readPath);
         xodusDbRepository.print();
         xodusDbRepository.close();
         // 3일 이전에 생성된 폴더 삭제.
@@ -85,10 +83,44 @@ public class EPSample {
         LOGGER.info("size {}", fileSize);
     }
 
+    static void FindDupLine() {
+        Path readPath = Paths.get("C:\\Temp\\sample.txt");
+        String line, trimLine;
+        String namedKey, existValue;
+        Map<String, String> ep = new HashMap<>();
+
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(readPath.toFile()), "utf-8"))) {
+
+            while ((line=in.readLine()) != null) {
+                trimLine = line.trim();
+                if (trimLine.isEmpty())
+                    continue;
+
+                if (StringUtils.startsWithIgnoreCase("id\t", trimLine))
+                    continue;
+
+                String cols[] = trimLine.split("\t");
+                namedKey = cols[1] + "." + cols[2];
+
+                existValue = ep.get(namedKey);
+                if (existValue != null) {
+                    LOGGER.info("[중복딜] {} {}", namedKey, existValue);
+                    continue;
+                }
+
+                ep.put(namedKey, cols[0]);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public static void main( String[] args ) throws Exception {
         //testRemoveDirs();
         testEP();
         //testStartWith();
         //testFileSize();
+        //FindDupLine();
     }
 }

@@ -1,5 +1,6 @@
 package com.exxodusdb.domain;
 
+
 import java.util.Date;
 
 /**
@@ -20,15 +21,13 @@ public class EPTSVData {
         this.title = cols[1];
         this.pcPrice = cols[2];
 
-        if (isAllEP == false && cols.length > 36) {
+        if (isAllEP == false && cols.length > 35) {
             // 요약에만 클래스 타입이 있음.
-            this.opClass = cols[36];
+            this.opClass = cols[35];
         }
 
-        this.namedKey = this.title + "\t" + this.pcPrice;
-        this.namedValue = this.id + "\t" + this.title + "\t" + this.pcPrice;
-
-        // 36번째 클래스
+        this.namedKey = this.title + "." + this.pcPrice;
+        this.namedValue = line;
     }
 
     public void setNamedKey(String namedKey) {
@@ -95,3 +94,4 @@ public class EPTSVData {
         return this.opClass;
     }
 }
+

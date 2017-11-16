@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.io.*;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,18 +29,19 @@ import static jetbrains.exodus.bindings.StringBinding.stringToEntry;
 /**
  * Created by jhkwon78 on 2017-11-15.
  */
-@Repository
 public class XodusDbRepository {
     String homeDir = "C:\\Temp\\Xodus.DB";
     String dbPath;
     Environment env = null;
     Store store = null;
     boolean isAllEP = false;
+    String appendPath;
+    Map<String, String> virtualFileMap = new HashMap<>();
 
     public XodusDbRepository() {
     }
 
-    public void open(String homeDir, boolean isAllEP) throws Exception {
+    public void open(String homeDir, boolean isAllEP, String appendPath) throws Exception {
         if (homeDir.charAt(homeDir.length()-1) != File.separatorChar) {
             this.homeDir = homeDir + File.separatorChar;
         } else {
@@ -55,8 +57,11 @@ public class XodusDbRepository {
             // 전체 EP 재 생성시에, 기존에 누적된 EP 데이터를 삭제함.
             FileUtils.deleteDirectory(new File(this.dbPath));
             LOGGER.info("Delete Dir {}", this.dbPath);
+        } else {
+            this.virtualFileMap.clear();
         }
 
+        this.appendPath = appendPath;
         this.env = Environments.newInstance(this.dbPath);
         this.store = env.computeInTransaction(txn ->
                 env.openStore("EP", StoreConfig.WITHOUT_DUPLICATES, txn));
@@ -77,6 +82,7 @@ public class XodusDbRepository {
         }
 
         env = null;
+        this.virtualFileMap.clear();
     }
 
     public void setHomeDir(String homeDir) {
@@ -87,9 +93,19 @@ public class XodusDbRepository {
         return this.homeDir;
     }
 
+    public void setAppendPath(String appendPath) {
+        this.appendPath = appendPath;
+    }
+
+    public String getAppendPath() {
+        return this.appendPath;
+    }
+
     public String getDbPath() {
         return this.dbPath;
     }
+
+    static int findCount = 0;
 
     private boolean isUpsertDeal(Transaction txn, EPTSVData curr) throws Exception {
 
@@ -135,7 +151,7 @@ public class XodusDbRepository {
         return false;
     }
 
-    public void append(Path readPath, Path appendPath) throws Exception {
+    public void append(Path readPath) throws Exception {
 
         if (!isOpen()) {
             LOGGER.error("not opened");
@@ -147,13 +163,9 @@ public class XodusDbRepository {
         this.env.executeInTransaction(txn -> {
             String line;
             long lineCount = 0;
-            try (BufferedReader in = Files.newBufferedReader(readPath, StandardCharsets.UTF_8);
-                 PrintWriter out = new PrintWriter(Files.newBufferedWriter(appendPath, StandardCharsets.UTF_8, StandardOpenOption.APPEND))) {
+            try (BufferedReader in = Files.newBufferedReader(readPath, StandardCharsets.UTF_8)) {
                 while ((line=in.readLine()) != null) {
-
-                    if (++lineCount % 10_000 == 0) {
-                        LOGGER.info("process {} tsv lines", lineCount);
-                    }
+                    lineCount++;
 
                     if (StringUtils.startsWithIgnoreCase(line, "id\t")) {
                         // 헤더 라인은 무시함.
@@ -165,18 +177,22 @@ public class XodusDbRepository {
 
                         if (StringUtils.equalsIgnoreCase(curr.getOpClass(), "D")) {
                             // class가 D인 경우는 중복체크를 하지 않고, 무조건 내보냄.
-                            out.println(line);
                             //LOGGER.debug("[내보냄] {}", line);
+                            if (!this.isAllEP)
+                                this.virtualFileMap.put(curr.getNamedKey(), line);
+
                             store.delete(txn, stringToEntry(curr.getNamedKey()));
                             continue;
                         }
 
                         if (isUpsertDeal(txn, curr)) {
-                            out.println(line);
                             //LOGGER.debug("[내보냄] {}", line);
+                            if (!this.isAllEP)
+                                this.virtualFileMap.put(curr.getNamedKey(), line);
+
                             this.store.put(txn, stringToEntry(curr.getNamedKey()), stringToEntry(curr.getNamedValue()));
                         } else {
-                            LOGGER.debug("[중복딜] {}", line);
+                            LOGGER.info("[중복딜] {}", line);
                         }
 
                     } catch(Exception e) {
@@ -193,18 +209,28 @@ public class XodusDbRepository {
         LOGGER.debug("@@@ Finish {} isAllEP {}", appendPath, this.isAllEP);
     }
 
-    public void append(String tsvReadPath, String tsvAppendPath) throws Exception {
-        append(Paths.get(tsvReadPath), Paths.get(tsvAppendPath));
+    public void append(String tsvReadPath) throws Exception {
+        append(Paths.get(tsvReadPath));
     }
 
-    public void print() {
-        this.env.executeInReadonlyTransaction(txn -> {
-            try (Cursor cursor = store.openCursor(txn)) {
-                while (cursor.getNext()) {
-                    LOGGER.info("{} \t\t=> {}", entryToString(cursor.getKey()), entryToString(cursor.getValue()));
-                }
+    public void save() {
+        try (PrintWriter out = new PrintWriter(Files.newBufferedWriter(Paths.get(this.appendPath), StandardCharsets.UTF_8, StandardOpenOption.APPEND))) {
+            if (this.isAllEP) {
+                this.env.executeInReadonlyTransaction(txn -> {
+                    try (Cursor cursor = store.openCursor(txn)) {
+                        while (cursor.getNext()) {
+                            out.println(entryToString(cursor.getValue()));
+                        }
+                    }
+                });
+            } else {
+                this.virtualFileMap.forEach((key, value) -> {
+                    out.println(value);
+                });
             }
-        });
+        } catch (Exception e) {
+            LOGGER.error("IO Error ", e);
+        }
     }
 
     public static void removeDirs(String homeDir, int daysAfter) {
@@ -234,6 +260,16 @@ public class XodusDbRepository {
                 FileUtils.deleteDirectory(dir);
             } catch (Exception e) {
                 LOGGER.error("fail to delete dir {}", dir.getAbsolutePath());
+            }
+        });
+    }
+
+    public void print() {
+        this.env.executeInReadonlyTransaction(txn -> {
+            try (Cursor cursor = store.openCursor(txn)) {
+                while (cursor.getNext()) {
+                    LOGGER.info("{} tt=> {}", entryToString(cursor.getKey()), entryToString(cursor.getValue()));
+                }
             }
         });
     }
