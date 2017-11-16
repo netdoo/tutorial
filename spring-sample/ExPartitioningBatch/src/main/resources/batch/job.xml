@@ -10,6 +10,13 @@
 
     <import resource="../applicationContext.xml"/>
 
+    <bean id="threadPoolTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="7"/>
+        <property name="maxPoolSize" value="7"/>
+        <property name="keepAliveSeconds" value="600"/>
+        <property name="queueCapacity" value="100000"/>
+    </bean>
+
     <batch:job id="mainBatchJob" job-repository="jobRepository" parent="simpleJob">
         <batch:step id="mainBatchStep">
             <!--
@@ -17,7 +24,7 @@
                 이 때, grid-size는 Sub Slave의 카운트임.
             -->
             <partition step="mainBatchParallelStep" partitioner="rangePartitioner">
-                <handler grid-size="4" task-executor="taskExecutor" />
+                <handler grid-size="5" task-executor="threadPoolTaskExecutor" />
             </partition>
         </batch:step>
     </batch:job>

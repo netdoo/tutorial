@@ -37,10 +37,11 @@ public class CustomItemReader implements ItemReader<List<String>> {
         if (!targetGroupListIterator.hasNext())
             return null;
 
-        logger.info("tid {} iter {}", Thread.currentThread().getId(), targetGroupListIterator);
+        logger.info("tid {}, activeThreadCount {}, iter {}", Thread.currentThread().getId(), Thread.activeCount(), targetGroupListIterator);
 
         List<String> targetList = targetGroupListIterator.next();
         logger.info("CustomItemReader ThreadId {}, targetList {} ", Thread.currentThread().getId(), targetList);
+        Thread.sleep(10_000);
         return targetList;
     }
 }
