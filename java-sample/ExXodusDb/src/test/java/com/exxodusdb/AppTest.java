@@ -2,13 +2,17 @@ package com.exxodusdb;
 
 import com.exxodusdb.domain.EPFile;
 import com.exxodusdb.domain.EPFileLine;
+import com.exxodusdb.domain.EPTSVData;
+import com.exxodusdb.domain.EPTSVData2;
 import jetbrains.exodus.ByteIterable;
 import jetbrains.exodus.env.Environment;
 import jetbrains.exodus.env.Environments;
 import jetbrains.exodus.env.Store;
 import jetbrains.exodus.env.StoreConfig;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -16,12 +20,15 @@ import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static jetbrains.exodus.bindings.StringBinding.stringToEntry;
@@ -230,6 +237,61 @@ public class AppTest {
 
     @Test
     public void test09App() throws Exception {
+
+        long lineCount = 0;
+        String line;
+        String readPath = "C:\\temp\\naver_all.txt";
+        boolean isAllEP = true;
+
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        try (BufferedReader in = Files.newBufferedReader(Paths.get(readPath), StandardCharsets.UTF_8)) {
+            while ((line = in.readLine()) != null) {
+                lineCount++;
+
+                if (StringUtils.startsWithIgnoreCase(line, "id\t")) {
+                    // 헤더 라인은 무시함.
+                    continue;
+                }
+
+                try {
+                    EPTSVData curr = new EPTSVData(line, isAllEP);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        stopWatch.stop();
+        LOGGER.info("elapsed time 1 {} (secs)", stopWatch.getTime(TimeUnit.SECONDS));
+
+        stopWatch.reset();
+        stopWatch.start();
+
+        try (BufferedReader in = Files.newBufferedReader(Paths.get(readPath), StandardCharsets.UTF_8)) {
+            while ((line = in.readLine()) != null) {
+                lineCount++;
+
+                if (StringUtils.startsWithIgnoreCase(line, "id\t")) {
+                    // 헤더 라인은 무시함.
+                    continue;
+                }
+
+                try {
+                    EPTSVData2 curr = new EPTSVData2(line, isAllEP);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        stopWatch.stop();
+        LOGGER.info("elapsed time 2 {} (secs)", stopWatch.getTime(TimeUnit.SECONDS));
 
     }
 }
