@@ -8,9 +8,29 @@ public class App {
 
     final static Logger logger = LoggerFactory.getLogger(App.class);
 
-    static void split() {
+    static void splitCase1() {
         String fullText = "mbc\tsbs\tkbs";
-        String results[] = fullText.split("\t");
+        String results[] = fullText.split("\t");    // 3
+        logger.info("length {}", results.length);
+
+        Arrays.stream(results).forEach(text -> {
+            logger.info("{}", text);
+        });
+
+        Arrays.sort(results);
+
+        logger.info("== sort ==");
+
+        Arrays.stream(results).forEach(text -> {
+            logger.info("{}", text);
+        });
+    }
+
+    static void splitCase2() {
+        String fullText = "\t\t\t";
+        String results[] = fullText.split("\t");    // 1
+
+        logger.info("length {}", results.length);
 
         Arrays.stream(results).forEach(text -> {
             logger.info("{}", text);
@@ -18,7 +38,8 @@ public class App {
     }
 
     public static void main( String[] args ) {
-        split();
+        splitCase1();
+        splitCase2();
     }
 }
 
