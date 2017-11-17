@@ -2,6 +2,7 @@ package com.exxodusdb;
 
 import jetbrains.exodus.ByteIterable;
 import jetbrains.exodus.env.*;
+import net.openhft.chronicle.map.ChronicleMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.time.StopWatch;
@@ -9,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import static jetbrains.exodus.bindings.StringBinding.entryToString;
@@ -64,38 +66,72 @@ public class BulkAddSample {
         logger.info("slowTransaction count {} elapsed time {} (secs)", count, stopWatch.getTime(TimeUnit.SECONDS));
     }
 
-    static void bigTransaction(Environment env, Store store) {
-        long count = 0;
-
-        // bulk insert
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
-
-        env.executeInTransaction(txn -> {
-            for (int i = 0; i < 2_000_000; i++) {
-                store.add(txn, stringToEntry("slow"+i), stringToEntry("slow"+i));
-            }
-        });
-
-        stopWatch.stop();
-        count = env.computeInReadonlyTransaction(txn -> store.count(txn));
-        logger.info("slowTransaction count {} elapsed time {} (secs)", count, stopWatch.getTime(TimeUnit.SECONDS));
-    }
-
-    public static void main( String[] args ) throws Exception {
+    static void bigTransaction() throws Exception {
 
         // 기존 embedded db file 지우기
         FileUtils.deleteDirectory(new File(dbPath));
+
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
         Environment env = Environments.newInstance(dbPath);
 
         // Stores can be opened with and without duplicate keys
         Store store = env.computeInTransaction(txn ->
                 env.openStore("Messages", StoreConfig.WITHOUT_DUPLICATES, txn));
+        long count = 0;
+
+        // bulk insert
+        env.executeInTransaction(txn -> {
+            for (int i = 0; i < 2_000_000; i++) {
+                store.add(txn, stringToEntry("123456789"+i), stringToEntry("012345678901234567890123456789"+i));
+            }
+        });
+
+        stopWatch.stop();
+        count = env.computeInReadonlyTransaction(txn -> store.count(txn));
+        logger.info("bigTransaction count {} elapsed time {} (secs)", count, stopWatch.getTime(TimeUnit.SECONDS));
+        env.close();
+    }
+
+    static void bulkInsert() {
+        File file = new File("C:\\temp\\cmap.dat");
+
+        if (file.exists())
+            file.delete();
+
+        StopWatch stopWatch = new StopWatch();
+
+        stopWatch.start();
+
+        try (ChronicleMap<String, String> map = ChronicleMap
+                .of(String.class, String.class)
+                // Entry checksums make sense only for persisted Chronicle Maps, and are ON by
+                // default for such maps
+                .entries(5_000_000)
+                .averageKeySize(100)
+                .averageValueSize(100)
+                .createPersistedTo(file)) {
+
+            for (int i = 0; i < 2_000_000; i++) {
+                map.put("123456789"+i, "012345678901234567890123456789");
+            }
+
+            logger.info("chronicle map size {}", map.size());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        stopWatch.stop();
+        logger.info("chronicle map elapsed time {} (secs)", stopWatch.getTime(TimeUnit.SECONDS));
+    }
+
+    public static void main( String[] args ) throws Exception {
 
         //fastTransaction(env, store);
         //slowTransaction(env, store);
-        bigTransaction(env, store);
-
-        env.close();
+        bigTransaction();
+        bulkInsert();
     }
 }
