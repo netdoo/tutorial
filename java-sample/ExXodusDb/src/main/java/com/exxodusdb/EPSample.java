@@ -1,5 +1,7 @@
 package com.exxodusdb;
 
+import com.exxodusdb.domain.EPFile;
+import com.exxodusdb.domain.EPFileLine;
 import com.exxodusdb.domain.EPTSVData;
 import com.oracle.webservices.internal.api.databinding.DatabindingFactory;
 import com.sun.org.apache.xml.internal.dtm.ref.IncrementalSAXSource;
@@ -27,6 +29,10 @@ import static jetbrains.exodus.bindings.StringBinding.stringToEntry;
 public class EPSample {
     final static Logger LOGGER = LoggerFactory.getLogger(EPSample.class);
     final static String DB_HOME_DIR = "C:\\Temp\\xodus.db";
+
+
+
+
 
     static void testEP() throws Exception {
         String readPath = "C:\\temp\\test_all.txt";
@@ -113,14 +119,15 @@ public class EPSample {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     public static void main( String[] args ) throws Exception {
         //testRemoveDirs();
-        testEP();
+        //testEP();
         //testStartWith();
         //testFileSize();
         //FindDupLine();
+
+
     }
 }
