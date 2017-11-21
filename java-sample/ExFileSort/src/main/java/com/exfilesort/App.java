@@ -28,22 +28,31 @@ public class App {
         }
 
         try (PrintWriter out = new PrintWriter(Files.newBufferedWriter(dummyFile.toPath(), StandardCharsets.UTF_8, StandardOpenOption.CREATE_NEW));) {
-            out.println("11,MBC");
-            out.println("6,SBS");
-            out.println("7,KBS");
-            out.println("13,EBS");
+            out.println("11,AAA");
+            out.println("6,BBB");
+            out.println("7,가가가");
+            out.println("13,나나나");
+            out.println("8,ZZZ");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    static class DescComparator implements Comparator<String> {
+    static long parseId(String text) {
+        String cols[] = text.split(",");
+        return Long.valueOf(cols[0]);
+    }
+
+    static String parseName(String text) {
+        String cols[] = text.split(",");
+        return cols[1];
+    }
+
+    static class DescIdComparator implements Comparator<String> {
         @Override
         public int compare(String o1, String o2) {
-            String left[] = o1.split(",");
-            String right[] = o2.split(",");
-            long leftId = Long.valueOf(left[0]);
-            long rightId = Long.valueOf(right[0]);
+            long leftId = parseId(o1);
+            long rightId = parseId(o2);
 
             if (leftId > rightId) {
                 return -1;
@@ -55,20 +64,28 @@ public class App {
         }
 
         @Override
-        public boolean equals(Object obj) {
-            return false;
-        }
-
+        public boolean equals(Object obj) {  return false;  }
     }
 
-    static class AscComparator implements Comparator<String> {
+    static class DescNameComparator implements Comparator<String> {
+        @Override
+        public int compare(String o1, String o2) {
+            String leftName = parseName(o1);
+            String rightName = parseName(o2);
+
+            return leftName.compareTo(rightName);
+        }
+
+        @Override
+        public boolean equals(Object obj) {  return false;  }
+    }
+
+    static class AscIdComparator implements Comparator<String> {
 
         @Override
         public int compare(String o1, String o2) {
-            String left[] = o1.split(",");
-            String right[] = o2.split(",");
-            long leftId = Long.valueOf(left[0]);
-            long rightId = Long.valueOf(right[0]);
+            long leftId = parseId(o1);
+            long rightId = parseId(o2);
 
             if (leftId < rightId) {
                 return -1;
@@ -80,9 +97,20 @@ public class App {
         }
 
         @Override
-        public boolean equals(Object obj) {
-            return false;
+        public boolean equals(Object obj) {  return false;  }
+    }
+
+    static class AscNameComparator implements Comparator<String> {
+        @Override
+        public int compare(String o1, String o2) {
+            String leftName = parseName(o1);
+            String rightName = parseName(o2);
+
+            return rightName.compareTo(leftName);
         }
+
+        @Override
+        public boolean equals(Object obj) {  return false;  }
     }
 
     static void printFile(String path) throws Exception {
@@ -100,14 +128,22 @@ public class App {
         File dummyFile = new File("C:\\Temp\\dummy.txt");
         createDummyFile(dummyFile);
 
-        ExternalSort.mergeSortedFiles(ExternalSort.sortInBatch(dummyFile, new AscComparator()), new File("C:\\Temp\\dummy_asc_sort.txt"));
-        ExternalSort.mergeSortedFiles(ExternalSort.sortInBatch(dummyFile, new DescComparator()), new File("C:\\Temp\\dummy_desc_sort.txt"));
+        ExternalSort.mergeSortedFiles(ExternalSort.sortInBatch(dummyFile, new AscIdComparator()), new File("C:\\Temp\\dummy_asc_id_sort.txt"));
+        ExternalSort.mergeSortedFiles(ExternalSort.sortInBatch(dummyFile, new DescIdComparator()), new File("C:\\Temp\\dummy_desc_id_sort.txt"));
+        ExternalSort.mergeSortedFiles(ExternalSort.sortInBatch(dummyFile, new AscNameComparator()), new File("C:\\Temp\\dummy_asc_name_sort.txt"));
+        ExternalSort.mergeSortedFiles(ExternalSort.sortInBatch(dummyFile, new DescNameComparator()), new File("C:\\Temp\\dummy_desc_name_sort.txt"));
 
-        logger.info("== asc sort result ==");
-        printFile("C:\\Temp\\dummy_asc_sort.txt");
+        logger.info("== id asc sort result ==");
+        printFile("C:\\Temp\\dummy_asc_id_sort.txt");
 
-        logger.info("== desc sort result ==");
-        printFile("C:\\Temp\\dummy_desc_sort.txt");
+        logger.info("== id desc sort result ==");
+        printFile("C:\\Temp\\dummy_desc_id_sort.txt");
+
+        logger.info("== name desc sort result ==");
+        printFile("C:\\Temp\\dummy_desc_name_sort.txt");
+
+        logger.info("== name asc sort result ==");
+        printFile("C:\\Temp\\dummy_asc_name_sort.txt");
     }
 }
 
