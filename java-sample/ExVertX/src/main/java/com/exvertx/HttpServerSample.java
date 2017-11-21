@@ -11,6 +11,7 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,7 +96,7 @@ public class HttpServerSample {
         }
 
         // > curl localhost:9999/echo?param=hello
-        Thread.sleep(60_000);
+        Thread.sleep(20_000);
 
         String deploymentID = httpServerVerticle.deploymentID();
         logger.info("deploymentID {}", deploymentID);
@@ -107,5 +108,9 @@ public class HttpServerSample {
         }
 
         vertx.close();
+        logger.info("close vertx");
+
+        // flush all logs
+        LogManager.shutdown();
     }
 }

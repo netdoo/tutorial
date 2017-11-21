@@ -18,26 +18,41 @@
         <param name="Append" value="true"/>
         <param name="MaxFileSize" value="100KB"/>
         <param name="MaxBackupIndex" value="5"/>
+        <param name="ImmediateFlush" value="false" />
+        <param name="BufferedIO" value="true" />
+        <param name="BufferSize" value="16" /> <!-- In KB, Default is 8KB -->
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p %c{1}:%L - %m%n" />
         </layout>
     </appender>
 
+    <!--
+    * Buffer size : Higher value is good for performance.
+
+    *Blocking: Means ‘what to do if buffer is full and still waiting for flushing’.
+               In case of ‘false’, appender will discard log event until buffer is available
+               but provide better performance.
+               Default is ‘true’. Again a trade-off.
+               However this is ‘Async’ operation and not impacting much to performance,
+               hence I prefer to use ‘true’ here.
+    -->
     <appender name="asyncConsole" class="org.apache.log4j.AsyncAppender">
         <param name="BufferSize" value="500"/>
+        <param name="Blocking" value="true" />
         <param name="LocationInfo" value="true"/>
         <appender-ref ref="console"/>
     </appender>
 
     <appender name="asyncRollingFile" class="org.apache.log4j.AsyncAppender">
         <param name="BufferSize" value="500"/>
+        <param name="Blocking" value="true" />
         <param name="LocationInfo" value="true"/>
         <appender-ref ref="rollingFile"/>
     </appender>
 
     <!-- 기본 출력 설정 -->
     <root>
-        <level value="DEBUG" />
+        <level value="INFO" />
         <appender-ref ref="asyncConsole" />
         <appender-ref ref="asyncRollingFile" />
     </root>
