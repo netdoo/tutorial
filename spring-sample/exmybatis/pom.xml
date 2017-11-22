@@ -104,6 +104,14 @@
           <version>1.4</version>
       </dependency>
 
+      <!-- https://mvnrepository.com/artifact/com.zaxxer/HikariCP -->
+      <dependency>
+          <groupId>com.zaxxer</groupId>
+          <artifactId>HikariCP</artifactId>
+          <version>2.7.3</version>
+      </dependency>
+
+
       <!-- AOP 기반의 트랜잭션 처리 -->
       <dependency>
           <groupId>aspectj</groupId>
