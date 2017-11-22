@@ -30,21 +30,36 @@ public class SplitTest {
         return pattern;
     }
 
+    List<String> subSplit(String text) {
+        List<String> terms = new ArrayList<>();
+
+        for (char c : text.toCharArray()) {
+            if (i)
+        }
+
+
+        return terms;
+    }
+
 
     String replacePattern(String input) {
 
+        String trimPattern = "[\\(,\\[,\\],\\)]";
         Set<String> colorPattern = loadPattern("C:\\Temp\\colorPattern.txt");
         Set<String> sizePattern = loadPattern("C:\\Temp\\sizePattern.txt");
         List<String> termList = new ArrayList<>();
         String terms[] = input.split(" ");
 
         for (String term : terms) {
-            if (colorPattern.contains(term)) {
+
+            String trimTerm = term.replaceAll(trimPattern, "");
+
+            if (colorPattern.contains(trimTerm)) {
                 termList.add("#color#");
-            } else if (sizePattern.contains(term)) {
+            } else if (sizePattern.contains(trimTerm)) {
                 termList.add("#size#");
             } else {
-                termList.add(term);
+                termList.add(trimTerm);
             }
         }
 
@@ -54,11 +69,15 @@ public class SplitTest {
 
     @Test
     public void testReplace() {
+
         List<String> inputList = new ArrayList<>();
 
         inputList.add("나이키 운동화 블루 260mm");
         inputList.add("나이키 운동화 Blue 260mm");
         inputList.add("나이키 운동화 파란색 270mm");
+        inputList.add("도그포즈 애견가운 (블루L)");
+        inputList.add("도그포즈 애견가운 (블루M)");
+        inputList.add("도그포즈 애견가운 (블루XL)");
 
         inputList.forEach(input -> {
             logger.info("{} => {}", input, replacePattern(input));
