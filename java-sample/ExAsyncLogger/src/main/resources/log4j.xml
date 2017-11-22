@@ -18,6 +18,7 @@
         <param name="Append" value="true"/>
         <param name="MaxFileSize" value="100KB"/>
         <param name="MaxBackupIndex" value="5"/>
+        <param name="ImmediateFlush" value="false" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p %c{1}:%L - %m%n" />
         </layout>
@@ -25,12 +26,14 @@
 
     <appender name="asyncConsole" class="org.apache.log4j.AsyncAppender">
         <param name="BufferSize" value="500"/>
+        <param name="Blocking" value="true" />
         <param name="LocationInfo" value="true"/>
         <appender-ref ref="console"/>
     </appender>
 
     <appender name="asyncRollingFile" class="org.apache.log4j.AsyncAppender">
         <param name="BufferSize" value="500"/>
+        <param name="Blocking" value="true" />
         <param name="LocationInfo" value="true"/>
         <appender-ref ref="rollingFile"/>
     </appender>
