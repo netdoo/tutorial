@@ -119,6 +119,7 @@ public class SplitTest {
         textList.add("L블루");
         textList.add("L블루100");
         textList.add("100L블루");
+        textList.add("100/L-블루");
 
         textList.forEach(text -> {
             logger.info("{} => {}", text, subSplit(text));
@@ -136,6 +137,9 @@ public class SplitTest {
         inputList.add("도그포즈 애견가운 (블루L)");
         inputList.add("도그포즈 애견가운 (블루M)");
         inputList.add("도그포즈 애견가운 (블루XL)");
+        inputList.add("남성 후드래쉬가드 오렌지 L");
+        inputList.add("남성 후드래쉬가드 오렌지 M");
+        inputList.add("남성 후드래쉬가드 오렌지 XL");
 
         inputList.forEach(input -> {
             logger.info("{} => {}", input, replacePattern(input));
