@@ -6,8 +6,9 @@ package com.exre;
 public enum CharType {
     UNKNOWN(0),
     NUM(1),
-    ENG(2),
-    HAN(3);
+    OPMARK(2),
+    ENG(5),
+    HAN(6);
 
     final int id;
 
@@ -114,17 +115,37 @@ public enum CharType {
         return true;
     }
 
+    public static boolean isOpMark(char c) {
+        final String opMark = "/-";
+        return opMark.indexOf(c) >= 0;
+    }
+
+    public static boolean isOpMark(String text) {
+        if (text == null)
+            return false;
+
+        for (char c : text.toCharArray()) {
+            if (!isOpMark(c))
+                return false;
+        }
+
+        return true;
+    }
+
     public static CharType analyze(char c) {
         return analyze(String.valueOf(c));
     }
 
     public static CharType analyze(String text) {
+
         if (isHan(text)) {
             return CharType.HAN;
         } else if (isEng(text)) {
             return CharType.ENG;
         } else if (isNum(text)) {
             return CharType.NUM;
+        } else if (isOpMark(text)) {
+            return CharType.OPMARK;
         }
 
         return CharType.UNKNOWN;

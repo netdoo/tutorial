@@ -47,7 +47,7 @@ public class SplitTest {
                 if (CharType.analyze(c) == findType) {
                     termBuffer.append(c);
                 } else {
-                    if (termBuffer.length() > 0) {
+                    if (termBuffer.length() > 0 && findType != CharType.OPMARK) {
                         terms.add(termBuffer.toString());
                     }
                     termBuffer.setLength(0);
@@ -115,6 +115,7 @@ public class SplitTest {
     @Test
     public void testSubSplit() {
         List<String> textList = new ArrayList<>();
+
         textList.add("블루L");
         textList.add("L블루");
         textList.add("L블루100");
