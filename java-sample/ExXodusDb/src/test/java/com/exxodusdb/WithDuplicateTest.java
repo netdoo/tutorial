@@ -25,13 +25,11 @@ public class WithDuplicateTest {
     final Logger LOGGER = LoggerFactory.getLogger(WithDuplicateTest.class);
     final static String dbPath = "C:\\Temp\\xodus.db";
 
-
     class Entry {
         String key;
         String val;
 
         public Entry() {
-
         }
 
         public Entry(String key, String val) {
@@ -42,15 +40,12 @@ public class WithDuplicateTest {
         public void setKey(String key) {
             this.key = key;
         }
-
         public String getKey() {
             return this.key;
         }
-
         public void setVal(String val) {
             this.val = val;
         }
-
         public String getVal() {
             return this.val;
         }
@@ -79,11 +74,9 @@ public class WithDuplicateTest {
         Store store = env.computeInTransaction(txn -> env.openStore("Messages", StoreConfig.WITH_DUPLICATES, txn));
 
         env.executeInTransaction(txn -> {
-            LOGGER.info("{}", store.put(txn, stringToEntry("MBC"), stringToEntry("10")));       // true
-            LOGGER.info("{}", store.put(txn, stringToEntry("SBS"), stringToEntry("6")));        // true
-            LOGGER.info("{}", store.put(txn, stringToEntry("KBS"), stringToEntry("7")));        // true
-            LOGGER.info("{}", store.put(txn, stringToEntry("KBS"), stringToEntry("9")));        // true
-            LOGGER.info("{}", store.put(txn, stringToEntry("EBS"), stringToEntry("13")));       // true
+            createDummyEntries().forEach(entry -> {
+                LOGGER.info("{}/{} {}", entry.getKey(), entry.getVal(), store.put(txn, stringToEntry(entry.getKey()), stringToEntry(entry.getVal())));
+            });
         });
 
         long count = env.computeInReadonlyTransaction(txn -> store.count(txn));
@@ -108,11 +101,9 @@ public class WithDuplicateTest {
         Store store = env.computeInTransaction(txn -> env.openStore("Messages", StoreConfig.WITH_DUPLICATES, txn));
 
         env.executeInTransaction(txn -> {
-            LOGGER.info("{}", store.add(txn, stringToEntry("MBC"), stringToEntry("10")));       // true
-            LOGGER.info("{}", store.add(txn, stringToEntry("SBS"), stringToEntry("6")));        // true
-            LOGGER.info("{}", store.add(txn, stringToEntry("KBS"), stringToEntry("7")));        // true
-            LOGGER.info("{}", store.add(txn, stringToEntry("KBS"), stringToEntry("9")));        // false
-            LOGGER.info("{}", store.add(txn, stringToEntry("EBS"), stringToEntry("13")));       // true
+            createDummyEntries().forEach(entry -> {
+                LOGGER.info("{}/{} {}", entry.getKey(), entry.getVal(), store.add(txn, stringToEntry(entry.getKey()), stringToEntry(entry.getVal())));
+            });
         });
 
         long count = env.computeInReadonlyTransaction(txn -> store.count(txn));
@@ -128,10 +119,5 @@ public class WithDuplicateTest {
         });
 
         env.close();
-
-        Pair<String, String> pair = new ImmutablePair<>("MBC", "10");
-
-        //Map.Entry<String, String> entry = new AbstractMap.SimpleEntry<String, String>("MBC", "10");
-
     }
 }
