@@ -45,4 +45,13 @@
 
     <bean id="processTasklet" class="com.exchunkbatch.ProcessTasklet" scope="step"/>
     <bean id="printTasklet" class="com.exchunkbatch.PrintTasklet" scope="step"/>
+    <bean id="debugTasklet" class="com.exchunkbatch.DebugTasklet" scope="step">
+        <property name="message" value="debug task"/>
+    </bean>
+
+    <batch:job id="testBatchJob" job-repository="jobRepository" parent="simpleJob">
+        <batch:step id="testBatchJobStep">
+            <batch:tasklet ref="debugTasklet" transaction-manager="transactionManager"/>
+        </batch:step>
+    </batch:job>
 </beans>
