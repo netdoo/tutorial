@@ -1,4 +1,4 @@
-package com.exjava;
+package com.exstream;
 
 import java.util.*;
 import java.util.stream.Collectors;
