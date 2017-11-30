@@ -65,13 +65,14 @@ public class App {
                 .of(String.class, String.class)
                 // Entry checksums make sense only for persisted Chronicle Maps, and are ON by
                 // default for such maps
-                .entries(1_000_000)
+                .entries(5_000_000)
                 .averageKeySize(100)
                 .averageValueSize(100)
                 .createPersistedTo(file)) {
 
             for (int i = 0; i < 100_000; i++) {
                 map.put("123456789"+i, "012345678901234567890123456789");
+                break;
             }
 
         } catch (IOException e) {
@@ -101,9 +102,30 @@ public class App {
         }
     }
 
+    static void clear() {
+        File file = new File("C:\\temp\\cmap.dat");
+
+        try (ChronicleMap<String, String> map = ChronicleMap
+                .of(String.class, String.class)
+                // Entry checksums make sense only for persisted Chronicle Maps, and are ON by
+                // default for such maps
+                .entries(1_000_000)
+                .averageKeySize(100)
+                .averageValueSize(100)
+                .createPersistedTo(file)) {
+
+            map.clear();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main( String[] args ) {
         //testCrudSample();
         //bulkInsert();
+        //printInfo();
+        clear();
         printInfo();
     }
 }
