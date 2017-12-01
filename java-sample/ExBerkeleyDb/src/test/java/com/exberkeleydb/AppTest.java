@@ -28,8 +28,7 @@ public class AppTest {
     @Test
     public void _1_기본_테스트() throws Exception {
 
-        BerkeleyDB berkeleyDB = new BerkeleyDB();
-        berkeleyDB.open(dbDir, "mydb", false);
+        BerkeleyDB berkeleyDB = new BerkeleyDB(dbDir, "mydb", false);
         berkeleyDB.put("001", "RED");
         berkeleyDB.put("002", "GREEN");
         berkeleyDB.put("003", "BLUE");
@@ -55,14 +54,14 @@ public class AppTest {
         assertEquals("WHITE", berkeleyDB.get("005"));
         assertEquals("PINK", berkeleyDB.get("006"));
 
+        assertEquals(6, berkeleyDB.count());
         berkeleyDB.close();
     }
 
     @Test
     public void _2_기본_테스트_DeleteOnExit() throws Exception {
 
-        BerkeleyDB berkeleyDB = new BerkeleyDB();
-        berkeleyDB.open(dbDir, "mydb", true);
+        BerkeleyDB berkeleyDB = new BerkeleyDB(dbDir, "mydb", true);
         berkeleyDB.put("001", "RED");
         berkeleyDB.put("002", "GREEN");
         berkeleyDB.put("003", "BLUE");
@@ -93,8 +92,7 @@ public class AppTest {
 
     @Test
     public void _3_트랜잭션_테스트() throws Exception {
-        BerkeleyDB berkeleyDB = new BerkeleyDB();
-        berkeleyDB.open(dbDir, "mydb", true);
+        BerkeleyDB berkeleyDB = new BerkeleyDB(dbDir, "mydb", true);
         berkeleyDB.put("001", "RED");
 
         berkeleyDB.beginTransaction();
@@ -111,8 +109,7 @@ public class AppTest {
 
     @Test
     public void _4_롤백_테스트() throws Exception {
-        BerkeleyDB berkeleyDB = new BerkeleyDB();
-        berkeleyDB.open(dbDir, "mydb", true);
+        BerkeleyDB berkeleyDB = new BerkeleyDB(dbDir, "mydb", true);
         berkeleyDB.put("001", "RED");
 
         berkeleyDB.beginTransaction();
@@ -123,6 +120,20 @@ public class AppTest {
         assertEquals("RED", berkeleyDB.get("001"));
         assertEquals(null, berkeleyDB.get("002"));
         assertEquals(null, berkeleyDB.get("003"));
+
+        berkeleyDB.close();
+    }
+
+    @Test
+    public void _5_카운트_테스트() throws Exception {
+
+        BerkeleyDB berkeleyDB = new BerkeleyDB(dbDir, "mydb", true);
+
+        berkeleyDB.put("001", "RED");
+        berkeleyDB.put("002", "GREEN");
+        berkeleyDB.put("003", "BLUE");
+
+        assertEquals(3, berkeleyDB.count());
 
         berkeleyDB.close();
     }

@@ -1,36 +1,26 @@
 package com.exberkeleydb;
 
-import com.exberkeleydb.domain.Box;
 import com.sleepycat.je.*;
-import org.apache.commons.lang3.SerializationUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-
 import java.io.File;
-import java.util.AbstractMap;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
-public class BerkeleyDB {
+public class BerkeleyDB implements AutoCloseable {
 
     final static String CHARSET = "UTF-8";
-    File dbDirFile;
 
     String dbDir;
     String dbName;
 
-    boolean isOpen;
-    Environment environment = null;
-    Database database = null;
-    Cursor cursor = null;
+    Environment environment;
+    Database database;
+    Cursor cursor;
     Transaction transaction;
 
     DatabaseEntry key = new DatabaseEntry();
     DatabaseEntry value = new DatabaseEntry();
 
     boolean deleteOnExit;
-
-
 
     static class Entry {
         String key;
@@ -50,13 +40,9 @@ public class BerkeleyDB {
         }
     }
 
-    public BerkeleyDB() {
-    }
-
-    public void open(String dbDir, String dbName, boolean deleteOnExit) throws Exception {
+    public BerkeleyDB(String dbDir, String dbName, boolean deleteOnExit) throws Exception {
         this.dbDir = dbDir;
         this.dbName = dbName;
-        this.isOpen = true;
         this.deleteOnExit = deleteOnExit;
 
         File dir = new File(this.dbDir);
@@ -81,19 +67,21 @@ public class BerkeleyDB {
         this.cursor = database.openCursor(null, cursorConfig);
     }
 
+    @Override
     public void close() throws Exception {
         if (cursor != null) {
             cursor.close();
+            cursor = null;
         }
         if (database != null) {
             database.close();
+            database = null;
         }
 
         if (environment != null) {
             environment.close();
+            environment = null;
         }
-
-        this.isOpen = false;
 
         if (deleteOnExit) {
             File dir = new File(this.dbDir);
@@ -161,5 +149,9 @@ public class BerkeleyDB {
         }
 
         return entry;
+    }
+
+    public long count() throws Exception {
+        return this.database.count();
     }
 }

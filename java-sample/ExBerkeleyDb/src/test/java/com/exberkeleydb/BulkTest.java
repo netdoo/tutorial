@@ -10,8 +10,13 @@ import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 import static junit.framework.TestCase.assertTrue;
 
@@ -19,79 +24,57 @@ import static junit.framework.TestCase.assertTrue;
 public class BulkTest {
 
     final static Logger logger = LoggerFactory.getLogger(BulkTest.class);
-    final static File homeDir = new File("./dbhome");
+    final static String dbDir = "./db";
     final static String dbName = "testDB";
     final static long MAX_PUT_COUNT = 100_000_000L;
 
-    @Test
-    public void _0_테스트_준비() {
-        if (homeDir.exists()) {
-            Arrays.stream(homeDir.listFiles()).forEach(File::delete);
-        } else {
-            homeDir.mkdir();
+    static String getNamedKey(String line) {
+        String cols[] = line.split("\t");
+        if (cols.length < 4) {
+            logger.info("bad line {}", line);
         }
+        return cols[1] + "." + cols[2];
     }
 
     @Test
-    public void _1_벌크_테스트() {
-        Environment environment = null;
-        Database database = null;
-        Cursor cursor = null;
-        Transaction transaction;
+    public void _0_테스트_준비() {
+
+    }
+
+    @Test
+    public void _1_벌크_테스트() throws Exception {
+
+        String line, trimLine ;
+        String readPath = "C:\\temp\\naver_all.txt";
+        BufferedBerkeleyDB db = new BufferedBerkeleyDB(new BerkeleyDB(dbDir, "bdb", false), 100_000);
+
         StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
 
-        try {
-            EnvironmentConfig environmentConfig = new EnvironmentConfig();
-            environmentConfig.setAllowCreate(true);
-            environmentConfig.setTransactional(true);
-            environment = new Environment(homeDir, environmentConfig);
+        for (int i = 0; i < 5; i++) {
+            StopWatch subStopWatch = new StopWatch();
+            subStopWatch.start();
 
-            DatabaseConfig databaseConfig = new DatabaseConfig();
-            databaseConfig.setAllowCreate(true);
-            databaseConfig.setTransactional(true);
+            try (BufferedReader in = Files.newBufferedReader(Paths.get(readPath), StandardCharsets.UTF_8);) {
+                while ((line = in.readLine()) != null) {
+                    trimLine = line.trim();
 
-            database = environment.openDatabase(null, dbName, databaseConfig);
+                    if (trimLine.isEmpty())
+                        continue;
 
-            StringBuilder builder = new StringBuilder();
-
-            while (builder.length() < 4096) {
-                builder.append("0123456789");
-            }
-
-            String dummyValue = builder.toString();
-            String dummyKey = dummyValue.substring(0, 512);
-
-            for (long i = 0; i < MAX_PUT_COUNT; i++) {
-                transaction = environment.beginTransaction(null, null);
-
-                for (int j = 0; j < 100_000; j++, i++) {
-                    String key = dummyKey + i;
-                    database.put(transaction, new DatabaseEntry(key.getBytes("UTF-8")),
-                            new DatabaseEntry(dummyValue.getBytes("UTF-8")));
+                    String key = getNamedKey(trimLine);
+                    db.put(key+i, line);
                 }
-
-                i--;
-                transaction.commitSync();
-                logger.info("put {}", i);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
-        } catch (Exception e) {
-            logger.info("", e);
+            subStopWatch.stop();
+            logger.info("{} process elapsed time {} (secs), db count {}", i, subStopWatch.getTime(TimeUnit.SECONDS), db.count());
         }
 
-        try {
-            if (cursor != null) {
-                cursor.close();
-            }
-            if (database != null) {
-                database.close();
-            }
-
-            if (environment != null) {
-                environment.close();
-            }
-        } catch (Exception e) {
-            logger.info("", e);
-        }
+        stopWatch.stop();
+        logger.info("total elapsed time {} (secs)", stopWatch.getTime(TimeUnit.SECONDS));
+        db.close();
     }
 }
