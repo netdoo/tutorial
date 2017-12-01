@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BerkeleyDB {
+
+    final static String CHARSET = "UTF-8";
     File dbDirFile;
 
     String dbDir;
@@ -27,6 +29,8 @@ public class BerkeleyDB {
     DatabaseEntry value = new DatabaseEntry();
 
     boolean deleteOnExit;
+
+
 
     static class Entry {
         String key;
@@ -72,12 +76,9 @@ public class BerkeleyDB {
 
         this.database = this.environment.openDatabase(null, dbName, databaseConfig);
 
-
         CursorConfig cursorConfig = new CursorConfig();
         cursorConfig.setReadUncommitted(true);
         this.cursor = database.openCursor(null, cursorConfig);
-
-
     }
 
     public void close() throws Exception {
@@ -105,26 +106,39 @@ public class BerkeleyDB {
         }
     }
 
+    public void beginTransaction() throws Exception {
+        this.transaction = this.environment.beginTransaction(null, null);
+    }
+
+    public void commitTransaction() throws Exception {
+        this.transaction.commitSync();
+    }
+
+    public void abortTransaction() throws Exception {
+        this.transaction.abort();
+    }
+
     public void put(String key, String value) throws Exception {
-        this.database.put(transaction, new DatabaseEntry(key.getBytes("UTF-8")),
-                new DatabaseEntry(value.getBytes("UTF-8")));
+        this.database.put(transaction, new DatabaseEntry(key.getBytes(CHARSET)),
+                new DatabaseEntry(value.getBytes(CHARSET)));
     }
 
     public void putAll(Map<String, String> m) throws Exception {
-        this.transaction = this.environment.beginTransaction(null, null);
+
+        beginTransaction();
 
         for (Map.Entry<String, String> entry : m.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }
 
-        transaction.commitSync();
+        commitTransaction();
     }
 
     public String get(String key) throws Exception {
         DatabaseEntry value = new DatabaseEntry();
 
-        if (this.database.get(null, new DatabaseEntry(key.getBytes("UTF-8")), value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-            return new String(value.getData(), "UTF-8");
+        if (this.database.get(null, new DatabaseEntry(key.getBytes(CHARSET)), value, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+            return new String(value.getData(), CHARSET);
         }
 
         return null;
@@ -140,7 +154,7 @@ public class BerkeleyDB {
             return null;
         }
 
-        Entry entry = new Entry(new String(this.key.getData(), "UTF-8"), new String(this.value.getData(), "UTF-8"));
+        Entry entry = new Entry(new String(this.key.getData(), CHARSET), new String(this.value.getData(), CHARSET));
 
         if (this.cursor.getNext(this.key, this.value, LockMode.DEFAULT) != OperationStatus.SUCCESS) {
             this.key.setSize(0);

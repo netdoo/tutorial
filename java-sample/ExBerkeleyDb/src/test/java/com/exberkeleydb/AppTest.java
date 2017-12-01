@@ -90,4 +90,40 @@ public class AppTest {
 
         berkeleyDB.close();
     }
+
+    @Test
+    public void _3_트랜잭션_테스트() throws Exception {
+        BerkeleyDB berkeleyDB = new BerkeleyDB();
+        berkeleyDB.open(dbDir, "mydb", true);
+        berkeleyDB.put("001", "RED");
+
+        berkeleyDB.beginTransaction();
+        berkeleyDB.put("002", "GREEN");
+        berkeleyDB.put("003", "BLUE");
+        berkeleyDB.commitTransaction();
+
+        assertEquals("RED", berkeleyDB.get("001"));
+        assertEquals("GREEN", berkeleyDB.get("002"));
+        assertEquals("BLUE", berkeleyDB.get("003"));
+
+        berkeleyDB.close();
+    }
+
+    @Test
+    public void _4_롤백_테스트() throws Exception {
+        BerkeleyDB berkeleyDB = new BerkeleyDB();
+        berkeleyDB.open(dbDir, "mydb", true);
+        berkeleyDB.put("001", "RED");
+
+        berkeleyDB.beginTransaction();
+        berkeleyDB.put("002", "GREEN");
+        berkeleyDB.put("003", "BLUE");
+        berkeleyDB.abortTransaction();
+
+        assertEquals("RED", berkeleyDB.get("001"));
+        assertEquals(null, berkeleyDB.get("002"));
+        assertEquals(null, berkeleyDB.get("003"));
+
+        berkeleyDB.close();
+    }
 }
