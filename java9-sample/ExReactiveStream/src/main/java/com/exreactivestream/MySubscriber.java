@@ -7,7 +7,7 @@ import java.util.concurrent.Flow;
 /**
  * Created by jhkwon78 on 2017-11-29.
  */
-public class MySubscriber implements Flow.Subscriber<String> {
+public class MySubscriber<T> implements Flow.Subscriber<T> {
     private Flow.Subscription subscription;
     final static Logger logger = LoggerFactory.getLogger(MySubscriber.class);
 
@@ -19,7 +19,7 @@ public class MySubscriber implements Flow.Subscriber<String> {
     }
 
     @Override
-    public void onNext(String item) {
+    public void onNext(T item) {
         logger.info("item {}", item);
         this.subscription.request(1);
     }
