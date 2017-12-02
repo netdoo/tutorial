@@ -4,6 +4,7 @@ import jetbrains.exodus.ByteIterable;
 import jetbrains.exodus.env.*;
 import net.openhft.chronicle.map.ChronicleMap;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
@@ -11,7 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static jetbrains.exodus.bindings.StringBinding.entryToString;
 import static jetbrains.exodus.bindings.StringBinding.stringToEntry;
@@ -37,6 +40,9 @@ public class BulkAddSample {
                     store.add(txn, stringToEntry("fast"+mInt.getValue()), stringToEntry("fast"+mInt.getValue()));
                 }
             });
+
+            count = env.computeInReadonlyTransaction(txn -> store.count(txn));
+            logger.info("process {}", count);
         }
 
         stopWatch.stop();
@@ -66,33 +72,7 @@ public class BulkAddSample {
         logger.info("slowTransaction count {} elapsed time {} (secs)", count, stopWatch.getTime(TimeUnit.SECONDS));
     }
 
-    static void bigTransaction() throws Exception {
 
-        // 기존 embedded db file 지우기
-        FileUtils.deleteDirectory(new File(dbPath));
-
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
-
-        Environment env = Environments.newInstance(dbPath);
-
-        // Stores can be opened with and without duplicate keys
-        Store store = env.computeInTransaction(txn ->
-                env.openStore("Messages", StoreConfig.WITHOUT_DUPLICATES, txn));
-        long count = 0;
-
-        // bulk insert
-        env.executeInTransaction(txn -> {
-            for (int i = 0; i < 2_000_000; i++) {
-                store.add(txn, stringToEntry("123456789"+i), stringToEntry("012345678901234567890123456789"+i));
-            }
-        });
-
-        stopWatch.stop();
-        count = env.computeInReadonlyTransaction(txn -> store.count(txn));
-        logger.info("bigTransaction count {} elapsed time {} (secs)", count, stopWatch.getTime(TimeUnit.SECONDS));
-        env.close();
-    }
 
     static void bulkInsert() {
         File file = new File("C:\\temp\\cmap.dat");
@@ -127,11 +107,69 @@ public class BulkAddSample {
         logger.info("chronicle map elapsed time {} (secs)", stopWatch.getTime(TimeUnit.SECONDS));
     }
 
+    static void bigTransaction() throws Exception {
+
+        // 기존 embedded db file 지우기
+        File dir = new File(dbPath);
+
+        if (dir.exists()) {
+            Arrays.stream(dir.listFiles()).forEach(File::delete);
+        } else {
+            dir.mkdir();
+        }
+
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        Environment env = Environments.newInstance(dbPath);
+
+        // Stores can be opened with and without duplicate keys
+        Store store = env.computeInTransaction(txn ->
+                env.openStore("Messages", StoreConfig.WITHOUT_DUPLICATES, txn));
+        long count = 0;
+
+        // bulk insert
+        String dummyKey = StringUtils.leftPad("0", 512);
+        String dummyVal = StringUtils.leftPad("0", 2048);
+        AtomicInteger atomicInteger = new AtomicInteger(0);
+
+        /*
+        for (int mainLoop = 0; mainLoop < 20; mainLoop++) {
+            env.executeInTransaction(txn -> {
+                for (int i = 0; i < 100_000; i++, atomicInteger.incrementAndGet()) {
+                    store.put(txn, stringToEntry(dummyKey + atomicInteger.get()), stringToEntry(dummyVal + atomicInteger.get()));
+                }
+            });
+
+            count = env.computeInReadonlyTransaction(txn -> store.count(txn));
+            logger.info("process {}", count);
+        }
+        */
+
+
+        for (int mainLoop = 0; mainLoop < 1_000; mainLoop++) {
+            env.executeInTransaction(txn -> {
+                for (int i = 0; i < 2_000; i++, atomicInteger.incrementAndGet()) {
+                    store.put(txn, stringToEntry(dummyKey + atomicInteger.get()), stringToEntry(dummyVal + atomicInteger.get()));
+                }
+            });
+
+            count = env.computeInReadonlyTransaction(txn -> store.count(txn));
+            logger.info("process {}", count);
+        }
+
+
+        stopWatch.stop();
+        count = env.computeInReadonlyTransaction(txn -> store.count(txn));
+        logger.info("bigTransaction count {} elapsed time {} (secs)", count, stopWatch.getTime(TimeUnit.SECONDS));
+        env.close();
+    }
+
     public static void main( String[] args ) throws Exception {
 
         //fastTransaction(env, store);
         //slowTransaction(env, store);
         bigTransaction();
-        bulkInsert();
+        //bulkInsert();
     }
 }
