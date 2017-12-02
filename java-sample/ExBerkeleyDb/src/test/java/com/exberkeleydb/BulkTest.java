@@ -46,7 +46,7 @@ public class BulkTest {
 
         String line, trimLine ;
         String readPath = "C:\\temp\\naver_all.txt";
-        BufferedBerkeleyDB db = new BufferedBerkeleyDB(new BerkeleyDB(dbDir, "bdb", false), 100_000);
+        BufferedBerkeleyDB db = new BufferedBerkeleyDB(new BerkeleyDB(dbDir, "bdb", false), 10_000);
 
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -63,13 +63,14 @@ public class BulkTest {
                         continue;
 
                     String key = getNamedKey(trimLine);
-                    db.put(key+i, line);
+                    db.put(key+i, line.substring(0, 255));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             subStopWatch.stop();
+            db.flush();
             logger.info("{} process elapsed time {} (secs), db count {}", i, subStopWatch.getTime(TimeUnit.SECONDS), db.count());
         }
 
