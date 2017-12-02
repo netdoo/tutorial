@@ -1,38 +1,18 @@
 package com.exrocksdb;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.Test;
+import org.rocksdb.RocksDB;
 
-/**
- * Unit test for simple App.
- */
-public class AppTest 
-    extends TestCase
-{
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public AppTest( String testName )
-    {
-        super( testName );
+import static junit.framework.Assert.assertTrue;
+
+public class AppTest {
+    static {
+        System.load("E:\\tutorial\\java-sample\\ExRocksDb\\librocksdbjni-win64.dll");
     }
-
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( AppTest.class );
-    }
-
-    /**
-     * Rigourous Test :-)
-     */
+    @Test
     public void testApp()
     {
+        RocksDB.loadLibrary();
         assertTrue( true );
     }
 }
