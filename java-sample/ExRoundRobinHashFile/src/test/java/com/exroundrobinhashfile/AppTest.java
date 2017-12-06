@@ -33,8 +33,8 @@ public class AppTest {
         String line, trimLine ;
         String readPath = "C:\\temp\\naver_all.txt";
         int lineCount = 0;
-        RoundRobinHashFile roundRobinHashFile = new RoundRobinHashFile();
-        roundRobinHashFile.open("C:\\temp\\rr", 512, false);
+        HashDb roundRobinHashFile = new HashDb();
+        roundRobinHashFile.open("C:\\temp\\rr", 512, false, false);
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
