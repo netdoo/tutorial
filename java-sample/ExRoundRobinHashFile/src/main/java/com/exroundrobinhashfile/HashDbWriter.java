@@ -26,16 +26,17 @@ public class HashDbWriter implements AutoCloseable {
     int maxRR;
     boolean isOpen;
     boolean deleteOnExit;
-    HashDbFileLineProcessor hashDbFileLineProcessor;
+    HashDbEvent hashDbEvent;
     List<HashDbFileWriter> hashDbFileWriters = new ArrayList<>();
 
     final static Logger logger = LoggerFactory.getLogger(HashDbWriter.class);
 
-    public HashDbWriter(String roundRobinDir, int maxRR, HashDbFileLineProcessor hashDbFileLineProcessor, boolean truncate, boolean deleteOnExit) throws Exception {
+    public HashDbWriter(String roundRobinDir, int maxRR, HashDbEvent hashDbEvent, boolean truncate, boolean deleteOnExit) throws Exception {
         this.maxRR = maxRR;
         this.roundRobinDir = roundRobinDir;
         this.deleteOnExit = deleteOnExit;
-        this.hashDbFileLineProcessor = hashDbFileLineProcessor;
+        this.hashDbEvent = hashDbEvent;
+
         File dir = new File(this.roundRobinDir);
 
         if (dir.exists()) {
@@ -53,11 +54,11 @@ public class HashDbWriter implements AutoCloseable {
         this.isOpen = true;
     }
 
-    public void put(String key, String value) {
+    public void put(String key, HashDbValue value) {
         int idx = Math.abs(key.hashCode()) % maxRR;
         HashDbFileWriter writer = hashDbFileWriters.get(idx);
         writer.setChanged(true);
-        writer.println(value);
+        writer.println(HashDb.serializeKeyValue(key, value.serialize()));
     }
 
     @Override
@@ -72,7 +73,7 @@ public class HashDbWriter implements AutoCloseable {
                 .stream()
                 .filter(writer -> writer.isChanged())
                 .forEach(writer -> {
-                    p.execute(new HashDbDistinctJob(writer.getIoPath(), this.hashDbFileLineProcessor));
+                    p.execute(new HashDbIndexJob(writer.getIoPath(), this.hashDbEvent));
                 });
 
         p.shutdown();
@@ -89,14 +90,6 @@ public class HashDbWriter implements AutoCloseable {
             } else {
                 dir.mkdir();
             }
-        }
-    }
-
-    public void sort(Comparator<String> comparator) throws Exception {
-        for (int i = 0; i <= maxRR; i++) {
-            Path curr = Paths.get(this.roundRobinDir, String.valueOf(i) + ".dat");
-            Path sortPath = Paths.get(this.roundRobinDir, String.valueOf(i) + ".sort.dat");
-            ExternalSort.mergeSortedFiles(ExternalSort.sortInBatch(curr.toFile(), comparator), sortPath.toFile());
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.exroundrobinhashfile;
 
 import org.apache.commons.lang3.time.StopWatch;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,29 +32,37 @@ public class AppTest {
     @Test
     public void testApp() throws Exception {
 
-        String line, trimLine ;
-        String readPath = "C:\\temp\\naver_all.txt";
-        int lineCount = 0;
-        HashDb roundRobinHashFile = new HashDb();
-        roundRobinHashFile.open("C:\\temp\\rr", 512, false, false);
+        long updateTimeAt = System.currentTimeMillis();
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        try (BufferedReader in = Files.newBufferedReader(Paths.get(readPath), StandardCharsets.UTF_8);) {
-            line = in.readLine();
-            while ((line = in.readLine()) != null) {
-                lineCount++;
-                String key = getNamedKey(line);
-                roundRobinHashFile.println(key, key + "\t" + line);
-                if (lineCount % 100_000 == 0) {
-                    logger.info("process {}", lineCount);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        logger.info("updateTimeAt {}", updateTimeAt);
+
+        HashDbEvent hashDbEvent = (key, value) -> {
+            SimpleHashDbValue simpleHashDbValue = new SimpleHashDbValue(value);
+            logger.info("index {} ", key);
+        };
+
+        try (HashDbWriter hashDbWriter = new HashDbWriter("C:\\temp\\rr", 1, hashDbEvent, false, false);) {
+            int lineCount = 0;
+            //String line, trimLine ;
+            String readPath = "C:\\temp\\naver_all.txt";
+
+            //try (BufferedReader in = Files.newBufferedReader(Paths.get(readPath), StandardCharsets.UTF_8);) {
+            //    line = in.readLine();
+            //    while ((line = in.readLine()) != null) {
+            String line = "0\tMBC\t100\t200\t300\t400";
+                    lineCount++;
+                    hashDbWriter.put(getNamedKey(line), new SimpleHashDbValue(line, updateTimeAt));
+                    if (lineCount % 100_000 == 0) {
+                        logger.info("process {}", lineCount);
+                    }
+                //}
+            //} catch (Exception e) {
+            //    e.printStackTrace();
+            //}
         }
 
-        roundRobinHashFile.close();
         stopWatch.stop();
         logger.info("total elapsed time {} (secs)", stopWatch.getTime(TimeUnit.SECONDS));
     }
