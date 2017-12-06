@@ -1,5 +1,6 @@
 package com.exroundrobinhashfile;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,9 +20,10 @@ public class HashDbDistinctJob implements Runnable {
 
     Path readPath;
     final static Logger logger = LoggerFactory.getLogger(HashDbDistinctJob.class);
-
-    public HashDbDistinctJob(Path readPath) {
+    HashDbFileLineProcessor hashDbFileLineProcessor;
+    public HashDbDistinctJob(Path readPath, HashDbFileLineProcessor hashDbFileLineProcessor) {
         this.readPath = readPath;
+        this.hashDbFileLineProcessor = hashDbFileLineProcessor;
     }
 
     @Override
@@ -34,10 +36,8 @@ public class HashDbDistinctJob implements Runnable {
             int pos;
             String key, value;
             while ((line = in.readLine()) != null) {
-                pos = line.indexOf("\t");
-                key = line.substring(0, pos);
-                value = line.substring(pos+1);
-                map.put(key, value);
+                Pair<String, String> pair = hashDbFileLineProcessor.onProcess(line);
+                map.put(pair.getKey(), pair.getValue());
             }
         } catch (Exception e) {
             logger.error("fail to make unique ", e);

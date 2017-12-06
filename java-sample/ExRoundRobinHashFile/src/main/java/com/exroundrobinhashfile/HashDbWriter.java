@@ -21,20 +21,21 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class HashDb {
+public class HashDbWriter implements AutoCloseable {
     String roundRobinDir;
     int maxRR;
     boolean isOpen;
     boolean deleteOnExit;
+    HashDbFileLineProcessor hashDbFileLineProcessor;
     List<HashDbFileWriter> hashDbFileWriters = new ArrayList<>();
 
-    final static Logger logger = LoggerFactory.getLogger(HashDb.class);
+    final static Logger logger = LoggerFactory.getLogger(HashDbWriter.class);
 
-    public void open(String roundRobinDir, int maxRR, boolean truncate, boolean deleteOnExit) throws Exception {
+    public HashDbWriter(String roundRobinDir, int maxRR, HashDbFileLineProcessor hashDbFileLineProcessor, boolean truncate, boolean deleteOnExit) throws Exception {
         this.maxRR = maxRR;
         this.roundRobinDir = roundRobinDir;
         this.deleteOnExit = deleteOnExit;
-
+        this.hashDbFileLineProcessor = hashDbFileLineProcessor;
         File dir = new File(this.roundRobinDir);
 
         if (dir.exists()) {
@@ -52,12 +53,14 @@ public class HashDb {
         this.isOpen = true;
     }
 
-    public void println(String key, String value) {
+    public void put(String key, String value) {
         int idx = Math.abs(key.hashCode()) % maxRR;
         HashDbFileWriter writer = hashDbFileWriters.get(idx);
+        writer.setChanged(true);
         writer.println(value);
     }
 
+    @Override
     public void close() throws Exception {
         this.hashDbFileWriters.forEach(writer -> {
             writer.close();
@@ -65,9 +68,12 @@ public class HashDb {
 
         ExecutorService p = Executors.newFixedThreadPool(10);
 
-        this.hashDbFileWriters.forEach(writer -> {
-            p.execute(new HashDbDistinctJob(writer.getIoPath()));
-        });
+        this.hashDbFileWriters
+                .stream()
+                .filter(writer -> writer.isChanged())
+                .forEach(writer -> {
+                    p.execute(new HashDbDistinctJob(writer.getIoPath(), this.hashDbFileLineProcessor));
+                });
 
         p.shutdown();
         p.awaitTermination(10, TimeUnit.MINUTES);

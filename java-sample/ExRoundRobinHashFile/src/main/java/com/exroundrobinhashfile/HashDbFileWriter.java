@@ -11,6 +11,7 @@ import java.nio.file.StandardOpenOption;
 public class HashDbFileWriter extends PrintWriter {
 
     Path ioPath;
+    boolean changed;
 
     public HashDbFileWriter(Path ioPath) throws Exception {
         super(new PrintWriter(Files.newBufferedWriter(ioPath, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)));
@@ -19,5 +20,13 @@ public class HashDbFileWriter extends PrintWriter {
 
     public Path getIoPath() {
         return this.ioPath;
+    }
+
+    public void setChanged(boolean changed) {
+        this.changed = changed;
+    }
+
+    public boolean isChanged() {
+        return this.changed;
     }
 }
