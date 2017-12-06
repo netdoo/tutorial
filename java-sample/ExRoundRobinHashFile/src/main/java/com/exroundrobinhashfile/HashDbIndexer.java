@@ -16,13 +16,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class HashDbIndexJob implements Runnable {
+public class HashDbIndexer implements Runnable {
 
     Path readPath;
-    final static Logger logger = LoggerFactory.getLogger(HashDbIndexJob.class);
+    final static Logger logger = LoggerFactory.getLogger(HashDbIndexer.class);
     HashDbEvent hashDbEvent;
 
-    public HashDbIndexJob(Path readPath, HashDbEvent hashDbEvent) {
+    public HashDbIndexer(Path readPath, HashDbEvent hashDbEvent) {
         this.readPath = readPath;
         this.hashDbEvent = hashDbEvent;
     }
