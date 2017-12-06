@@ -1,8 +1,6 @@
 package com.exroundrobinhashfile;
 
 import org.apache.commons.lang3.time.StopWatch;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +12,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import static junit.framework.TestCase.assertTrue;
 
 /**
  * Unit test for simple App.
@@ -43,12 +39,22 @@ public class AppTest {
         //deals.add("0\tMBC\t100\tJPN\t300\t400");
         //deals.add("0\tMBC\t100\tCHN\t300\t400");
 
-        HashDbEvent hashDbEvent = (key, value) -> {
-            SimpleHashDbValue simpleHashDbValue = new SimpleHashDbValue(value);
-            if (simpleHashDbValue.getUpdateTimeAt() == updateTimeAt) {
-                logger.info("new index {} ", key);
-            } else {
-                logger.info("old index {} ", key);
+        HashDbEvent hashDbEvent = new HashDbEvent() {
+            @Override
+            public void onIndex(String key, String serializeValue) {
+                SimpleHashDbValue simpleHashDbValue = new SimpleHashDbValue(serializeValue);
+                if (simpleHashDbValue.getUpdateTimeAt() == updateTimeAt) {
+                    logger.info("new index {} ", key);
+                } else {
+                    logger.info("old index {} ", key);
+                }
+            }
+
+            @Override
+            public boolean onOverWrite(String oldSerializeValue, String newSerializeValue) {
+                SimpleHashDbValue oldValue = new SimpleHashDbValue(oldSerializeValue);
+                SimpleHashDbValue newValue = new SimpleHashDbValue(newSerializeValue);
+                return false;
             }
         };
 
@@ -67,9 +73,16 @@ public class AppTest {
 
         logger.info("updateTimeAt {}", updateTimeAt);
 
-        HashDbEvent hashDbEvent = (key, value) -> {
-        //    SimpleHashDbValue simpleHashDbValue = new SimpleHashDbValue(value);
-        //   logger.info("index {} ", key);
+        HashDbEvent hashDbEvent = new HashDbEvent() {
+            @Override
+            public void onIndex(String key, String serializeValue) {
+
+            }
+
+            @Override
+            public boolean onOverWrite(String oldSerializeValue, String newSerializeValue) {
+                return true;
+            }
         };
 
         try (HashDbWriter hashDbWriter = new HashDbWriter("C:\\temp\\rr", 2048, hashDbEvent, true, false);) {

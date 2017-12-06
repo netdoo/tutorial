@@ -35,7 +35,19 @@ public class HashDbIndexer implements Runnable {
         try (BufferedReader in = Files.newBufferedReader(readPath, StandardCharsets.UTF_8);) {
             while ((line = in.readLine()) != null) {
                 Pair<String, String> pair = HashDb.deserializeKeyValue(line);
-                map.put(pair.getKey(), pair.getValue());
+
+                // 중복된 키가 없는 경우
+                String value = map.get(pair.getKey());
+                if (value == null) {
+                    map.put(pair.getKey(), pair.getValue());
+                } else {
+                    // 중복된 키가 있는 경우
+                    logger.info("onOverWrite {} {}", value, pair.getValue());
+
+                    if (true == this.hashDbEvent.onOverWrite(value, pair.getValue())) {
+                        map.put(pair.getKey(), pair.getValue());
+                    }
+                }
             }
         } catch (Exception e) {
             logger.error("fail to make unique ", e);
