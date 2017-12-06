@@ -28,7 +28,6 @@ public class HashDbWriter implements AutoCloseable {
     boolean deleteOnExit;
     HashDbEvent hashDbEvent;
     List<HashDbFileWriter> hashDbFileWriters = new ArrayList<>();
-
     final static Logger logger = LoggerFactory.getLogger(HashDbWriter.class);
 
     public HashDbWriter(String roundRobinDir, int maxRR, HashDbEvent hashDbEvent, boolean truncate, boolean deleteOnExit) throws Exception {
@@ -48,7 +47,11 @@ public class HashDbWriter implements AutoCloseable {
         }
 
         for (int i = 0; i < maxRR; i++) {
-            hashDbFileWriters.add(new HashDbFileWriter(Paths.get(this.roundRobinDir, String.valueOf(i) + ".dat")));
+            if (truncate) {
+                hashDbFileWriters.add(new HashDbFileWriter(Paths.get(this.roundRobinDir, String.valueOf(i) + ".dat"), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING));
+            } else {
+                hashDbFileWriters.add(new HashDbFileWriter(Paths.get(this.roundRobinDir, String.valueOf(i) + ".dat"), StandardOpenOption.CREATE, StandardOpenOption.APPEND));
+            }
         }
 
         this.isOpen = true;
@@ -73,7 +76,7 @@ public class HashDbWriter implements AutoCloseable {
                 .stream()
                 .filter(writer -> writer.isChanged())
                 .forEach(writer -> {
-                    p.execute(new HashDbIndexJob(writer.getIoPath(), this.hashDbEvent));
+                    p.execute(new HashDbIndexer(writer.getIoPath(), this.hashDbEvent));
                 });
 
         p.shutdown();
