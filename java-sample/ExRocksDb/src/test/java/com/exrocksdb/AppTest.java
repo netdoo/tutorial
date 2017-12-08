@@ -15,6 +15,8 @@ public class AppTest {
     final static Logger logger = LoggerFactory.getLogger(AppTest.class);
 
     static {
+        String libPath = System.getProperty("java.library.path");
+        logger.info("{}", libPath);
         RocksDB.loadLibrary();
     }
 
