@@ -1,6 +1,5 @@
 package com.exfastutil;
 
-import com.sun.xml.internal.fastinfoset.util.StringArray;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.longs.*;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -34,9 +33,29 @@ public class ListTest {
     }
 
     @Test
-    public void _1_테스트_ObjectArrayList() {
+    public void _1_테스트_ArrayList() {
+
+        List<String> list = new ArrayList<>(MAX_PUT_COUNT);
+
+        for (long i = 0; i < MAX_PUT_COUNT; i++) {
+            list.add(dummyStringValue);
+        }
+    }
+
+    @Test
+    public void _2_테스트_ObjectArrayList() {
 
         ObjectArrayList<String> list = new ObjectArrayList<>();
+
+        for (long i = 0; i < MAX_PUT_COUNT; i++) {
+            list.add(dummyStringValue);
+        }
+    }
+
+    @Test
+    public void _3_테스트_ObjectArrayList() {
+
+        ObjectArrayList<String> list = new ObjectArrayList<>(MAX_PUT_COUNT);
 
         for (long i = 0; i < MAX_PUT_COUNT; i++) {
             list.add(dummyStringValue);
