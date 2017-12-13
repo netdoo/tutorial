@@ -11,10 +11,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import static jdk.nashorn.internal.runtime.regexp.joni.Syntax.Java;
 
 public class App {
-    public static void main( String[] args ) {
+    public static void main( String[] args ) throws Exception {
         Workbook xlsWb = new HSSFWorkbook(); // Excel 2007 이전 버전
 
         // *** Sheet-------------------------------------------------
@@ -69,15 +68,10 @@ public class App {
         //---------------------------------
 
         // excel 파일 저장
-        try {
-            File xlsFile = new File("C:/temp/testExcel.xls");
-            FileOutputStream fileOut = new FileOutputStream(xlsFile);
-            xlsWb.write(fileOut);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println( "Hello World!" );
+        File xlsFile = new File("C:/temp/testExcel.xls");
+        FileOutputStream fileOut = new FileOutputStream(xlsFile);
+        xlsWb.write(fileOut);
+        xlsWb.close();
+        fileOut.close();
     }
 }
