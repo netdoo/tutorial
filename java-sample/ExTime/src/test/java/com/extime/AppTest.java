@@ -2,6 +2,8 @@ package com.extime;
 
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,6 +12,8 @@ import java.time.format.DateTimeFormatter;
 import static junit.framework.TestCase.assertTrue;
 
 public class AppTest {
+
+    final static Logger logger = LoggerFactory.getLogger(AppTest.class);
 
     @Test
     public void AppTest() {
