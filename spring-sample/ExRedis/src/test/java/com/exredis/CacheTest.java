@@ -58,18 +58,21 @@ public class CacheTest {
 
     @Test
     public void _2_캐쉬_테스트() throws Exception {
-        logger.info("{}", this.colorDB.getColor("001"));
-        logger.info("{}", this.colorDB.getColor("001"));
-        logger.info("{}", this.colorDB.getColor("001"));
+
+        String id = "001";
+
+        logger.info("{}", this.colorDB.getColor(id));
+        logger.info("{}", this.colorDB.getColor(id));
+        logger.info("{}", this.colorDB.getColor(id));
 
         Thread.sleep(12_000);
-        logger.info("{}", this.colorDB.getColor("001"));
-        logger.info("{}", this.colorDB.getColor("001"));
-        logger.info("{}", this.colorDB.getColor("001"));
+        logger.info("{}", this.colorDB.getColor(id));
+        logger.info("{}", this.colorDB.getColor(id));
+        logger.info("{}", this.colorDB.getColor(id));
 
-        this.colorDB.delColor("001");
-        logger.info("{}", this.colorDB.getColor("001"));
-        logger.info("{}", this.colorDB.getColor("001"));
-        logger.info("{}", this.colorDB.getColor("001"));
+        this.colorDB.delColor(id);
+        logger.info("{}", this.colorDB.getColor(id));
+        logger.info("{}", this.colorDB.getColor(id));
+        logger.info("{}", this.colorDB.getColor(id));
     }
 }
