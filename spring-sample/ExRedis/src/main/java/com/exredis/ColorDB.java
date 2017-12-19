@@ -27,28 +27,25 @@ public class ColorDB {
     }
 
     /**
-     * The User that is saved from this method will be stored in the
-     * cache and referenced by its' ID.
+     * 캐쉬 갱신
      */
-    @CachePut("colors")
+    @CachePut(value = "colors")
     public String putColor(String id) {
-        logger.info("putColor {}", id);
+        logger.info("read from colorDB for update the cache {}", id);
         return this.colorDB.get(id);
     }
 
     /**
-     * This method should never actually be executed, since the User will
-     * always be retrieved from the cached output of saveUser.
+     * 캐쉬 조회, 데이터 조회후 캐쉬에 추가
      */
-    @Cacheable("colors")
+    @Cacheable(value = "colors")
     public String getColor(String id) {
-        logger.info("getColor {}", id);
+        logger.info("read from colorDB {}", id);
         return this.colorDB.get(id);
     }
 
     /**
-     * When this method is called, the cached User will be deleted from
-     * the cache.
+     * 캐쉬 삭제
      */
     @CacheEvict("colors")
     public void delColor(String id) {

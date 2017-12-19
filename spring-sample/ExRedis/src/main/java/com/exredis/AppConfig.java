@@ -1,6 +1,7 @@
 package com.exredis;
 
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.*;
 import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.context.event.SimpleApplicationEventMulticaster;
@@ -8,12 +9,21 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import redis.embedded.RedisServer;
 
 @Configuration
 @ImportResource("classpath:/app-config.xml")
 @ComponentScan("com.exredis")
+@EnableCaching
 @EnableAspectJAutoProxy(proxyTargetClass=false)
 public class AppConfig {
+
+    RedisServer redisServer;
+
+    public AppConfig() throws Exception {
+//        this.redisServer = new RedisServer(6379);
+//        this.redisServer.start();
+    }
 
     @Bean
     JedisConnectionFactory jedisConnectionFactory() {

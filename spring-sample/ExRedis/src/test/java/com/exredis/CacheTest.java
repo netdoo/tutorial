@@ -12,6 +12,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import redis.embedded.RedisServer;
 
 import java.util.Map;
 import java.util.Set;
@@ -57,7 +58,10 @@ public class CacheTest {
 
     @Test
     public void _2_캐쉬_테스트() throws Exception {
-        this.colorDB.putColor("001");
+        logger.info("{}", this.colorDB.getColor("001"));
+        logger.info("{}", this.colorDB.getColor("001"));
+        logger.info("{}", this.colorDB.getColor("001"));
+        Thread.sleep(12_000);
         logger.info("{}", this.colorDB.getColor("001"));
         logger.info("{}", this.colorDB.getColor("001"));
         logger.info("{}", this.colorDB.getColor("001"));
