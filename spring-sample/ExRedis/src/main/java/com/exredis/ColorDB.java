@@ -13,6 +13,8 @@ import java.util.Map;
 @Repository
 public class ColorDB {
 
+    // https://github.com/caseyscarborough/spring-redis-caching-example/blob/master/src/main/java/com/caseyscarborough/spring/redis/config/CacheConfig.java
+
     Map<String, String> colorDB = new HashMap<>();
     final static Logger logger = LoggerFactory.getLogger(ColorDB.class);
 
