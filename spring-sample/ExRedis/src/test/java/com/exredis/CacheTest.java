@@ -61,7 +61,13 @@ public class CacheTest {
         logger.info("{}", this.colorDB.getColor("001"));
         logger.info("{}", this.colorDB.getColor("001"));
         logger.info("{}", this.colorDB.getColor("001"));
+
         Thread.sleep(12_000);
+        logger.info("{}", this.colorDB.getColor("001"));
+        logger.info("{}", this.colorDB.getColor("001"));
+        logger.info("{}", this.colorDB.getColor("001"));
+
+        this.colorDB.delColor("001");
         logger.info("{}", this.colorDB.getColor("001"));
         logger.info("{}", this.colorDB.getColor("001"));
         logger.info("{}", this.colorDB.getColor("001"));
