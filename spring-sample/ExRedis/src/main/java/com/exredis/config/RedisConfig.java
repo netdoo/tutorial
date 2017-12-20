@@ -1,5 +1,6 @@
 package com.exredis.config;
 
+import com.exredis.domain.Box;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
@@ -12,6 +13,7 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
+import org.springframework.data.redis.serializer.JacksonJsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
@@ -42,6 +44,8 @@ public class RedisConfig extends CachingConfigurerSupport {
         template.setKeySerializer( new StringRedisSerializer() );
         template.setHashValueSerializer( new GenericToStringSerializer< Object >( Object.class ) );
         template.setValueSerializer( new GenericToStringSerializer< Object >( Object.class ) );
+
+        //template.setValueSerializer(new JacksonJsonRedisSerializer<>(Box.class));
 
         return template;
     }

@@ -1,5 +1,8 @@
 package com.exredis;
 
+import com.exredis.domain.Box;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataAccessException;
@@ -20,6 +23,14 @@ public class SpringRedis {
     @Autowired
     RedisTemplate<String, Object> redisTemplate;
 
+    ObjectMapper mapper;
+
+    public SpringRedis() {
+        this.mapper = new ObjectMapper();
+        this.mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
+
+
     public void flushAll() {
         this.redisTemplate.execute((RedisCallback<Object>)redisConnection -> {
             redisConnection.flushAll();
@@ -39,6 +50,18 @@ public class SpringRedis {
     public String getValue(String key) {
         return (String)this.redisTemplate.opsForValue().get(key);
     }
+
+    public void setObject(String key, Box box) throws Exception {
+        String value = this.mapper.writeValueAsString(box);
+        this.redisTemplate.opsForValue().set(key, value);
+    }
+
+    public Box getObject(String key) throws Exception {
+
+        String value = (String)this.redisTemplate.opsForValue().get(key);
+        return this.mapper.readValue(value, Box.class);
+    }
+
 
     public void delKey(String key) {
         this.redisTemplate.delete(key);

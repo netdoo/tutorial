@@ -74,6 +74,7 @@ public class PubSubTest {
         logger.info("publish message");
         this.springRedis.publish(MBC, "한글");
         this.springRedis.publish(SBS, "Korea");
+        Thread.sleep(3_000);
     }
 
     @Test
