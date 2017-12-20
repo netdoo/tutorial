@@ -2,6 +2,8 @@ package com.exredis;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @Lazy
@@ -26,6 +29,11 @@ public class SpringRedis {
 
     public void setValue(String key, String value) {
         this.redisTemplate.opsForValue().set(key, value);
+    }
+
+    public void setValue(String key, String value, long timeout, TimeUnit unit) {
+        this.redisTemplate.opsForValue().set(key, value);
+        this.redisTemplate.expire(key, timeout, unit);
     }
 
     public String getValue(String key) {
@@ -70,5 +78,9 @@ public class SpringRedis {
 
     public Set<ZSetOperations.TypedTuple<Object>> getTopWithScore(String key, int start, int limit) {
         return this.redisTemplate.opsForZSet().reverseRangeWithScores(key, start, start+limit-1);
+    }
+
+    public void publish(String channel, String message) {
+        this.redisTemplate.convertAndSend(channel, message);
     }
 }

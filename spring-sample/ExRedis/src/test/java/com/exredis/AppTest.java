@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {AppConfig.class})
@@ -31,7 +32,7 @@ public class AppTest {
     }
 
     @Test
-    public void _1_Key_Value_테스트() {
+    public void _1_Key_Value_테스트() throws Exception {
         final String key = "001";
 
         springRedis.setValue(key, "hello");
@@ -42,6 +43,13 @@ public class AppTest {
         springRedis.delKey(key);
 
         logger.info("{}", springRedis.getValue(key));
+
+        springRedis.setValue(key, "expire test value", 3, TimeUnit.SECONDS);
+
+        for (int i = 0; i < 5; i++) {
+            logger.info("{} {}", i, springRedis.getValue(key));
+            Thread.sleep(1500);
+        }
     }
 
     @Test

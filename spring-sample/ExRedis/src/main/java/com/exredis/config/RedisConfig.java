@@ -10,6 +10,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.serializer.GenericToStringSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 @EnableCaching
@@ -34,6 +37,12 @@ public class RedisConfig extends CachingConfigurerSupport {
     public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(jedisConnectionFactory());
+
+        // 한글깨짐 방지
+        template.setKeySerializer( new StringRedisSerializer() );
+        template.setHashValueSerializer( new GenericToStringSerializer< Object >( Object.class ) );
+        template.setValueSerializer( new GenericToStringSerializer< Object >( Object.class ) );
+
         return template;
     }
 
@@ -42,5 +51,12 @@ public class RedisConfig extends CachingConfigurerSupport {
         RedisCacheManager cacheManager = new RedisCacheManager(redisTemplate);
         cacheManager.setDefaultExpiration(10);  // 단위 : 초, 기본값 : 0 (무제한)
         return cacheManager;
+    }
+
+    @Bean
+    public RedisMessageListenerContainer redisMessageListenerContainer(JedisConnectionFactory jedisConnectionFactory) {
+        final RedisMessageListenerContainer redisMessageListenerContainer = new RedisMessageListenerContainer();
+        redisMessageListenerContainer.setConnectionFactory(jedisConnectionFactory);
+        return redisMessageListenerContainer;
     }
 }
