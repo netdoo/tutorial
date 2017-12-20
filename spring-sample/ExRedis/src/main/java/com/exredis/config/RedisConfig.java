@@ -1,29 +1,32 @@
-package com.exredis;
+package com.exredis.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CachingConfigurer;
+import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.*;
-import org.springframework.context.event.ApplicationEventMulticaster;
-import org.springframework.context.event.SimpleApplicationEventMulticaster;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.cache.annotation.CachingConfigurerSupport;
 
 @Configuration
-@ImportResource("classpath:/app-config.xml")
-@ComponentScan("com.exredis")
 @EnableCaching
-@EnableAspectJAutoProxy(proxyTargetClass=false)
-public class AppConfig extends CachingConfigurerSupport {
+@PropertySource("redis.properties")
+public class RedisConfig extends CachingConfigurerSupport {
+
+    @Value("${redis.hostname}")
+    String redisHostName;
+
+    @Value("${redis.port}")
+    int redisPort;
 
     @Bean
     JedisConnectionFactory jedisConnectionFactory() {
         JedisConnectionFactory jedisConFactory = new JedisConnectionFactory();
-        jedisConFactory.setHostName("localhost");
-        jedisConFactory.setPort(6379);
+        jedisConFactory.setHostName(this.redisHostName);
+        jedisConFactory.setPort(this.redisPort);
         return jedisConFactory;
     }
 

@@ -1,5 +1,6 @@
 package com.exredis;
 
+import com.exredis.config.AppConfig;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
