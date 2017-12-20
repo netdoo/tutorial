@@ -1,38 +1,20 @@
 package com.exchmap;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.Test;
 
-/**
- * Unit test for simple App.
- */
-public class AppTest 
-    extends TestCase
-{
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public AppTest( String testName )
-    {
-        super( testName );
-    }
+import java.util.HashMap;
+import java.util.Map;
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( AppTest.class );
-    }
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThat;
 
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
+public class AppTest {
+    @Test
+    public void appTest() {
+        Map<String, String> map = new HashMap<>();
+        map.put("001", "RED");
+        map.put("002", "GREEN");
+        map.put("003", "BLUE");
+        assertThat(map.getOrDefault("004", "empty"), is("empty"));
     }
 }
