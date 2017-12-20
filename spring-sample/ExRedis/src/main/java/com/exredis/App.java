@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.data.redis.core.ZSetOperations;
-import redis.embedded.RedisServer;
 
 import java.util.Map;
 import java.util.Set;

@@ -12,7 +12,6 @@ import org.springframework.cache.CacheManager;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import redis.embedded.RedisServer;
 
 import java.util.Map;
 import java.util.Set;

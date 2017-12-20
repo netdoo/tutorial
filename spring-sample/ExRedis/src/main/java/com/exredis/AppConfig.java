@@ -1,6 +1,7 @@
 package com.exredis;
 
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CachingConfigurer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.*;
 import org.springframework.context.event.ApplicationEventMulticaster;
@@ -9,21 +10,14 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import redis.embedded.RedisServer;
+import org.springframework.cache.annotation.CachingConfigurerSupport;
 
 @Configuration
 @ImportResource("classpath:/app-config.xml")
 @ComponentScan("com.exredis")
 @EnableCaching
 @EnableAspectJAutoProxy(proxyTargetClass=false)
-public class AppConfig {
-
-    RedisServer redisServer;
-
-    public AppConfig() throws Exception {
-//        this.redisServer = new RedisServer(6379);
-//        this.redisServer.start();
-    }
+public class AppConfig extends CachingConfigurerSupport {
 
     @Bean
     JedisConnectionFactory jedisConnectionFactory() {
@@ -40,10 +34,10 @@ public class AppConfig {
         return template;
     }
 
-    @Bean
-    CacheManager cacheManager(RedisTemplate redisTemplate) {
+    @Bean(name = "cacheManager")
+    public CacheManager cacheManager(RedisTemplate redisTemplate) {
         RedisCacheManager cacheManager = new RedisCacheManager(redisTemplate);
-        cacheManager.setDefaultExpiration(10);  // 단위 : 초
+        cacheManager.setDefaultExpiration(10);  // 단위 : 초, 기본값 : 0 (무제한)
         return cacheManager;
     }
 }
