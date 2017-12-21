@@ -4,7 +4,9 @@ import jetbrains.exodus.env.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,13 +19,10 @@ import java.util.Map;
 import static jetbrains.exodus.bindings.StringBinding.entryToString;
 import static jetbrains.exodus.bindings.StringBinding.stringToEntry;
 
-/**
- * Created by jhkwon78 on 2017-11-17.
- */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class WithDuplicateTest {
 
-    final Logger LOGGER = LoggerFactory.getLogger(WithDuplicateTest.class);
-    final static String dbPath = "C:\\Temp\\xodus.db";
+    final Logger logger = LoggerFactory.getLogger(WithDuplicateTest.class);
 
     class Entry {
         String key;
@@ -63,30 +62,38 @@ public class WithDuplicateTest {
         return entryList;
     }
 
-    // WITH_DUPLICATES 모드로 데이터베이스를 생성한 경우,
-    // put 메서드는 중복된 키 값이 있어도 데이터가 추가되나,
-    // add 메서드는 중복된 키 값이 있는 경우, 데이터가 추가가 안된다.
+    @Test
+    public void _0_테스트_준비() throws Exception {
+        TestEnv.cleanUp();
+    }
 
     @Test
-    public void testWithDuplicatePutOp() throws Exception {
-        FileUtils.deleteDirectory(new File(dbPath));
-        Environment env = Environments.newInstance(dbPath);
-        Store store = env.computeInTransaction(txn -> env.openStore("Messages", StoreConfig.WITH_DUPLICATES, txn));
+    public void _1_중복허용_PUT_테스트_준비() throws Exception {
+        TestEnv.cleanUp();
+    }
+
+    // WITH_DUPLICATES 모드로 데이터베이스를 생성한 경우,
+    // put 메서드는 중복된 키 값이 있어도 데이터가 추가된다.
+
+    @Test
+    public void _2_중복허용_PUT_테스트() throws Exception {
+        Environment env = Environments.newInstance(TestEnv.dbPath);
+        Store store = env.computeInTransaction(txn -> env.openStore(TestEnv.storeName, StoreConfig.WITH_DUPLICATES, txn));
 
         env.executeInTransaction(txn -> {
             createDummyEntries().forEach(entry -> {
-                LOGGER.info("{}/{} {}", entry.getKey(), entry.getVal(), store.put(txn, stringToEntry(entry.getKey()), stringToEntry(entry.getVal())));
+                logger.info("{}/{} {}", entry.getKey(), entry.getVal(), store.put(txn, stringToEntry(entry.getKey()), stringToEntry(entry.getVal())));
             });
         });
 
         long count = env.computeInReadonlyTransaction(txn -> store.count(txn));
-        LOGGER.info("count {} ", count);
+        logger.info("count {} ", count);
 
         // iterate
         env.executeInReadonlyTransaction(txn -> {
             try (Cursor cursor = store.openCursor(txn)) {
                 while (cursor.getNext()) {
-                    LOGGER.info("iter {} / {}", entryToString(cursor.getKey()), entryToString(cursor.getValue()));
+                    logger.info("iter {} / {}", entryToString(cursor.getKey()), entryToString(cursor.getValue()));
                 }
             }
         });
@@ -95,25 +102,33 @@ public class WithDuplicateTest {
     }
 
     @Test
-    public void testWithDuplicateAddOp() throws Exception {
-        FileUtils.deleteDirectory(new File(dbPath));
-        Environment env = Environments.newInstance(dbPath);
-        Store store = env.computeInTransaction(txn -> env.openStore("Messages", StoreConfig.WITH_DUPLICATES, txn));
+    public void _3_중복허용_ADD_테스트_준비() throws Exception {
+        TestEnv.cleanUp();
+    }
+
+    // WITH_DUPLICATES 모드로 데이터베이스를 생성한 경우,
+    // add 메서드는 중복된 키 값이 있는 경우, 데이터가 추가가 안된다.
+
+    @Test
+    public void _4_중복허용_ADD_테스트() throws Exception {
+
+        Environment env = Environments.newInstance(TestEnv.dbPath);
+        Store store = env.computeInTransaction(txn -> env.openStore(TestEnv.storeName, StoreConfig.WITH_DUPLICATES, txn));
 
         env.executeInTransaction(txn -> {
             createDummyEntries().forEach(entry -> {
-                LOGGER.info("{}/{} {}", entry.getKey(), entry.getVal(), store.add(txn, stringToEntry(entry.getKey()), stringToEntry(entry.getVal())));
+                logger.info("{}/{} {}", entry.getKey(), entry.getVal(), store.add(txn, stringToEntry(entry.getKey()), stringToEntry(entry.getVal())));
             });
         });
 
         long count = env.computeInReadonlyTransaction(txn -> store.count(txn));
-        LOGGER.info("count {} ", count);
+        logger.info("count {} ", count);
 
         // iterate
         env.executeInReadonlyTransaction(txn -> {
             try (Cursor cursor = store.openCursor(txn)) {
                 while (cursor.getNext()) {
-                    LOGGER.info("iter {} / {}", entryToString(cursor.getKey()), entryToString(cursor.getValue()));
+                    logger.info("iter {} / {}", entryToString(cursor.getKey()), entryToString(cursor.getValue()));
                 }
             }
         });

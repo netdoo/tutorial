@@ -22,22 +22,10 @@ import static jetbrains.exodus.bindings.StringBinding.stringToEntry;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class BulkTest {
     final static Logger logger = LoggerFactory.getLogger(BulkTest.class);
-    String dbDir = "C:\\temp\\db";
-    int i = 0, count = 0;
-
-    long getUsedMemory() {
-        return (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024*1024);
-    }
 
     @Test
     public void _0_테스트_준비() throws Exception {
-        File dir = new File(dbDir);
-
-        if (dir.exists()) {
-            Arrays.stream(dir.listFiles()).forEach(File::delete);
-        } else {
-            dir.mkdir();
-        }
+        TestEnv.cleanUp();
     }
 
     @Test
@@ -46,23 +34,25 @@ public class BulkTest {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
 
-        Environment env = Environments.newInstance(this.dbDir);
-        Store store = env.computeInTransaction(txn -> env.openStore("Messages", StoreConfig.WITHOUT_DUPLICATES, txn));
+        Environment env = Environments.newInstance(TestEnv.dbPath);
+        Store store = env.computeInTransaction(txn -> env.openStore(TestEnv.storeName, StoreConfig.WITHOUT_DUPLICATES, txn));
 
         String key = StringUtils.leftPad("0", 64);
         String val = StringUtils.leftPad("0", 1024);
 
-        while (count < 20_000_000) {
-            env.executeInTransaction(txn -> {
-                for (int i = 0; i < 200_000; i++) {
-                    count++;
-                    store.put(txn, stringToEntry(key + count), stringToEntry(val));
-                }
-            });
-            logger.info("put {} records", count);
-        }
+        env.executeInTransaction(txn -> {
+            for (int i = 0; i < 200_000; i++) {
+                store.put(txn, stringToEntry(key + i), stringToEntry(val));
+            }
+        });
+
         env.close();
         stopWatch.stop();
         logger.info("elapsed time {} (secs)", stopWatch.getTime(TimeUnit.SECONDS));
+    }
+
+    @Test
+    public void _99_테스트_종료() throws Exception {
+
     }
 }

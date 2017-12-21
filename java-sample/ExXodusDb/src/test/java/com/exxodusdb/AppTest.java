@@ -1,297 +1,109 @@
 package com.exxodusdb;
 
-import com.exxodusdb.domain.EPFile;
-import com.exxodusdb.domain.EPFileLine;
-import com.exxodusdb.domain.EPTSVData;
-import com.exxodusdb.domain.EPTSVData2;
 import jetbrains.exodus.ByteIterable;
-import jetbrains.exodus.env.Environment;
-import jetbrains.exodus.env.Environments;
-import jetbrains.exodus.env.Store;
-import jetbrains.exodus.env.StoreConfig;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.mutable.MutableInt;
-import org.apache.commons.lang3.time.StopWatch;
-import org.junit.Assert;
+import jetbrains.exodus.env.*;
+import org.jetbrains.annotations.NotNull;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
+import static jetbrains.exodus.bindings.StringBinding.entryToString;
 import static jetbrains.exodus.bindings.StringBinding.stringToEntry;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AppTest {
 
-    final Logger LOGGER = LoggerFactory.getLogger(AppTest.class);
-    String dbDirPath = "C:\\temp\\EP\\test\\db\\";
+    final static Logger logger = LoggerFactory.getLogger(AppTest.class);
 
-    String inputAllDirPath = "C:\\temp\\EP\\test\\all\\input\\";
-    String outputAllDirPath = "C:\\temp\\EP\\test\\all\\output\\";
-    String appendAllPath = outputAllDirPath + "ep_all_result.txt";
+    @Test
+    public void _0_테스트_준비() throws Exception {
+        TestEnv.cleanUp();
+    }
 
-    String inputUpdateDirPath = "C:\\temp\\EP\\test\\update\\input\\";
-    String outputUpdateDirPath = "C:\\temp\\EP\\test\\update\\output\\";
-    String appendUpdatePath = outputUpdateDirPath + "ep_update_result.txt";
+    @Test
+    public void _1_CRUD_테스트() throws Exception {
 
-    public boolean verifyDbData(String dbPath, Map<String, String> verifyMap) {
-        Environment env = Environments.newInstance(dbPath);
-        Store store = env.computeInTransaction(txn -> env.openStore("EP", StoreConfig.WITHOUT_DUPLICATES, txn));
-        AtomicInteger errorCount = new AtomicInteger();
+        Environment env = Environments.newInstance(TestEnv.dbPath);
+        Store store = env.computeInTransaction(txn -> env.openStore(TestEnv.storeName, StoreConfig.WITHOUT_DUPLICATES, txn));
 
-        env.executeInReadonlyTransaction(txn -> {
-            verifyMap.forEach((key, value) -> {
-                ByteIterable exist = store.get(txn, stringToEntry(key));
-                if (exist == null) {
-                    errorCount.incrementAndGet();
-                    LOGGER.error("No such {}", key);
-                }
-            });
+        // 데이터베이스에 접근하기 위해서는 트랜잭션이 필요함.
+        // If you have an exclusive transaction,
+        // no other transaction (except read-only) can be started against the same Environment
+        // unless you finish (commit or abort) the exclusive transaction.
+
+        // 1. 쓰기 전용 트랜잭션 (exclusive transaction)
+        env.executeInTransaction(new TransactionalExecutable() {
+            @Override
+            public void execute(@NotNull Transaction transaction) {
+                store.put(transaction, stringToEntry("Hello"), stringToEntry("World!"));
+            }
         });
 
+        // 2. 읽기/쓰기 가능한 트랜잭션 (exclusive transaction
+        String value = env.computeInTransaction(new TransactionalComputable<String>() {
+            @Override
+            public String compute(@NotNull Transaction transaction) {
+                return entryToString(store.get(transaction, stringToEntry("Hello")));
+            }
+        });
+
+        logger.info("value {}", value);
+
+        // 3. 읽기전용 트랜잭션
+        String notExistValue = env.computeInReadonlyTransaction(new TransactionalComputable<String>() {
+            @Override
+            public String compute(@NotNull Transaction transaction) {
+                ByteIterable result = store.get(transaction, stringToEntry("Bye"));
+                return (result == null) ? "" : entryToString(result);
+            }
+        });
+
+        logger.info("notExistValue {}", notExistValue);
+
+
+        // 4. 더미 데이터 입력
+        env.executeInTransaction(new TransactionalExecutable() {
+            @Override
+            public void execute(@NotNull Transaction transaction) {
+                store.add(transaction, stringToEntry("1"), stringToEntry("Red"));
+                store.add(transaction, stringToEntry("2"), stringToEntry("Green"));
+                store.add(transaction, stringToEntry("3"), stringToEntry("Blue"));
+            }
+        });
+
+        // 5. 일부 데이터 삭제
+        env.executeInTransaction(new TransactionalExecutable() {
+            @Override
+            public void execute(@NotNull Transaction transaction) {
+
+                // k 값이 존재하면 삭제하고 true 반환
+                boolean firstResult = store.delete(transaction, stringToEntry("1"));
+
+                // k 값이 없으면 false 반환
+                boolean secondResult = store.delete(transaction, stringToEntry("1"));
+                logger.info("firstResult {} secondResult {}", firstResult, secondResult);
+            }
+        });
+
+        // 6. 전체 데이터 조회
+        env.executeInReadonlyTransaction(txn -> {
+            try (Cursor cursor = store.openCursor(txn)) {
+                while (cursor.getNext()) {
+                    String key = entryToString(cursor.getKey());   // current key
+                    String val = entryToString(cursor.getValue()); // current value
+                    logger.info("k {} v {}", key, val);
+                }
+            }
+        });
+
+        // 9. DB Close
         env.close();
-
-        if (errorCount.get() == 0) {
-            LOGGER.info("데이터 검증 성공");
-            return true;
-        }
-
-        LOGGER.error("데이터 검증 실패 {} 건이 다름.", errorCount.get());
-        return false;
     }
 
     @Test
-    public void test01EpAll() throws Exception {
-
-        boolean isAllEP = true;
-
-        // 1. 더미 파일 생성
-        EPFile epFile = new EPFile(isAllEP);
-        epFile.add(new EPFileLine("1", "RED", "1000"));
-        epFile.add(new EPFileLine("2", "RED", "2000"));
-        epFile.add(new EPFileLine("3", "BLUE", "2000"));
-        epFile.add(new EPFileLine("4", "BLUE", "2000"));
-        epFile.save(inputAllDirPath + "ep_all.txt");
-
-        // 2. 중복 제거 작업
-        File appendFile = new File(appendAllPath);
-
-        if (appendFile.exists()) {
-            FileUtils.forceDelete(appendFile);
-        }
-
-        Files.write(appendFile.toPath(), EPFile.getEPHeader(isAllEP).concat("\r\n").getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-
-        XodusDbRepository xodusDbRepository = new XodusDbRepository();
-        xodusDbRepository.open(dbDirPath, isAllEP, appendAllPath);
-
-        File inputDir = new File(inputAllDirPath);
-        for (File curFile : inputDir.listFiles()) {
-            xodusDbRepository.append(curFile.getPath());
-        }
-
-        xodusDbRepository.save();
-        xodusDbRepository.print();
-        String dbPath = xodusDbRepository.getDbPath();
-        xodusDbRepository.close();
-
-        // 3. 검증작업
-        Map<String, String> verifyMap = new HashMap<>();
-        verifyMap.put("BLUE.2000", "");
-        verifyMap.put("RED.1000", "");
-        verifyMap.put("RED.2000", "");
-        Assert.assertTrue(verifyDbData(dbPath, verifyMap));
-    }
-
-    @Test
-    public void test02EpUpdateCaseDelete() throws Exception {
-        boolean isAllEP = false;
-
-        // 1. 더미 파일 생성
-        EPFile epFile = new EPFile(isAllEP);
-        epFile.add(new EPFileLine("1", "RED", "1000", "D"));
-        epFile.add(new EPFileLine("4", "RED", "2000"));
-
-        epFile.save(inputUpdateDirPath + "ep_update.txt");
-
-        // 2. 중복 제거 작업
-        File appendFile = new File(appendUpdatePath);
-
-        if (appendFile.exists()) {
-            FileUtils.forceDelete(appendFile);
-        }
-
-        Files.write(appendFile.toPath(), EPFile.getEPHeader(isAllEP).concat("\r\n").getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-
-        XodusDbRepository xodusDbRepository = new XodusDbRepository();
-        xodusDbRepository.open(dbDirPath, isAllEP, appendUpdatePath);
-
-        File inputDir = new File(inputUpdateDirPath);
-        for (File curFile : inputDir.listFiles()) {
-            xodusDbRepository.append(curFile.getPath());
-        }
-
-        xodusDbRepository.save();
-        xodusDbRepository.print();
-        String dbPath = xodusDbRepository.getDbPath();
-        xodusDbRepository.close();
-
-        // 3. 검증작업
-        Map<String, String> verifyMap = new HashMap<>();
-        verifyMap.put("BLUE.2000", "");
-        verifyMap.put("RED.2000", "");
-        Assert.assertTrue(verifyDbData(dbPath, verifyMap));
-    }
-
-    @Test
-    public void test03EpUpdateCaseIgnore() throws Exception {
-        boolean isAllEP = false;
-
-        // 1. 더미 파일 생성
-        EPFile epFile = new EPFile(isAllEP);
-        epFile.add(new EPFileLine("3", "BLUE", "2000"));
-
-        epFile.save(inputUpdateDirPath + "ep_update.txt");
-
-        // 2. 중복 제거 작업
-        File appendFile = new File(appendUpdatePath);
-
-        if (appendFile.exists()) {
-            FileUtils.forceDelete(appendFile);
-        }
-
-        Files.write(appendFile.toPath(), EPFile.getEPHeader(isAllEP).concat("\r\n").getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-
-        XodusDbRepository xodusDbRepository = new XodusDbRepository();
-        xodusDbRepository.open(dbDirPath, isAllEP, appendUpdatePath);
-
-        File inputDir = new File(inputUpdateDirPath);
-        for (File curFile : inputDir.listFiles()) {
-            xodusDbRepository.append(curFile.getPath());
-        }
-
-        xodusDbRepository.save();
-        xodusDbRepository.print();
-        String dbPath = xodusDbRepository.getDbPath();
-        xodusDbRepository.close();
-
-        // 3. 검증작업
-        Map<String, String> verifyMap = new HashMap<>();
-        verifyMap.put("BLUE.2000", "");
-        verifyMap.put("RED.2000", "");
-        Assert.assertTrue(verifyDbData(dbPath, verifyMap));
-    }
-
-    @Test
-    public void test04EpUpdateCaseInsert() throws Exception {
-        boolean isAllEP = false;
-
-        // 1. 더미 파일 생성
-        EPFile epFile = new EPFile(isAllEP);
-        epFile.add(new EPFileLine("4", "BLACK", "2000"));
-
-        epFile.save(inputUpdateDirPath + "ep_update.txt");
-
-        // 2. 중복 제거 작업
-        File appendFile = new File(appendUpdatePath);
-
-        if (appendFile.exists()) {
-            FileUtils.forceDelete(appendFile);
-        }
-
-        Files.write(appendFile.toPath(), EPFile.getEPHeader(isAllEP).concat("\r\n").getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-
-        XodusDbRepository xodusDbRepository = new XodusDbRepository();
-        xodusDbRepository.open(dbDirPath, isAllEP, appendUpdatePath);
-
-        File inputDir = new File(inputUpdateDirPath);
-        for (File curFile : inputDir.listFiles()) {
-            xodusDbRepository.append(curFile.getPath());
-        }
-
-        xodusDbRepository.save();
-        xodusDbRepository.print();
-        String dbPath = xodusDbRepository.getDbPath();
-        xodusDbRepository.close();
-
-        // 3. 검증작업
-        Map<String, String> verifyMap = new HashMap<>();
-        verifyMap.put("BLUE.2000", "");
-        verifyMap.put("RED.2000", "");
-        verifyMap.put("BLACK.2000", "");
-        Assert.assertTrue(verifyDbData(dbPath, verifyMap));
-    }
-
-    @Test
-    public void test09App() throws Exception {
-
-        long lineCount = 0;
-        String line;
-        String readPath = "C:\\temp\\naver_all.txt";
-        boolean isAllEP = true;
-
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
-
-        try (BufferedReader in = Files.newBufferedReader(Paths.get(readPath), StandardCharsets.UTF_8)) {
-            while ((line = in.readLine()) != null) {
-                lineCount++;
-
-                if (StringUtils.startsWithIgnoreCase(line, "id\t")) {
-                    // 헤더 라인은 무시함.
-                    continue;
-                }
-
-                try {
-                    EPTSVData curr = new EPTSVData(line, isAllEP);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        stopWatch.stop();
-        LOGGER.info("elapsed time 1 {} (secs)", stopWatch.getTime(TimeUnit.SECONDS));
-
-        stopWatch.reset();
-        stopWatch.start();
-
-        try (BufferedReader in = Files.newBufferedReader(Paths.get(readPath), StandardCharsets.UTF_8)) {
-            while ((line = in.readLine()) != null) {
-                lineCount++;
-
-                if (StringUtils.startsWithIgnoreCase(line, "id\t")) {
-                    // 헤더 라인은 무시함.
-                    continue;
-                }
-
-                try {
-                    EPTSVData2 curr = new EPTSVData2(line, isAllEP);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        stopWatch.stop();
-        LOGGER.info("elapsed time 2 {} (secs)", stopWatch.getTime(TimeUnit.SECONDS));
+    public void _99_테스트_종료() throws Exception {
 
     }
 }
