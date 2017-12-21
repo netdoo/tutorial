@@ -1,18 +1,52 @@
 <html>
 <body>
     <div id="app">
-        <h1>{{ msg }}</h1>
+        <h1 title="abcd">1. {{ msg }}</h1>
+        <h1 v-bind:title="msg">2. {{msg}}</h1>
+        <h1 v-if="seen">3. toggle text</h1>
+        
+        <ol>
+            <color-item v-for="item in colors" v-bind:color="item" v-bind:key="item.id"></color-item>
+        </ol>
+        
+        <button v-on:click="toggleSeen">toggle seen attribute</button>
+        <button v-on:click="reverseMsg">ClickTest</button>
     </div>
 
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/2.1.6/vue.min.js"></script>    
+    <script src="static/vue.min.js"></script>
     <script>
-      new Vue({
+    Vue.component('color-item', {
+        // 이제 todo-item 컴포넌트는 "prop" 이라고 하는
+        // 사용자 정의 속성 같은 것을 입력받을 수 있습니다.
+        // 이 prop은 todo라는 이름으로 정의했습니다.
+        props: ['color'],
+        template: '<li>{{ color.text }}</li>'
+    });
+
+    var app = new Vue({
         el: "#app",
         data: {
-            msg: "Hello Vue"
-          }
+            seen: true,
+            msg: "Hello Vue",
+            colors: [
+                       { id: 0, text: 'Red' },
+                       { id: 1, text: 'Green' },
+                       { id: 2, text: 'White' }
+                    ]
+        },        
+        methods: {
+            toggleSeen: function() {
+                if (this.seen === true) {
+                    this.seen = false;
+                } else {
+                    this.seen = true;
+                }
+            },
+            reverseMsg: function() {
+                this.msg = this.msg.toUpperCase()
+            }
         }
-      );
+    });
     </script>
-  </body>
+</body>
 </html>
