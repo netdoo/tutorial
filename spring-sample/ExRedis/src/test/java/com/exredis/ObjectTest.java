@@ -2,6 +2,7 @@ package com.exredis;
 
 import com.exredis.config.AppConfig;
 import com.exredis.domain.Box;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,10 +35,19 @@ public class ObjectTest {
     }
 
     @Test
-    public void _1_OBJECT_KEY_VALUE_테스트() throws Exception {
+    public void _1_BOX_KEY_VALUE_테스트() throws Exception {
         this.springRedis.setObject("001", new Box("001", "RED", Arrays.asList("RED", "DARKRED", "LIGHTRED")));
-        Box box = this.springRedis.getObject("001");
-        logger.info("{}", box);
+        Box box1 = (Box)this.springRedis.getObject("001", new TypeReference<Box>() {});
+        Box box2 = this.springRedis.getObject("001", Box.class);
+        logger.info("\n{}\n{}", box1, box2);
+    }
+
+    @Test
+    public void _2_STRING_KEY_VALUE_테스트() throws Exception {
+        this.springRedis.setObject("001", new Box("001", "RED", Arrays.asList("RED", "DARKRED", "LIGHTRED")));
+        Box box1 = (Box)this.springRedis.getObject("001", new TypeReference<Box>() {});
+        Box box2 = this.springRedis.getObject("001", Box.class);
+        logger.info("\n{}\n{}", box1, box2);
     }
 
     @Test
