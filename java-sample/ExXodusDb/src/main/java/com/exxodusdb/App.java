@@ -5,6 +5,7 @@ import jetbrains.exodus.ByteIterable;
 import jetbrains.exodus.backup.BackupStrategy;
 import jetbrains.exodus.env.*;
 import jetbrains.exodus.management.Statistics;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.time.StopWatch;
@@ -22,8 +23,6 @@ import static jetbrains.exodus.bindings.StringBinding.stringToEntry;
 
 public class App {
     final static Logger logger = LoggerFactory.getLogger(App.class);
-
-
 
     static void caseDuplicate(Environment env, Store store) {
 
@@ -100,20 +99,14 @@ public class App {
 
     public static void main( String[] args ) throws Exception {
 
-        //cleanUp();
-
-
-  /*      Environment env = Environments.newInstance(dbPath);
+        String dbPath = "C:\\temp\\xodus.db";
+        FileUtils.deleteDirectory(new File(dbPath));
+        Environment env = Environments.newInstance(dbPath);
 
         // Stores can be opened with and without duplicate keys
-        Store store = env.computeInTransaction(txn ->
-                env.openStore("Messages", StoreConfig.WITHOUT_DUPLICATES, txn));
-*/
-        //simple(env, store);
-        //delete(env, store);
-        //caseDuplicate(env, store);
-
-        //bulkPut(env, store, 20_000, 10_000, "012345678901234567890123456789", "1");
-//        env.close();
+        Store store = env.computeInTransaction(txn ->  env.openStore("Messages", StoreConfig.WITHOUT_DUPLICATES, txn));
+        caseDuplicate(env, store);
+        bulkPut(env, store, 20_000, 10_000, "012345678901234567890123456789", "1");
+        env.close();
     }
 }
