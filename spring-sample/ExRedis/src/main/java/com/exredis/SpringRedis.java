@@ -13,6 +13,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -106,5 +107,21 @@ public class SpringRedis {
 
     public void publish(String channel, String message) {
         this.redisTemplate.convertAndSend(channel, message);
+    }
+
+    public void leftPush(String key, String value) {
+        this.redisTemplate.opsForList().leftPush(key, value);
+    }
+
+    public String leftPop(String key) {
+        return (String)this.redisTemplate.opsForList().leftPop(key);
+    }
+
+    public String listIndex(String key, long idx) {
+        return (String)this.redisTemplate.opsForList().index(key, idx);
+    }
+
+    public void listSet(String key, long idx, String val) {
+        this.redisTemplate.opsForList().set(key, idx, val);
     }
 }
