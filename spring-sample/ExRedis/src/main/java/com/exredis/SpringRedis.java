@@ -1,3 +1,4 @@
+
 package com.exredis;
 
 import com.exredis.domain.Box;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Component
 @Lazy
@@ -117,11 +119,26 @@ public class SpringRedis {
         return (String)this.redisTemplate.opsForList().leftPop(key);
     }
 
+    public void rightPush(String key, String value) {
+        this.redisTemplate.opsForList().rightPush(key, value);
+    }
+
+    public String rightPop(String key) {
+        return (String)this.redisTemplate.opsForList().rightPop(key);
+    }
+
     public String listIndex(String key, long idx) {
         return (String)this.redisTemplate.opsForList().index(key, idx);
     }
 
     public void listSet(String key, long idx, String val) {
         this.redisTemplate.opsForList().set(key, idx, val);
+    }
+
+    public List<String> listRange(String key, long from, long to) {
+        List<Object> range = this.redisTemplate.opsForList().range(key, from, to);
+        return range.stream()
+                .map(obj -> obj.toString())
+                .collect(Collectors.toList());
     }
 }
