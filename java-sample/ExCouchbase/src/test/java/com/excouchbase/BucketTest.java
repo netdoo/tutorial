@@ -3,6 +3,10 @@ package com.excouchbase;
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.CouchbaseCluster;
+import com.couchbase.client.java.bucket.BucketType;
+import com.couchbase.client.java.cluster.BucketSettings;
+import com.couchbase.client.java.cluster.ClusterManager;
+import com.couchbase.client.java.cluster.DefaultBucketSettings;
 import com.couchbase.client.java.document.JsonDocument;
 import com.couchbase.client.java.env.CouchbaseEnvironment;
 import com.couchbase.client.java.env.DefaultCouchbaseEnvironment;
@@ -10,12 +14,12 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ConnTest {
+public class BucketTest {
 
     final static Logger logger = LoggerFactory.getLogger(AppTest.class);
 
     @Test
-    public void _1_접속테스트() throws Exception {
+    public void _1_버킷_CRUD_테스트() throws Exception {
 
         String nodes[] = {"localhost"};
         String bucketName = "my_service_bucket";
@@ -27,8 +31,17 @@ public class ConnTest {
                 .build();
 
         Cluster cluster = CouchbaseCluster.create(env, nodes);
-        Bucket bucket = cluster.openBucket(bucketName, bucketPassword);
-        JsonDocument document = bucket.get("1234");
-        logger.info("{}", document);
+        ClusterManager clusterManager = cluster.clusterManager("Administrator", "123456");
+        BucketSettings bucketSettings = new DefaultBucketSettings.Builder()
+                .type(BucketType.COUCHBASE)
+                .name(bucketName)
+                .quota(110)
+                .build();
+
+        // create
+        clusterManager.insertBucket(bucketSettings);
+
+        // remove
+        clusterManager.removeBucket(bucketName);
     }
 }
