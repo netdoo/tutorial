@@ -17,9 +17,9 @@ public class ConnTest {
     @Test
     public void _1_접속테스트() throws Exception {
 
-        String nodes[] = {"devmem1.tmonc.net"};
-        String bucketName = "search_service_bucket";
-        String bucketPassword = "search_service_bucket!@#$";
+        String nodes[] = {"localhost"};
+        String bucketName = "my_service_bucket";
+        String bucketPassword = "my_service_bucket_password";
 
         CouchbaseEnvironment env = DefaultCouchbaseEnvironment.builder()
                 .connectTimeout(10000)
@@ -28,7 +28,9 @@ public class ConnTest {
 
         Cluster cluster = CouchbaseCluster.create(env, nodes);
         Bucket bucket = cluster.openBucket(bucketName, bucketPassword);
-        JsonDocument document = bucket.get("1100181964894961360");
+        JsonDocument document = bucket.get("1234");
         logger.info("{}", document);
     }
+
+
 }
