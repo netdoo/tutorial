@@ -18,8 +18,8 @@ public class ConnTest {
     public void _1_접속테스트() throws Exception {
 
         String nodes[] = {"localhost"};
-        String bucketName = "my_service_bucket";
-        String bucketPassword = "my_service_bucket_password";
+        String bucketName = "mybucket";
+        String bucketPassword = "1111";
 
         CouchbaseEnvironment env = DefaultCouchbaseEnvironment.builder()
                 .connectTimeout(10000)
@@ -28,6 +28,7 @@ public class ConnTest {
 
         Cluster cluster = CouchbaseCluster.create(env, nodes);
         Bucket bucket = cluster.openBucket(bucketName, bucketPassword);
+        logger.info("connect success {}", bucket.name());
         JsonDocument document = bucket.get("1234");
         logger.info("{}", document);
     }
