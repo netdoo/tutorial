@@ -21,3 +21,12 @@ $ bin\windows\kafka-topics.bat --create --zookeeper localhost:2181 --replication
 $ bin\windows\kafka-console-producer.bat --broker-list localhost:9092 --topic MapAppTopic
 ```
 
+
+
+# Reference
+```
+https://www.javatips.net/api/examples-master/kafka-streams/src/main/java/io/confluent/examples/streams/MapFunctionLambdaExample.java
+https://github.com/ishiis/kafka-streams-sample/blob/master/README.md
+https://github.com/anuj1207/kafka-stream-sample/blob/master/src/main/scala/kafka/streams/dsl/GeneratorApp.scala
+```
+
