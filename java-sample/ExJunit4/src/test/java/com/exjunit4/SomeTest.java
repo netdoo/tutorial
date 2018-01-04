@@ -1,5 +1,7 @@
 package com.exjunit4;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +23,16 @@ public class SomeTest {
         $ mvn test -Dtest=SomeTest#*Test
      */
     final static Logger logger = LoggerFactory.getLogger(SomeTest.class);
+
+    @BeforeClass
+    public static void onBefore() {
+        logger.info("call onBefore");
+    }
+
+    @AfterClass
+    public static void onAfter() {
+        logger.info("call onAfter");
+    }
 
     @Test
     public void fooTest() {
