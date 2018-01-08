@@ -2,21 +2,28 @@ package com.sample;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class App 
-{
-    public static void main( String[] args )
-    {
+import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class App {
+
+    final static Logger logger = LoggerFactory.getLogger(App.class);
+
+    public static void main( String[] args ) {
          String[] springConfig =
-                {
-                        "classpath:applicationContext.xml"
-                };
+            {
+                "classpath:applicationContext.xml"
+            };
 
         ClassPathXmlApplicationContext context = null;
 
         try {
-
             context = new ClassPathXmlApplicationContext(springConfig);
+            Properties prop = new Properties();
+            prop.load(HelloWorld.class.getClassLoader().getResourceAsStream("db.properties"));
 
+            logger.info("{} {} {}", prop.getProperty("host"), prop.getProperty("name"), prop.getProperty("port"));
             HelloWorld helloWorld = context.getBean(HelloWorld.class);
             helloWorld.printHello();
         } catch (final Exception e) {
@@ -26,6 +33,5 @@ public class App
                 context.close();
             }
         }
-
     }
 }
