@@ -27,17 +27,17 @@ public class ConsumerTest {
         Properties props = new Properties();
 
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaEnv.bootstrapServers);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "test-group-id");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, KafkaEnv.groupId);
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
         props.put("auto.commit.interval.ms", "360000");
-        props.put(ConsumerConfig.CLIENT_ID_CONFIG, "test-client-id");
+        props.put(ConsumerConfig.CLIENT_ID_CONFIG, KafkaEnv.clientId);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,         StringDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,      StringDeserializer.class.getName());
 
         for (int i = 0; i < KafkaEnv.maxConsumeTestCount; i++) {
-            logger.warn("<<< consume {}", getRecords(props));
-            Thread.sleep(60_000);
+            logger.warn("{} <<< consume {}", i, getRecords(props));
+            Thread.sleep(KafkaEnv.consumeSleepTerm);
         }
     }
 
@@ -51,12 +51,12 @@ public class ConsumerTest {
         for (int i = 0; i < KafkaEnv.maxPollCount && emptyCount < 3; i++) {
             ConsumerRecords<String, String> records = consumer.poll(1000);
 
-            if (records.count() == 0) {
-                emptyCount++;
-            } else {
+            if (records.count() > 0) {
                 records.forEach(record -> {
                     values.add(record.value());
                 });
+            } else {
+                emptyCount++;
             }
         }
 

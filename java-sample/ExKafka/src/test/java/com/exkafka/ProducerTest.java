@@ -22,7 +22,6 @@ public class ProducerTest {
 
     @Test
     public void _0_테스트준비() throws Exception {
-
     }
 
     @Test
@@ -39,12 +38,10 @@ public class ProducerTest {
         Producer<String, String> producer = new KafkaProducer<>(props);
 
         for(int i = 0; i < KafkaEnv.maxProduceTestCount; i++) {
-            Thread.sleep(60*1_000);
-            //String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")); // 2015-04-18 00:42:24
+            Thread.sleep(KafkaEnv.produceSleepTerm);
             String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")); // 00:42:24
-            //producer.send(new ProducerRecord<String, String>(KafkaEnv.topicName, String.valueOf(i), now));
             producer.send(new ProducerRecord<String, String>(KafkaEnv.topicName, now));
-            logger.warn(">>> produce {}", now);
+            logger.warn("{} >>> produce {}", i, now);
         }
 
         producer.close();
