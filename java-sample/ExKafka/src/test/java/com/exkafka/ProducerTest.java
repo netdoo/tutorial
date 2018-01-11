@@ -2,7 +2,9 @@ package com.exkafka;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -32,8 +34,8 @@ public class ProducerTest {
         props.put("batch.size", 16384);
         props.put("linger.ms", 1);
         props.put("buffer.memory", 33554432);
-        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         Producer<String, String> producer = new KafkaProducer<>(props);
 
         for(int i = 0; i < 500; i++) {
@@ -42,7 +44,7 @@ public class ProducerTest {
             String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")); // 00:42:24
             //producer.send(new ProducerRecord<String, String>(KafkaEnv.topicName, String.valueOf(i), now));
             producer.send(new ProducerRecord<String, String>(KafkaEnv.topicName, now));
-            logger.info("*** produce {}", now);
+            logger.warn(">>> produce {}", now);
         }
 
         producer.close();
