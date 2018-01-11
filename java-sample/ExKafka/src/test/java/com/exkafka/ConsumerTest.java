@@ -35,7 +35,7 @@ public class ConsumerTest {
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,         StringDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,      StringDeserializer.class.getName());
 
-        for (int i = 0; i < 500; i++) {
+        for (int i = 0; i < KafkaEnv.maxConsumeTestCount; i++) {
             logger.warn("<<< consume {}", getRecords(props));
             Thread.sleep(60_000);
         }
@@ -48,7 +48,7 @@ public class ConsumerTest {
         List<String> values = new ArrayList<>();
         int emptyCount = 0;
 
-        for (int i = 0; i < 100 && emptyCount < 3; i++) {
+        for (int i = 0; i < KafkaEnv.maxPollCount && emptyCount < 3; i++) {
             ConsumerRecords<String, String> records = consumer.poll(1000);
 
             if (records.count() == 0) {

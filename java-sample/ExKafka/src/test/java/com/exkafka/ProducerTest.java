@@ -38,7 +38,7 @@ public class ProducerTest {
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         Producer<String, String> producer = new KafkaProducer<>(props);
 
-        for(int i = 0; i < 500; i++) {
+        for(int i = 0; i < KafkaEnv.maxProduceTestCount; i++) {
             Thread.sleep(60*1_000);
             //String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")); // 2015-04-18 00:42:24
             String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")); // 00:42:24
