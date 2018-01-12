@@ -1,0 +1,32 @@
+<html>
+<body>
+    <div id="app">
+        <h1 v-bind:title="msg">{{msg}}</h1>
+        <button v-on:click="now">현재시간</button>
+    </div>
+
+    <script src="static/vue.min.js"></script>
+    <script src="static/moment.min.js"></script>
+    <script>
+    var app = new Vue({
+        el: "#app",
+        data: {
+            msg: moment().format('YYYY/MM/DD HH:mm:ss')
+        },
+        methods: {
+            now: function() {
+                console.log('change date');
+                this.msg = moment().format('YYYY/MM/DD HH:mm:ss');
+            }
+        }
+    });
+
+    app.$watch('msg', function(newVal, oldVal) {
+        // msg가 변경되면 호출됨.
+        console.log('watch => msg is changed');
+        alert('change data.msg : ' + oldVal + " => " + newVal);
+    });
+    
+    </script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<html>
+<body>
+    <div id="app">
+        <h1 v-bind:title="msg">{{msg}}</h1>
+        <button v-on:click="now">현재시간</button>
+    </div>
+
+    <script src="static/vue.min.js"></script>
+    <script src="static/moment.min.js"></script>
+    <script>
+    var app = new Vue({
+        el: "#app",
+        data: {
+            msg: moment().format('YYYY/MM/DD HH:mm:ss')
+        },
+        beforeCreate: function() {
+            console.log('beforeCreate');
+        },
+        created: function() {
+            console.log('created');
+        },
+        beforeMount: function() {
+            console.log('beforeMount');
+        },
+        mounted: function() {
+            console.log('mounted');
+        },
+        beforeUpdate: function() {
+            console.log('beforeUpdate');
+        },
+        updated: function() {
+            console.log('updated');
+        },
+        beforeDestroy: function() {
+            console.log('beforeDestroy');
+        },
+        destroyed: function() {
+            console.log('destroyed');
+        },
+        methods: {
+            now: function() {
+                console.log('change date');
+                this.msg = moment().format('YYYY/MM/DD HH:mm:ss');
+            }
+        }
+    });
+    </script>
+</body>
+</html>
