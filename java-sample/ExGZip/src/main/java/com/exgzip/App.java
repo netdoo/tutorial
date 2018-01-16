@@ -4,16 +4,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.Arrays;
 
 public class App {
     final static Logger logger = LoggerFactory.getLogger(App.class);
 
     public static void main( String[] args ) throws Exception {
-        File source = new File("C:\\temp\\test.png");
-        File gzFile = new File("C:\\temp\\test.gz");
-        File output = new File("C:\\temp\\test_result.png");
-        GZip.compress(source, gzFile);
-        GZip.decompress(gzFile, output);
+        logger.info("start gzip");
+        RunShell.RunSh("gzip", Arrays.asList("-f", "/root/temp/test.txt"), true);
+        logger.info("finish gzip");
     }
 }
 
