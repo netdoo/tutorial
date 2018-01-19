@@ -1,0 +1,61 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>vue.js - class</title>
+    <link rel="stylesheet" href="static/bootstrap.min.css">
+    <script src="static/jquery.min.js"></script>
+    <script src="static/bootstrap.min.js"></script>
+</head>
+<body>
+    <div id="app">
+
+        <div class="alert" v-bind:class="{'alert-success': this.isSuccessful, 'alert-danger': this.isError }">
+            <p>Hello Vue.js</p>
+        </div>
+
+        <div class="alert" v-bind:class="updateClass">
+            <p>Hello Vue.js</p>
+        </div>
+
+        <button v-on:click="onClickUpdateClass">클래스 변경</button>
+    </div>
+
+    <script src="static/vue.min.js"></script>
+    <script src="static/moment.min.js"></script>
+    <script>
+    var app = new Vue({
+        el: "#app",
+        data: {
+            isSuccessful: true,
+            isError: false
+        },
+        computed: {
+            updateClass: function () {
+                return {
+                    'alert-info': this.isSuccessful === true,
+                    'alert-warning': this.isSuccessful === false
+                }
+            }
+        },
+        methods: {
+            onClickUpdateClass: function(){
+                if (this.isSuccessful === true) {
+                    this.isSuccessful = false;
+                    this.isError = true;
+                } else {
+                    this.isSuccessful = true;
+                    this.isError = false;
+                }
+            }
+        }
+    });
+
+    app.$watch('isSuccessful', function(newVal, oldVal) {
+        // isSuccessful가 변경되면 호출됨.
+        console.log('watch => isSuccessful is changed');
+        alert('change data.isSuccessful : ' + oldVal + " => " + newVal);
+    });
+
+    </script>
+</body>
+</html>
