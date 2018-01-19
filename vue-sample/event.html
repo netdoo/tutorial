@@ -1,0 +1,36 @@
+<html>
+<head>
+    <meta charset="utf-8">
+</head>
+<body>
+    <div id="app">
+        <button v-on:click="onClick">Click Me</button>
+        <input v-on:keyup="onKeyup" v-on:keyup.enter="onEnter">
+    </div>
+
+    <script src="static/vue.min.js"></script>
+    <script>
+
+    var app = new Vue({
+        el: "#app",
+        data: {
+            counter: 0
+        },
+        methods: {
+            onClick: function() {
+                this.counter++;
+                alert(this.counter);
+            },
+            onKeyup: function(event) {
+                let keyCode = String.fromCharCode(event.keyCode);
+                console.log(event.key + ' ' + keyCode);
+            },
+            onEnter: function(event) {
+                let keyCode = String.fromCharCode(event.keyCode);
+                console.log('catch enter keycode => ' + event.key + ' ' + keyCode);
+            }
+        }
+    });
+    </script>
+</body>
+</html>

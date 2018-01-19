@@ -1,0 +1,45 @@
+<html>
+<head>
+    <meta charset="utf-8">
+</head>
+<body>
+    <div id="app">
+        <h1 v-bind:title="msg">{{msg}}</h1>
+        <h1 v-if="seen">toggle text</h1>
+        
+        <ul>
+            <li v-if="seen" v-for="item in colors" v-bind:key="item.id">
+                {{item.text}}
+            </li>
+        </ul>
+        
+        <button v-on:click="toggleSeen">toggle seen attribute</button>
+    </div>
+
+    <script src="static/vue.min.js"></script>
+    <script>
+
+    var app = new Vue({
+        el: "#app",
+        data: {
+            seen: true,
+            msg: "Hello Vue",
+            colors: [
+                       { id: 0, text: 'Red' },
+                       { id: 1, text: 'Green' },
+                       { id: 2, text: 'White' }
+                    ]
+        },        
+        methods: {
+            toggleSeen: function() {
+                if (this.seen === true) {
+                    this.seen = false;
+                } else {
+                    this.seen = true;
+                }
+            }
+        }
+    });
+    </script>
+</body>
+</html>
