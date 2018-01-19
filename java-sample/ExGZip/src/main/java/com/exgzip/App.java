@@ -15,4 +15,3 @@ public class App {
         logger.info("finish gzip");
     }
 }
-//이건 로컬
