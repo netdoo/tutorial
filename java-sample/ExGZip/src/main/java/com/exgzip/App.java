@@ -15,3 +15,4 @@ public class App {
         logger.info("finish gzip");
     }
 }
+remote 
