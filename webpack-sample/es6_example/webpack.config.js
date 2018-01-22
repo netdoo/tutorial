@@ -1,4 +1,5 @@
-var debug = process.env.NODE_ENV !== "production";
+//var debug = process.env.NODE_ENV !== "production";
+var debug = '';
 const webpack = require('webpack')
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
@@ -38,6 +39,8 @@ module.exports = {
         ]
     },
     plugins: debug ? [] : [
-        new webpack.optimize.UglifyJsPlugin({ mangle: false, sourcemap: false }),
+        new webpack.optimize.UglifyJsPlugin({ 
+            mangle: false, sourcemap: false 
+        }),
     ]
 }
