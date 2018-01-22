@@ -5,7 +5,9 @@ module.exports = {
     },
     output: {
         path: __dirname + "/",
-        filename: "bundle.js"
+        filename: "bundle.js",
+        libraryTarget: 'var',
+        library: 'EntryPoint'
     },
     module: {
         loaders : [
