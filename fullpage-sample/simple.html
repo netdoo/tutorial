@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>fullPage.js A simple Demo</title>
+	<meta name="author" content="Alvaro Trigo Lopez" />
+	<meta name="description" content="fullPage very simple demo." />
+	<meta name="keywords"  content="fullpage,jquery,demo,simple" />
+	<meta name="Resource-type" content="Document" />
+
+
+	<link rel="stylesheet" type="text/css" href="static/libs/fullpage/jquery.fullPage.css" />
+	<link rel="stylesheet" type="text/css" href="static/examples.css" />
+
+
+	<script src="static/libs/jquery/1.8.3/jquery.min.js"></script>
+	<script src="static/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
+
+	<script type="text/javascript" src="static/scrolloverflow.js"></script>
+
+	<script type="text/javascript" src="static/libs/fullpage/jquery.fullPage.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#fullpage').fullpage({
+				sectionsColor: ['lightpink', 'lightgrey', 'yellow', 'whitesmoke', 'white']
+			});
+		});
+	</script>
+
+</head>
+<body>
+
+<div id="fullpage">
+    <div class="section active" id="section0"><h1>Section #0</h1></div>
+    <div class="section" id="section1">
+        <div class="slide "><h1>One</h1></div>
+        <div class="slide active"><h1>Two</h1></div>
+        <div class="slide"><h1>Three</h1></div>
+        <div class="slide"><h1>Four</h1></div>
+    </div>
+    <div class="section" id="section2"><h1>Section #2</h1></div>
+    <div class="section" id="section3"><h1>Section #3</h1></div>
+</div>
+
+</body>
+</html>
