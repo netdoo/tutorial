@@ -1,4 +1,3 @@
 import main from './main';
 
-console.log("hello world");
-main();
+main.writeLog('hello parcel');
