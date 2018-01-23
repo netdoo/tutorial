@@ -1,0 +1,36 @@
+<html>
+<head>
+    <meta charset="utf-8">
+</head>
+<body>
+    <div id="app">
+        <!-- html이 그대로 표시 -->
+        <h1 v-text="hello"></h1>
+        
+        <!-- html이 랜더링된 이후에 표시 -->
+        <h1 v-html="world"></h1>
+        
+        <!-- v-show 속성이 true이면 화면에 표시됨 -->
+        <h1 v-show="visible">vue</h1>
+
+        <!-- v-show 속성이 false이면 화면에 표시안됨 -->
+        <h1 v-show="visible">js</h1>
+    </div>
+
+    <script src="static/vue.min.js"></script>
+    <script>
+
+    var app = new Vue({
+        el: "#app",
+        data: {
+            hello: "<i>hello<i>",   
+            world: "<i>world<i>",
+            visible: true
+        },        
+        methods: {
+            
+        }
+    });
+    </script>
+</body>
+</html>
