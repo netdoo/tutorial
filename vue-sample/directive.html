@@ -30,6 +30,12 @@
 
         <!-- 머스태쉬 태그로 값을 표시 -->
         <h1>{{ "value : " + value }} </h1>
+
+        <!-- v-bind 속성을 사용하여, html 태그의 속성값을 변경할 수 있음. -->
+        <img v-bind:src="value > 3 ? large : small" />
+        
+        <!-- 또는 이렇게 약어 : 로 사용할 수 있음. -->
+        <img :src="value > 3 ? large : small" />
     </div>
 
     <script src="static/vue.min.js"></script>
@@ -41,7 +47,9 @@
             hello: "<i>hello<i>",   
             world: "<i>world<i>",
             visible: true,
-            value: 6
+            value: 6,
+            large: "1.png" ,
+            small: "2.png"
         },        
         methods: {
             
