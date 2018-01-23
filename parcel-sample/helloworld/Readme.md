@@ -1,3 +1,11 @@
+# Parcel 설치
+
+```
+npm install -g parcel-bundler
+yarn global add parcel-bundler
+```
+
+
 # 샘플 파일 준비
 
 
@@ -16,8 +24,8 @@
 ```
 import main from './main';
 
-console.log("hello world");
-main();
+main.writeLog('hello parcel');
+
 
 ```
 
@@ -26,9 +34,15 @@ main();
 // CSS 모듈 임포트
 import classes from './main.css';
 
-export default function main() {
-    console.log('main');
+class Main {
+    static writeLog(msg) { 
+        console.log('[LOG] ' + msg) 
+    }
 }
+
+export default Main;
+
+
 
 ```
 
