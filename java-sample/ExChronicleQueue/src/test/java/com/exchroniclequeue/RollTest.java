@@ -18,9 +18,9 @@ import java.io.IOException;
 import static junit.framework.TestCase.assertEquals;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class CycleTest {
+public class RollTest {
 
-    final static Logger logger = LoggerFactory.getLogger(CycleTest.class);
+    final static Logger logger = LoggerFactory.getLogger(RollTest.class);
     final String path = "roll";
 
     @Test
