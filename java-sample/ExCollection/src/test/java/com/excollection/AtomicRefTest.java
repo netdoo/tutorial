@@ -17,14 +17,15 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
 /**
- * VM Options : -Xmx320m
+ *
+
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AtomicRefTest {
     final static Logger logger = LoggerFactory.getLogger(AtomicRefTest.class);
     final AtomicReference<List<String>> atomicReference = new AtomicReference<>(Collections.emptyList());
     final int maxReaders = 3;
-    final long testTime = 10 * 60 * 1000;        // 2 mins
+    final long testTime = 2 * 60 * 1000;        // 2 mins
     final long deadLine = System.currentTimeMillis() + testTime;
     CountDownLatch countDownLatch = new CountDownLatch(maxReaders+1);
 
