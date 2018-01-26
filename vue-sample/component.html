@@ -4,13 +4,18 @@
 </head>
 <body>
     <div id="app">
+        <my-global-component></my-global-component>
+        <my-private-component></my-private-component>
         <button v-on:click="onClick">Click Me</button>
-        <button ref="btn" id="btn">dynamic click</button>
         <input v-on:keyup="onKeyup" v-on:keyup.enter="onEnter">
     </div>
 
     <script src="static/vue.min.js"></script>
     <script>
+
+    Vue.component('my-global-component', {
+        template: '<div>모든 사용자 정의 컴포넌트 입니다!</div>'
+    })
 
     var app = new Vue({
         el: "#app",
@@ -22,9 +27,6 @@
                 this.counter++;
                 alert(this.counter);
             },
-            onDynamicClick: function() {
-                alert('dynamic click');
-            },
             onKeyup: function(event) {
                 let keyCode = String.fromCharCode(event.keyCode);
                 console.log(event.key + ' ' + keyCode);
@@ -34,10 +36,10 @@
                 console.log('catch enter keycode => ' + event.key + ' ' + keyCode);
             }
         },
-        mounted() {
-            console.log('mounted');
-            //var button = document.getElementById("btn");
-            this.$refs.btn.addEventListener('click', this.onDynamicClick);
+        components : {
+            'my-private-component': {
+                template: '<div>개인 사용자 정의 컴포넌트 입니다!</div>'
+            }
         }
     });
     </script>
