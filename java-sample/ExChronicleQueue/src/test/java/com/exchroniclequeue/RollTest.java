@@ -14,6 +14,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static junit.framework.TestCase.assertEquals;
 
@@ -23,57 +27,64 @@ public class RollTest {
     final static Logger logger = LoggerFactory.getLogger(RollTest.class);
     final String path = "roll";
 
-
-
     @Test
     public void _Roll_테스트() throws Exception {
         FileUtils.deleteDirectory(new File(path));
+        Map<Integer, File> oldFiles = new HashMap<>();
+        int lastCycle = 0;
 
-        try (SingleChronicleQueue queue = SingleChronicleQueueBuilder.binary(path).storeFileListener(new StoreFileListener() {
+        Thread reader = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                long deadLine = System.currentTimeMillis() + 150_000;
+
+                while (System.currentTimeMillis() < deadLine) {
+                    try (SingleChronicleQueue queue = SingleChronicleQueueBuilder.binary(path).build()) {
+                        ExcerptTailer tailer = queue.createTailer();
+                        String text = null;
+
+                        while ((text = tailer.readText()) != null) {
+                            logger.info("{}", text);
+                        }
+                    }
+                }
+            }
+        });
+
+
+
+        try (SingleChronicleQueue queue = SingleChronicleQueueBuilder.binary(path).rollCycle(RollCycles.MINUTELY).storeFileListener(new StoreFileListener() {
             @Override
             public void onReleased(int i, File file) {
                 if (file != null) {
-                    logger.info("release first queue file {}", file.getAbsolutePath());
-                    file.delete();
+                    oldFiles.put(i, file);
+                    logger.info("release file {} cycle {}", file.getName(), i);
                 }
             }
         }).build()) {
             ExcerptAppender appender = queue.acquireAppender();
 
-            for (int i = 0; i < 100; i++) {
-                appender.writeText("first");
-                logger.info("write first");
-            }
+            for (int i = 0; i < 15; i++) {
+                appender.writeText("first" + i);
+                logger.info("write first {} lastCycle {}", i, queue.lastCycle());
+                lastCycle = queue.lastCycle();
 
-        }
-
-        //Thread.sleep(20_000);
-
-        try (SingleChronicleQueue queue = SingleChronicleQueueBuilder.binary(path).storeFileListener(new StoreFileListener() {
-            @Override
-            public void onReleased(int i, File file) {
-                if (file != null) {
-                    logger.info("release second queue file {}", file.getAbsolutePath());
-                    //file.delete();
+                if (i == 0) {
+                    reader.start();
                 }
+                Thread.sleep(5_000);
             }
-        }).build()) {
-            ExcerptAppender appender = queue.acquireAppender();
-            appender.writeText("second");
-            logger.info("write second");
         }
 
-        try (SingleChronicleQueue queue = SingleChronicleQueueBuilder.binary(path).build()) {
-            ExcerptTailer tailer = queue.createTailer();
-            String text = null;
-
-            logger.info("read");
-            while ((text = tailer.readText()) != null) {
-                logger.info("{}", text);
+        for (Map.Entry<Integer, File> entry : oldFiles.entrySet()) {
+            if (entry.getKey() != lastCycle) {
+                File qFile = entry.getValue();
+                logger.info("delete file {} result {}", qFile.getName(), qFile.delete());
             }
         }
 
 
+        reader.join();
     }
 
 
