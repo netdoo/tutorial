@@ -1,10 +1,7 @@
 package com.exchroniclequeue;
 
 
-import net.openhft.chronicle.queue.ExcerptAppender;
-import net.openhft.chronicle.queue.ExcerptTailer;
-import net.openhft.chronicle.queue.RollCycle;
-import net.openhft.chronicle.queue.RollCycles;
+import net.openhft.chronicle.queue.*;
 import net.openhft.chronicle.queue.impl.StoreFileListener;
 import net.openhft.chronicle.queue.impl.single.SingleChronicleQueue;
 import net.openhft.chronicle.queue.impl.single.SingleChronicleQueueBuilder;
@@ -26,6 +23,62 @@ public class RollTest {
     final static Logger logger = LoggerFactory.getLogger(RollTest.class);
     final String path = "roll";
 
+
+
+    @Test
+    public void _Roll_테스트() throws Exception {
+        FileUtils.deleteDirectory(new File(path));
+
+        try (SingleChronicleQueue queue = SingleChronicleQueueBuilder.binary(path).storeFileListener(new StoreFileListener() {
+            @Override
+            public void onReleased(int i, File file) {
+                if (file != null) {
+                    logger.info("release first queue file {}", file.getAbsolutePath());
+                    file.delete();
+                }
+            }
+        }).build()) {
+            ExcerptAppender appender = queue.acquireAppender();
+
+            for (int i = 0; i < 100; i++) {
+                appender.writeText("first");
+                logger.info("write first");
+            }
+
+        }
+
+        //Thread.sleep(20_000);
+
+        try (SingleChronicleQueue queue = SingleChronicleQueueBuilder.binary(path).storeFileListener(new StoreFileListener() {
+            @Override
+            public void onReleased(int i, File file) {
+                if (file != null) {
+                    logger.info("release second queue file {}", file.getAbsolutePath());
+                    //file.delete();
+                }
+            }
+        }).build()) {
+            ExcerptAppender appender = queue.acquireAppender();
+            appender.writeText("second");
+            logger.info("write second");
+        }
+
+        try (SingleChronicleQueue queue = SingleChronicleQueueBuilder.binary(path).build()) {
+            ExcerptTailer tailer = queue.createTailer();
+            String text = null;
+
+            logger.info("read");
+            while ((text = tailer.readText()) != null) {
+                logger.info("{}", text);
+            }
+        }
+
+
+    }
+
+
+
+    /*
     @Test
     public void _0_테스트_준비() throws Exception {
         FileUtils.deleteDirectory(new File(path));
@@ -33,6 +86,7 @@ public class RollTest {
 
     @Test
     public void _1_큐에쓰기() throws Exception {
+
         try (SingleChronicleQueue queue = SingleChronicleQueueBuilder.binary(path).rollCycle(RollCycles.TEST_SECONDLY).storeFileListener(new StoreFileListener() {
             @Override
             public void onReleased(int i, File file) {
