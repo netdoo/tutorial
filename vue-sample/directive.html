@@ -36,6 +36,14 @@
         
         <!-- 또는 이렇게 약어 : 로 사용할 수 있음. -->
         <img :src="value > 3 ? large : small" />
+
+        <li v-for="(bbs, index) in bbsList">{{ index }} {{bbs.name}} </li>            
+
+        <!-- 양방향 바인딩 -->
+        <input type="text" v-model="hello"/>
+
+        <button v-on:click="onClick">클릭</button>
+        <button @click="onClick">클릭</button>
     </div>
 
     <script src="static/vue.min.js"></script>
@@ -48,11 +56,18 @@
             world: "<i>world<i>",
             visible: true,
             value: 6,
-            large: "1.png" ,
-            small: "2.png"
+            large: "1.png",
+            small: "2.png",
+            bbsList: [{name:"MBC"},
+                {name:"KBS"},
+                {name:"SBS"},
+                {name:"EBS"}
+                ]
         },        
         methods: {
-            
+            onClick: function() {
+                alert(this.hello);
+            }
         }
     });
     </script>
