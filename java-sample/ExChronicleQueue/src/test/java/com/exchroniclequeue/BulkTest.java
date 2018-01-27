@@ -22,7 +22,8 @@ import static junit.framework.TestCase.assertEquals;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class BulkTest {
 
-    final static long MAX_PUT_COUNT = 30_000L;
+    // 10억건.
+    final static long MAX_PUT_COUNT = 1_000_000_000L;
     final static Logger logger = LoggerFactory.getLogger(BulkTest.class);
     final String path = "bulk";
 
@@ -40,9 +41,12 @@ public class BulkTest {
             ExcerptAppender appender = queue.acquireAppender();
             for (long i = 0; i < MAX_PUT_COUNT; i++) {
                 appender.writeText(String.valueOf(i)+padding);
+                if (i % 10_000_000 == 0) {
+                    logger.info("PUT {}", i);
+                }
             }
         }
         stopWatch.stop();
-        logger.info("elapsed time {} (secs)", stopWatch.getTime(TimeUnit.MILLISECONDS));
+        logger.info("elapsed time {} (secs)", stopWatch.getTime(TimeUnit.SECONDS));
     }
 }
