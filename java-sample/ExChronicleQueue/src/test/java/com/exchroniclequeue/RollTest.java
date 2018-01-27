@@ -39,14 +39,20 @@ public class RollTest {
                 long deadLine = System.currentTimeMillis() + 150_000;
 
                 while (System.currentTimeMillis() < deadLine) {
+
                     try (SingleChronicleQueue queue = SingleChronicleQueueBuilder.binary(path).build()) {
                         ExcerptTailer tailer = queue.createTailer();
                         String text = null;
-
+                        List<String> list = new ArrayList<>();
                         while ((text = tailer.readText()) != null) {
-                            logger.info("{}", text);
+                            list.add(text);
                         }
+                        logger.info("READER {}", list);
                     }
+
+                    try {
+                        Thread.sleep(10 * 1_000);
+                    } catch (Exception e) {}
                 }
             }
         });
@@ -62,11 +68,12 @@ public class RollTest {
                 }
             }
         }).build()) {
+
             ExcerptAppender appender = queue.acquireAppender();
 
             for (int i = 0; i < 15; i++) {
-                appender.writeText("first" + i);
-                logger.info("write first {} lastCycle {}", i, queue.lastCycle());
+                appender.writeText(String.valueOf(i));
+                logger.info("WRITER {} lastCycle {}", i, queue.lastCycle());
                 lastCycle = queue.lastCycle();
 
                 if (i == 0) {
