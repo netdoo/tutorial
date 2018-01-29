@@ -37,7 +37,6 @@ public class BulkTest {
 
     @Test
     public void _0_테스트_준비() throws Exception {
-
     }
 
     void bulkRequest(RestTemplate restTemplate, String url, int maxThreadCount, int maxRequestCount, CountDownLatch countDownLatch) {
