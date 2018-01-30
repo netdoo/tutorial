@@ -177,10 +177,10 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="150" />
-    <option name="y" value="-8" />
+    <option name="x" value="-407" />
+    <option name="y" value="99" />
     <option name="width" value="1778" />
-    <option name="height" value="1216" />
+    <option name="height" value="1159" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -747,7 +747,7 @@
     </history-entry>
   </component>
   <component name="ToolWindowManager">
-    <frame x="150" y="-8" width="1778" height="1216" extended-state="0" />
+    <frame x="-407" y="99" width="1778" height="1159" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -855,6 +855,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2147">
           <caret line="113" column="30" lean-forward="false" selection-start-line="113" selection-start-column="30" selection-end-line="113" selection-end-column="30" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1142,6 +1143,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="152">
           <caret line="121" column="23" lean-forward="true" selection-start-line="121" selection-start-column="23" selection-end-line="121" selection-end-column="23" />
+          <folding />
         </state>
       </provider>
     </entry>
