@@ -54,6 +54,13 @@
             <version>${simple-spring-memcached.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.7.3</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
 
         <!-- Logging -->
         <dependency>
