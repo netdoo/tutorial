@@ -32,8 +32,8 @@ import java.util.stream.IntStream;
 public class BulkTest {
 
     final static Logger logger = LoggerFactory.getLogger(BulkTest.class);
-    final static int MAX_REQUEST_COUNT = 500;
-    final static int MAX_THREAD_COUNT = 20;
+    final static int MAX_REQUEST_COUNT = 100;
+    final static int MAX_THREAD_COUNT = 30;
 
     @Test
     public void _0_테스트_준비() throws Exception {
@@ -72,13 +72,33 @@ public class BulkTest {
     }
 
     @Test
-    public void _2_벌크_요청_테스트() throws Exception {
+    public void _2_Memcached_벌크_요청_테스트() throws Exception {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         String baseUrl = "http://localhost:8080";
         RestTemplate restTemplate = new RestTemplate();
         URI targetUrl = UriComponentsBuilder.fromUriString(baseUrl)      // Build the base link
-                .path("/bulk")                          // Add path
+                .path("/mcbulk")                          // Add path
+                .build()                                        // Build the URL
+                .encode()                                       // Encode any URI items that need to be encoded
+                .toUri();                                       // Convert to URI
+
+        String url = targetUrl.toString();
+        CountDownLatch countDownLatch = new CountDownLatch(MAX_THREAD_COUNT);
+        bulkRequest(restTemplate, url, MAX_THREAD_COUNT, MAX_REQUEST_COUNT, countDownLatch);
+        countDownLatch.await(10, TimeUnit.HOURS);
+        stopWatch.stop();
+        logger.info("[MEMCACHED WITH SPRING] thread {} request {} elapsed time {} (secs)", MAX_THREAD_COUNT, MAX_REQUEST_COUNT, stopWatch.getTime(TimeUnit.SECONDS));
+    }
+
+    @Test
+    public void _3_Redis_벌크_요청_테스트() throws Exception {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        String baseUrl = "http://localhost:8080";
+        RestTemplate restTemplate = new RestTemplate();
+        URI targetUrl = UriComponentsBuilder.fromUriString(baseUrl)      // Build the base link
+                .path("/rebulk")                          // Add path
                 .build()                                        // Build the URL
                 .encode()                                       // Encode any URI items that need to be encoded
                 .toUri();                                       // Convert to URI
