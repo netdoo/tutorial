@@ -15,6 +15,7 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 public class App {
     final static Logger logger = LoggerFactory.getLogger(App.class);
 
+    /*
     static void doRequest(TransportClient client, QueryBuilder queryBuilder) {
         SearchRequestBuilder builder = client.prepareSearch(EsUtil.INDEX)
                 .setTypes(EsUtil.TYPE)
@@ -64,12 +65,16 @@ public class App {
 
         doRequest(client, queryBuilder);
     }
+    */
 
     public static void main(String[] args) throws Exception {
+
+        /*
         TransportClient client = EsUtil.connect("localhost", 9300);
 
         spanFirstSample(client);
         spanOrSample(client);
         spanNearSample(client);
+        */
     }
 }
