@@ -5,7 +5,10 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
+import java.util.stream.Collectors;
 
 /**
  * Created by jhkwon78 on 2018-01-31.
@@ -25,5 +28,15 @@ public class BaseTest {
 
     protected static TransportClient connect() throws Exception {
         return connect(EsConst.clusterName, EsConst.host, EsConst.port);
+    }
+
+    public String getResource(String name) {
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(classloader.getResourceAsStream(name)));) {
+            return bufferedReader.lines().collect(Collectors.joining(System.lineSeparator()));
+        } catch (Exception e) {
+            return "";
+        }
     }
 }

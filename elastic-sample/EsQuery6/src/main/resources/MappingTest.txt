@@ -1,0 +1,14 @@
+{
+    "market": {
+        "properties": {
+            "name": {
+                "type": "keyword",
+                "index": false
+            },
+            "price" : {
+                "type": "long",
+                "index": false
+            }
+        }
+    }
+}

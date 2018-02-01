@@ -2,6 +2,7 @@ package com.esquery6;
 
 import org.elasticsearch.ResourceAlreadyExistsException;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.cluster.node.DiscoveryNode;
 import org.junit.BeforeClass;
@@ -14,10 +15,10 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class CreateIndexTest extends BaseTest {
+public class IndexTest extends BaseTest {
 
-    final static Logger logger = LoggerFactory.getLogger(App.class);
-    final static String indexName = "sample";
+    final static Logger logger = LoggerFactory.getLogger(IndexTest.class);
+    String indexName = "sample";
     static TransportClient esClient;
 
     @BeforeClass
@@ -47,13 +48,24 @@ public class CreateIndexTest extends BaseTest {
 
     @Test
     public void _2_인덱스_조회() throws Exception {
-
         String[] indexList = esClient.admin().cluster().prepareState().execute().actionGet().getState().getMetaData().getConcreteAllIndices();
         logger.info("index list => {}", indexList);
     }
 
     @Test
     public void _3_인덱스_삭제() throws Exception {
+        DeleteIndexResponse r = esClient.admin().indices().prepareDelete(indexName).execute().actionGet();
 
+        if (r.isAcknowledged() == true) {
+            logger.info("delete index {} ", indexName);
+        } else {
+            logger.error("fail to delete index ");
+        }
+    }
+
+    @Test
+    public void _4_인덱스_조회() throws Exception {
+        String[] indexList = esClient.admin().cluster().prepareState().execute().actionGet().getState().getMetaData().getConcreteAllIndices();
+        logger.info("index list => {}", indexList);
     }
 }
