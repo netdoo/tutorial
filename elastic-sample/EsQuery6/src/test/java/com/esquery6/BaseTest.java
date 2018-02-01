@@ -1,8 +1,11 @@
 package com.esquery6;
 
+import org.elasticsearch.action.admin.indices.refresh.RefreshResponse;
+import org.elasticsearch.client.Response;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
+import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 import java.io.BufferedReader;
@@ -32,11 +35,20 @@ public class BaseTest {
 
     public String getResource(String name) {
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        
+
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(classloader.getResourceAsStream(name)));) {
             return bufferedReader.lines().collect(Collectors.joining(System.lineSeparator()));
         } catch (Exception e) {
             return "";
         }
+    }
+
+    public RestStatus refreshIndex(TransportClient esClient, String index, String type) throws Exception {
+
+        RefreshResponse response = esClient.admin().indices()
+                .prepareRefresh(index)
+                .get();
+
+        return response.getStatus();
     }
 }
