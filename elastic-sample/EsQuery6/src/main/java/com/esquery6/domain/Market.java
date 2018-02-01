@@ -4,14 +4,19 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NON_PRIVATE)
 public class Market {
     String name;
     long price;
+    List<Product> products;
 
     @JsonIgnore
     String docId;
+
 
     public Market(String name, long price) {
         this.name = name;
@@ -46,5 +51,13 @@ public class Market {
 
     public long getPrice() {
         return this.price;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
+    public List<Product> getProducts() {
+        return this.products;
     }
 }

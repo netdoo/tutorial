@@ -61,7 +61,7 @@ public class _3_MappingTest extends BaseTest {
     @Test
     public void _03_매핑_생성() throws Exception {
 
-        String mappingJson = getResource("MappingTest.txt");
+        String mappingJson = getResource("MappingTest.json");
 
         PutMappingRequest request = new PutMappingRequest(indexName);
         request.type(typeName);

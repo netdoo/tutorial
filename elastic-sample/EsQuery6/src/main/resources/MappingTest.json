@@ -1,0 +1,30 @@
+{
+    "market": {
+        "properties": {
+            "name": {
+                "type": "keyword",
+                "index": false
+            },
+            "price" : {
+                "type": "long",
+                "index": false
+            },
+            "product" : {
+                "type" : "nested",
+                "properties" : {
+                    "label" : {"type" : "keyword"},
+                    "price" : {"type" : "long"},
+                    "count" : {"type" : "integer"},
+                    "review"  : {
+                        "type" : "nested",
+                        "properties" : {
+                            "star" : {"type" : "integer"},
+                            "message" : {"type" : "text"},
+                            "like" : {"type" : "boolean"}
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
