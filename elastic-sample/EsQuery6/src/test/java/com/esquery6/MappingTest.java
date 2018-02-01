@@ -38,7 +38,7 @@ public class MappingTest extends BaseTest {
     }
 
     @Test
-    public void _1_인덱스_생성() throws Exception {
+    public void _01_인덱스_생성() throws Exception {
         try {
             CreateIndexResponse r = esClient.admin().indices().prepareCreate(indexName).execute().actionGet();
 
@@ -53,13 +53,13 @@ public class MappingTest extends BaseTest {
     }
 
     @Test
-    public void _2_인덱스_조회() throws Exception {
+    public void _02_인덱스_조회() throws Exception {
         String[] indexList = esClient.admin().cluster().prepareState().execute().actionGet().getState().getMetaData().getConcreteAllIndices();
         logger.info("index list => {}", indexList);
     }
 
     @Test
-    public void _3_매핑_생성() throws Exception {
+    public void _03_매핑_생성() throws Exception {
 
         String mappingJson = getResource("MappingTest.txt");
 
@@ -77,7 +77,7 @@ public class MappingTest extends BaseTest {
     }
 
     @Test
-    public void _4_매핑_삭제() throws Exception {
+    public void _04_매핑_삭제() throws Exception {
         /*
         https://www.elastic.co/guide/en/elasticsearch/reference/6.0/indices-delete-mapping.html
 
@@ -88,7 +88,7 @@ public class MappingTest extends BaseTest {
     }
 
     @Test
-    public void _5_매핑_조회() throws Exception {
+    public void _05_매핑_조회() throws Exception {
 
         final GetMappingsResponse mappings = esClient.admin().indices().prepareGetMappings(indexName).setTypes(typeName).get();
         String mappingJson = mappings.getMappings().get(indexName).get(typeName).source().toString();
@@ -98,7 +98,7 @@ public class MappingTest extends BaseTest {
     }
 
     @Test
-    public void _6_인덱스_삭제() throws Exception {
+    public void _06_인덱스_삭제() throws Exception {
         DeleteIndexResponse r = esClient.admin().indices().prepareDelete(indexName).execute().actionGet();
 
         if (r.isAcknowledged() == true) {
@@ -109,7 +109,7 @@ public class MappingTest extends BaseTest {
     }
 
     @Test
-    public void _7_인덱스_조회() throws Exception {
+    public void _07_인덱스_조회() throws Exception {
         String[] indexList = esClient.admin().cluster().prepareState().execute().actionGet().getState().getMetaData().getConcreteAllIndices();
         logger.info("index list => {}", indexList);
     }

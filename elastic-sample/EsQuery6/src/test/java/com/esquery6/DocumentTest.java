@@ -13,11 +13,18 @@ import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.action.update.UpdateRequest;
+import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.cluster.node.DiscoveryNode;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.query.IdsQueryBuilder;
 import org.elasticsearch.index.query.MatchAllQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryAction;
@@ -34,6 +41,8 @@ import org.yaml.snakeyaml.error.Mark;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DocumentTest extends BaseTest {
@@ -64,7 +73,7 @@ public class DocumentTest extends BaseTest {
     }
 
     @Test
-    public void _1_인덱스_생성() throws Exception {
+    public void _01_인덱스_생성() throws Exception {
         try {
             CreateIndexResponse r = esClient.admin().indices().prepareCreate(indexName).execute().actionGet();
 
@@ -79,7 +88,7 @@ public class DocumentTest extends BaseTest {
     }
 
     @Test
-    public void _2_매핑_생성() throws Exception {
+    public void _02_매핑_생성() throws Exception {
 
         String mappingJson = getResource("MappingTest.txt");
 
@@ -97,7 +106,7 @@ public class DocumentTest extends BaseTest {
     }
 
     @Test
-    public void _3_문서_추가() throws Exception {
+    public void _03_문서_추가() throws Exception {
 
         Market market = markets.get(0);
         IndexRequest indexRequest = new IndexRequest(indexName, typeName, market.getDocId());
@@ -116,7 +125,7 @@ public class DocumentTest extends BaseTest {
     }
 
     @Test
-    public void _4_벌크_문서_추가() throws Exception {
+    public void _04_벌크_문서_추가() throws Exception {
         BulkRequestBuilder bulkRequest = esClient.prepareBulk();
 
         markets.forEach(market -> {
@@ -142,9 +151,89 @@ public class DocumentTest extends BaseTest {
     }
 
     @Test
-    public void _5_문서_삭제() throws Exception {
+    public void _05_문서_조회() throws Exception {
 
-        _4_벌크_문서_추가();
+        SearchRequestBuilder builder = esClient.prepareSearch(indexName)
+                .setTypes(typeName)
+                .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+                .setQuery(QueryBuilders.matchAllQuery());
+
+        SearchResponse response = builder.get();
+
+        response.getHits().forEach(hit -> {
+            String json = hit.getSourceAsString();
+            logger.info("{}", json);
+        });
+    }
+
+    @Test
+    public void _06_벌크_문서_조회() throws Exception {
+
+        IdsQueryBuilder idsQueryBuilder = QueryBuilders.idsQuery(typeName).addIds("1", "2");
+
+        SearchRequestBuilder builder = esClient.prepareSearch(indexName)
+                .setTypes(typeName)
+                .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+                .setQuery(idsQueryBuilder);
+
+        SearchResponse response = builder.get();
+
+        response.getHits().forEach(hit -> {
+            String json = hit.getSourceAsString();
+            logger.info("{}", json);
+        });
+    }
+
+    @Test
+    public void _07_문서_갱신() throws Exception {
+        Market market = markets.get(0);
+        market.setPrice(90_000);
+
+        UpdateRequest updateRequest = new UpdateRequest();
+        updateRequest.index(indexName);
+        updateRequest.type(typeName);
+        updateRequest.id(market.getDocId());
+        updateRequest.doc(objectMapper.writeValueAsString(market), XContentType.JSON);
+        UpdateResponse updateResponse = esClient.update(updateRequest).get();
+        logger.info("{}", updateResponse.status());
+    }
+
+
+    @Test
+    public void _08_벌크_문서_갱신() throws Exception {
+
+        BulkRequestBuilder bulkRequest = esClient.prepareBulk();
+
+        markets.forEach(market -> {
+            String json;
+
+            try {
+                market.setPrice(market.getPrice() + 1);
+
+                bulkRequest.add(esClient.prepareUpdate()
+                        .setIndex(indexName)
+                        .setType(typeName)
+                        .setId(market.getDocId())
+                        .setDoc(objectMapper.writeValueAsString(market), XContentType.JSON));
+                logger.info("bulk update request {}", market.getName());
+            } catch (Exception e) {
+                logger.error("fail to bulk update request ", e);
+            }
+        });
+
+        BulkResponse r = bulkRequest.execute().actionGet(5000);
+
+        if (r.hasFailures()) {
+            logger.error("fail to bulk update");
+        } else {
+            logger.info("bulk update !!");
+        }
+    }
+
+    @Test
+    public void _10_문서_삭제() throws Exception {
+
+        _04_벌크_문서_추가();
 
         Market market = markets.get(0);
         DeleteRequest deleteRequest = new DeleteRequest(indexName, typeName, market.getDocId());
@@ -158,9 +247,9 @@ public class DocumentTest extends BaseTest {
     }
 
     @Test
-    public void _5_벌크_문서_삭제() throws Exception {
+    public void _11_벌크_문서_삭제() throws Exception {
 
-        _4_벌크_문서_추가();
+        _04_벌크_문서_추가();
 
         logger.info("refresh index {}", refreshIndex(esClient, indexName, typeName));
 
@@ -187,9 +276,9 @@ public class DocumentTest extends BaseTest {
     }
 
     @Test
-    public void _6_모든_문서_삭제() throws Exception {
+    public void _12_모든_문서_삭제() throws Exception {
 
-        _4_벌크_문서_추가();
+        _04_벌크_문서_추가();
 
         logger.info("refresh index {}", refreshIndex(esClient, indexName, typeName));
 
@@ -201,5 +290,10 @@ public class DocumentTest extends BaseTest {
 
         long deleted = response.getDeleted();
         logger.info("delete document count {}", deleted);
+    }
+
+    @Test
+    public void _20_테스트() throws Exception {
+
     }
 }

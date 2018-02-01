@@ -32,7 +32,7 @@ public class IndexTest extends BaseTest {
     }
 
     @Test
-    public void _1_인덱스_생성() throws Exception {
+    public void _01_인덱스_생성() throws Exception {
         try {
             CreateIndexResponse r = esClient.admin().indices().prepareCreate(indexName).execute().actionGet();
 
@@ -47,13 +47,13 @@ public class IndexTest extends BaseTest {
     }
 
     @Test
-    public void _2_인덱스_조회() throws Exception {
+    public void _02_인덱스_조회() throws Exception {
         String[] indexList = esClient.admin().cluster().prepareState().execute().actionGet().getState().getMetaData().getConcreteAllIndices();
         logger.info("index list => {}", indexList);
     }
 
     @Test
-    public void _3_인덱스_삭제() throws Exception {
+    public void _03_인덱스_삭제() throws Exception {
         DeleteIndexResponse r = esClient.admin().indices().prepareDelete(indexName).execute().actionGet();
 
         if (r.isAcknowledged() == true) {
@@ -64,7 +64,7 @@ public class IndexTest extends BaseTest {
     }
 
     @Test
-    public void _4_인덱스_조회() throws Exception {
+    public void _04_인덱스_조회() throws Exception {
         String[] indexList = esClient.admin().cluster().prepareState().execute().actionGet().getState().getMetaData().getConcreteAllIndices();
         logger.info("index list => {}", indexList);
     }
