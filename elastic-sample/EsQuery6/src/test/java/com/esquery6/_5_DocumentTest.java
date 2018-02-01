@@ -4,7 +4,6 @@ import com.esquery6.domain.Market;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.elasticsearch.ResourceAlreadyExistsException;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
@@ -23,12 +22,9 @@ import org.elasticsearch.cluster.node.DiscoveryNode;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.IdsQueryBuilder;
-import org.elasticsearch.index.query.MatchAllQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryAction;
-import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 import org.elasticsearch.index.reindex.DeleteByQueryRequestBuilder;
 import org.elasticsearch.rest.RestStatus;
 import org.junit.BeforeClass;
@@ -37,7 +33,6 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.yaml.snakeyaml.error.Mark;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,9 +40,9 @@ import java.util.List;
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class DocumentTest extends BaseTest {
+public class _5_DocumentTest extends BaseTest {
 
-    final static Logger logger = LoggerFactory.getLogger(DocumentTest.class);
+    final static Logger logger = LoggerFactory.getLogger(_5_DocumentTest.class);
     String indexName = "sample";
     String typeName = "market";
     static TransportClient esClient;
