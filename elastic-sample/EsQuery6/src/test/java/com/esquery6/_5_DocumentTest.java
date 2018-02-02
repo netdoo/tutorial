@@ -1,6 +1,8 @@
 package com.esquery6;
 
 import com.esquery6.domain.Market;
+import com.esquery6.domain.Product;
+import com.esquery6.domain.Review;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.elasticsearch.ResourceAlreadyExistsException;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
@@ -47,7 +49,7 @@ public class _5_DocumentTest extends BaseTest {
     String typeName = "market";
     static TransportClient esClient;
     static ObjectMapper objectMapper;
-    static List<Market> markets;
+    static List<Market> markets = getMarkets();
 
     @BeforeClass
     public static void 테스트_준비() throws Exception {
@@ -60,11 +62,6 @@ public class _5_DocumentTest extends BaseTest {
         });
 
         objectMapper = new ObjectMapper();
-
-        markets = new ArrayList<>();
-        markets.add(new Market("1", "nike", 50_000));
-        markets.add(new Market("2", "lotte", 20_000));
-        markets.add(new Market("3", "ebs", 20_000));
     }
 
     @Test

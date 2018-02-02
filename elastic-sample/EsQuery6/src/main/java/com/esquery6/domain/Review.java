@@ -11,6 +11,16 @@ public class Review {
     String message;
     boolean like;
 
+    public Review() {
+
+    }
+
+    public Review(int star, String message, boolean like) {
+        this.star = star;
+        this.message = message;
+        this.like = like;
+    }
+
     public void setStar(int star) {
         this.star = star;
     }

@@ -29,6 +29,13 @@ public class Market {
         this.price = price;
     }
 
+    public Market(String docId, String name, long price, List<Product> products) {
+        this.docId = docId;
+        this.name = name;
+        this.price = price;
+        this.products = products;
+    }
+
     public void setDocId(String docId) {
         this.docId = docId;
     }

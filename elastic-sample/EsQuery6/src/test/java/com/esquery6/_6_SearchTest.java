@@ -21,7 +21,7 @@ public class _6_SearchTest extends BaseTest {
     String typeName = "market";
     static TransportClient esClient;
     static ObjectMapper objectMapper;
-    static List<Market> markets;
+    static List<Market> markets = getMarkets();
 
     @BeforeClass
     public static void 테스트_준비() throws Exception {
@@ -33,13 +33,6 @@ public class _6_SearchTest extends BaseTest {
         });
 
         objectMapper = new ObjectMapper();
-
-        markets = new ArrayList<>();
-        markets.add(new Market("1", "nike", 50_000));
-        markets.add(new Market("2", "lotte", 20_000));
-        markets.add(new Market("3", "ebs", 20_000));
-
-
     }
 
     @Test

@@ -11,6 +11,17 @@ public class Product {
     int count;
     Review review;
 
+    public Product() {
+
+    }
+
+    public Product(String label, long price, int count, Review review) {
+        this.label = label;
+        this.price = price;
+        this.count = count;
+        this.review = review;
+    }
+
     public void setLabel(String label) {
         this.label = label;
     }
