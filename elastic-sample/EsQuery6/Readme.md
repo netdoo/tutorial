@@ -254,4 +254,45 @@ GET cafe/_search
 
 
 
+# Reference
+
+```
+http://essql.nlpcn.org/
+```
+
+```
+SELECT count(*),avg(balance) FROM bank
+```
+
+
+```
+{
+	"from": 0,
+	"size": 0,
+	"_source": {
+		"includes": [
+			"COUNT",
+			"AVG"
+		],
+		"excludes": []
+	},
+	"aggregations": {
+		"COUNT(*)": {
+			"value_count": {
+				"field": "_index"
+			}
+		},
+		"AVG(balance)": {
+			"avg": {
+				"field": "balance"
+			}
+		}
+	}
+}
+
+```
+
+
+
+
 
