@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class _7_SearchAggTest extends BaseTest {
+public class _4_AliasTest extends BaseTest {
     final static Logger logger = LoggerFactory.getLogger(_3_MappingTest.class);
 
     @BeforeClass

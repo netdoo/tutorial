@@ -3,13 +3,17 @@ package com.esquery6;
 import com.esquery6.domain.Market;
 import com.esquery6.domain.Product;
 import com.esquery6.domain.Review;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.elasticsearch.action.admin.indices.refresh.RefreshResponse;
 import org.elasticsearch.client.Response;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.cluster.node.DiscoveryNode;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
+import org.junit.BeforeClass;
+import org.slf4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -18,10 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Created by jhkwon78 on 2018-01-31.
- */
 public class BaseTest {
+
+    String indexName = "sample";
+    String typeName = "market";
+    static TransportClient esClient = connect();
+    static ObjectMapper objectMapper = new ObjectMapper();
 
     public static TransportClient connect(String clusterName, String host, int port) throws Exception {
 
@@ -34,8 +40,15 @@ public class BaseTest {
         return client;
     }
 
-    protected static TransportClient connect() throws Exception {
-        return connect(EsConst.clusterName, EsConst.host, EsConst.port);
+    protected static TransportClient connect() {
+
+        try {
+            return connect(EsConst.clusterName, EsConst.host, EsConst.port);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public String getResource(String name) {
@@ -82,5 +95,10 @@ public class BaseTest {
         return response.getStatus();
     }
 
-
+    public static void printNodes(Logger logger) {
+        List<DiscoveryNode> nodes = esClient.listedNodes();
+        nodes.forEach(node -> {
+            logger.info("discover node address {}", node.getAddress());
+        });
+    }
 }

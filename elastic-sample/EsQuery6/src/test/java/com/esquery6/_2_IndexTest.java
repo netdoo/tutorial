@@ -18,17 +18,10 @@ import java.util.List;
 public class _2_IndexTest extends BaseTest {
 
     final static Logger logger = LoggerFactory.getLogger(_2_IndexTest.class);
-    String indexName = "sample";
-    static TransportClient esClient;
 
     @BeforeClass
     public static void 테스트_준비() throws Exception {
-        //executed only once, before the first test
-        esClient = connect();
-        List<DiscoveryNode> nodes = esClient.listedNodes();
-        nodes.forEach(node -> {
-            logger.info("discover node address {}", node.getAddress());
-        });
+        printNodes(logger);
     }
 
     @Test

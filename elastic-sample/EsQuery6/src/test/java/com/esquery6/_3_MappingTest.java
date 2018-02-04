@@ -23,18 +23,10 @@ import java.util.List;
 public class _3_MappingTest extends BaseTest {
 
     final static Logger logger = LoggerFactory.getLogger(_3_MappingTest.class);
-    String indexName = "sample";
-    String typeName = "market";
-    static TransportClient esClient;
 
     @BeforeClass
     public static void 테스트_준비() throws Exception {
-        //executed only once, before the first test
-        esClient = connect();
-        List<DiscoveryNode> nodes = esClient.listedNodes();
-        nodes.forEach(node -> {
-            logger.info("discover node address {}", node.getAddress());
-        });
+        printNodes(logger);
     }
 
     @Test

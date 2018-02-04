@@ -45,23 +45,11 @@ import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 public class _5_DocumentTest extends BaseTest {
 
     final static Logger logger = LoggerFactory.getLogger(_5_DocumentTest.class);
-    String indexName = "sample";
-    String typeName = "market";
-    static TransportClient esClient;
-    static ObjectMapper objectMapper;
     static List<Market> markets = getMarkets();
 
     @BeforeClass
     public static void 테스트_준비() throws Exception {
-        //executed only once, before the first test
-        esClient = connect();
-
-        List<DiscoveryNode> nodes = esClient.listedNodes();
-        nodes.forEach(node -> {
-            logger.info("discover node address {}", node.getAddress());
-        });
-
-        objectMapper = new ObjectMapper();
+        printNodes(logger);
     }
 
     @Test
