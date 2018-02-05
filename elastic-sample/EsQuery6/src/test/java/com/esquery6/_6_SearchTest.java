@@ -31,7 +31,7 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
         },
 */
 public class _6_SearchTest extends BaseTest {
-    final static Logger logger = LoggerFactory.getLogger(_3_MappingTest.class);
+    final static Logger logger = LoggerFactory.getLogger(_6_SearchTest.class);
     static List<Market> markets = getMarkets();
 
     @BeforeClass

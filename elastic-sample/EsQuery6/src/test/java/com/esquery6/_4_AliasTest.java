@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 public class _4_AliasTest extends BaseTest {
-    final static Logger logger = LoggerFactory.getLogger(_3_MappingTest.class);
+    final static Logger logger = LoggerFactory.getLogger(_4_AliasTest.class);
 
     @BeforeClass
     public static void 테스트_준비() throws Exception {

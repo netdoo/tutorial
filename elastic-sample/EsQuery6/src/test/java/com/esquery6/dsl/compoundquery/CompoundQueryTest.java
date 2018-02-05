@@ -24,7 +24,7 @@ import static org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders.
 import static org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders.weightFactorFunction;
 
 public class CompoundQueryTest extends Serializers.Base {
-    final static Logger logger = LoggerFactory.getLogger(TermQueryTest.class);
+    final static Logger logger = LoggerFactory.getLogger(CompoundQueryTest.class);
 
     @BeforeClass
     public static void 테스트_준비() throws Exception {

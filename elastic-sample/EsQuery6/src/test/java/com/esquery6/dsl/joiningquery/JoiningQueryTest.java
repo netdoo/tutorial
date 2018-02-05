@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 public class JoiningQueryTest extends BaseTest {
-    final static Logger logger = LoggerFactory.getLogger(TermQueryTest.class);
+    final static Logger logger = LoggerFactory.getLogger(JoiningQueryTest.class);
 
     @BeforeClass
     public static void 테스트_준비() throws Exception {
