@@ -293,6 +293,11 @@ SELECT count(*),avg(balance) FROM bank
 ```
 
 
+# 쿼리 사용전 주의사항
+
+1. 쿼리를 사용하기 위해서는 색인되어 있어야 함. (index : true)
+
+
 # match 쿼리
 
 1. 대소문자 구분안함.
