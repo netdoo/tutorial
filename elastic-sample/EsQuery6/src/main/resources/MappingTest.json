@@ -3,23 +3,27 @@
         "properties": {
             "name": {
                 "type": "keyword",
-                "index": false
+                "index": true
             },
             "price" : {
                 "type": "long",
-                "index": false
+                "index": true
+            },
+            "country" : {
+                "type" : "text",
+                "index" : true
             },
             "product" : {
                 "type" : "nested",
                 "properties" : {
-                    "label" : {"type" : "keyword"},
+                    "label" : {"type" : "text", "index" : true},
                     "price" : {"type" : "long"},
                     "count" : {"type" : "integer"},
                     "review"  : {
                         "type" : "nested",
                         "properties" : {
                             "star" : {"type" : "integer"},
-                            "message" : {"type" : "text"},
+                            "message" : {"type" : "text", "index" : true},
                             "like" : {"type" : "boolean"}
                         }
                     }

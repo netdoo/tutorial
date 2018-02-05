@@ -12,6 +12,8 @@ import java.util.List;
 public class Market {
     String name;
     long price;
+    String country;
+    String location;
     List<Product> products;
 
     @JsonIgnore
@@ -23,16 +25,19 @@ public class Market {
         this.price = price;
     }
 
-    public Market(String docId, String name, long price) {
+    public Market(String docId, String name, long price, String country) {
         this.docId = docId;
         this.name = name;
         this.price = price;
+        this.country = country;
     }
 
-    public Market(String docId, String name, long price, List<Product> products) {
+    public Market(String docId, String name, long price, String country, String location, List<Product> products) {
         this.docId = docId;
         this.name = name;
         this.price = price;
+        this.country = country;
+        this.location = location;
         this.products = products;
     }
 
@@ -58,6 +63,22 @@ public class Market {
 
     public long getPrice() {
         return this.price;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getCountry() {
+        return this.country;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getLocation() {
+        return this.location;
     }
 
     public void setProducts(List<Product> products) {

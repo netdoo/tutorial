@@ -293,6 +293,27 @@ SELECT count(*),avg(balance) FROM bank
 ```
 
 
+# match 쿼리
+
+1. 대소문자 구분안함.
 
 
+# bool 쿼리
 
+## 나이가 40세이지만 ID(아이다호)에 살고 있지 않은 사람의 모든 계정을 반환합니다.
+
+```
+GET /bank/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "match": { "age": "40" } }
+      ],
+      "must_not": [
+        { "match": { "state": "ID" } }
+      ]
+    }
+  }
+}
+```

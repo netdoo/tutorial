@@ -128,6 +128,8 @@ public class _5_DocumentTest extends BaseTest {
         } else {
             logger.info("bulk insert !!");
         }
+
+        refreshIndex(esClient, indexName, typeName);
     }
 
     @Test
