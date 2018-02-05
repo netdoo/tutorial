@@ -203,8 +203,8 @@ public class BaseTest {
         long searchCount = r.getHits().getTotalHits();
 
         for (SearchHit hit : r.getHits()) {
-
             Map<String, Object> source = hit.getSourceAsMap();
+
             source.forEach((key, value) -> {
                 // logger.info("key : {}, value : {}", key, value);
             });
@@ -213,7 +213,8 @@ public class BaseTest {
             price = (Integer)source.getOrDefault("price", 0);
             country = (String)source.getOrDefault("country", "");
             location = (String)source.getOrDefault("location", "");
-            logger.info("name : {}, price : {}, country : {}, location : {}", name, price, country, location);
+
+            logger.info("score : {}, name : {}, price : {}, country : {}, location : {}", hit.getScore(), name, price, country, location);
         }
     }
 }
