@@ -13,7 +13,7 @@
                 "type" : "text",
                 "index" : true
             },
-            "product" : {
+            "products" : {
                 "type" : "nested",
                 "properties" : {
                     "label" : {"type" : "text", "index" : true},
