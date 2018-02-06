@@ -29,7 +29,7 @@ public class CompoundQueryTest extends Serializers.Base {
     @BeforeClass
     public static void 테스트_준비() throws Exception {
         printNodes(logger);
-    //    initSearchTest(logger);
+        initSearchTest(logger);
     }
 
     @Test

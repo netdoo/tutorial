@@ -1,9 +1,7 @@
-package com.esquery6;
+package com.esquery6.dsl.document;
 
+import com.esquery6.BaseTest;
 import com.esquery6.domain.Market;
-import com.esquery6.domain.Product;
-import com.esquery6.domain.Review;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.elasticsearch.ResourceAlreadyExistsException;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
@@ -19,8 +17,6 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.cluster.node.DiscoveryNode;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.IdsQueryBuilder;
@@ -36,15 +32,14 @@ import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class _5_DocumentTest extends BaseTest {
+public class _8_DocumentTest extends BaseTest {
 
-    final static Logger logger = LoggerFactory.getLogger(_5_DocumentTest.class);
+    final static Logger logger = LoggerFactory.getLogger(_8_DocumentTest.class);
     static List<Market> markets = getMarkets();
 
     @BeforeClass
