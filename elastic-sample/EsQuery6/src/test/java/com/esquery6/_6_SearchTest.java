@@ -12,7 +12,9 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +32,7 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
             "index": true
         },
 */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class _6_SearchTest extends BaseTest {
     final static Logger logger = LoggerFactory.getLogger(_6_SearchTest.class);
     static List<Market> markets = getMarkets();

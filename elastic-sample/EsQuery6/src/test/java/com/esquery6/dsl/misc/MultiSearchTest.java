@@ -18,7 +18,9 @@ import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.search.SearchHit;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +28,7 @@ import java.util.Map;
 
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MultiSearchTest extends BaseTest {
     final static Logger logger = LoggerFactory.getLogger(MultiSearchTest.class);
 

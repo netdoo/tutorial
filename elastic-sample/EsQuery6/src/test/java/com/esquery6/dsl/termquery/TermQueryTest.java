@@ -7,7 +7,9 @@ import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +22,7 @@ the term-level queries operate on the exact terms that are stored in the inverte
 These queries are usually used for structured data like numbers, dates, and enums,
 rather than full text fields. Alternatively, they allow you to craft low-level queries, foregoing the analysis process.
 */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TermQueryTest extends BaseTest {
     final static Logger logger = LoggerFactory.getLogger(TermQueryTest.class);
 

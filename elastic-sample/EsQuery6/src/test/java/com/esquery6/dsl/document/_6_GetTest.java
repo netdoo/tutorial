@@ -5,11 +5,14 @@ import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.get.MultiGetItemResponse;
 import org.elasticsearch.action.get.MultiGetResponse;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Map;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class _6_GetTest extends BaseTest {
     final static Logger logger = LoggerFactory.getLogger(_6_GetTest.class);
 

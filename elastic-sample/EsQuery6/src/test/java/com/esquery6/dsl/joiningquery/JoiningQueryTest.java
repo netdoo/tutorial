@@ -8,12 +8,15 @@ import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class JoiningQueryTest extends BaseTest {
     final static Logger logger = LoggerFactory.getLogger(JoiningQueryTest.class);
 

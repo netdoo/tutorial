@@ -7,7 +7,9 @@ import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +20,7 @@ import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 //  Full text 쿼리는 보통 이메일 본문과 같은
 //  Full text 필드에 대하여 Full text 쿼리를 수행하는데 사용
 //
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MatchQueryTest extends BaseTest {
 
     final static Logger logger = LoggerFactory.getLogger(MatchQueryTest.class);
