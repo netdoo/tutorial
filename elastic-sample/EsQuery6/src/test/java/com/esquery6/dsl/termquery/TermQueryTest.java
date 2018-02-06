@@ -37,8 +37,8 @@ public class TermQueryTest extends BaseTest {
     @Test
     public void _01_Term_문서_검색() throws Exception {
         SearchRequestBuilder builder = esClient.prepareSearch()
-                .setIndices(indexName)
-                .setTypes(typeName)
+                .setIndices(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(termQuery("name", "nike"));
 
@@ -49,8 +49,8 @@ public class TermQueryTest extends BaseTest {
     public void _02_Terms_문서_검색() throws Exception {
         // name 필드에 값이 nike 또는 adidas 인 경우
         SearchRequestBuilder builder = esClient.prepareSearch()
-                .setIndices(indexName)
-                .setTypes(typeName)
+                .setIndices(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(termsQuery("name", "nike", "adidas"));
 
@@ -67,8 +67,8 @@ public class TermQueryTest extends BaseTest {
                 .includeUpper(false);       // upper 조건을 무시함. (즉, 50_000 이란 값이 무시됨.)
 
         SearchRequestBuilder builder = esClient.prepareSearch()
-                .setIndices(indexName)
-                .setTypes(typeName)
+                .setIndices(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(qb);
 
@@ -78,8 +78,8 @@ public class TermQueryTest extends BaseTest {
     @Test
     public void _04_ExistQuery_문서_검색() throws Exception {
         SearchRequestBuilder builder = esClient.prepareSearch()
-                .setIndices(indexName)
-                .setTypes(typeName)
+                .setIndices(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(existsQuery("name"));
 
@@ -89,8 +89,8 @@ public class TermQueryTest extends BaseTest {
     @Test
     public void _05_PrefixQuery_문서_검색() throws Exception {
         SearchRequestBuilder builder = esClient.prepareSearch()
-                .setIndices(indexName)
-                .setTypes(typeName)
+                .setIndices(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(prefixQuery("name", "nik"));
 
@@ -100,8 +100,8 @@ public class TermQueryTest extends BaseTest {
     @Test
     public void _06_WildcardQuery_문서_검색() throws Exception {
         SearchRequestBuilder builder = esClient.prepareSearch()
-                .setIndices(indexName)
-                .setTypes(typeName)
+                .setIndices(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(wildcardQuery("name", "nik*"));
 
@@ -111,8 +111,8 @@ public class TermQueryTest extends BaseTest {
     @Test
     public void _07_Regexp_문서_검색() throws Exception {
         SearchRequestBuilder builder = esClient.prepareSearch()
-                .setIndices(indexName)
-                .setTypes(typeName)
+                .setIndices(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(regexpQuery("name", "ni.*e"));
 
@@ -122,8 +122,8 @@ public class TermQueryTest extends BaseTest {
     @Test
     public void _08_Fuzzy_문서_검색() throws Exception {
         SearchRequestBuilder builder = esClient.prepareSearch()
-                .setIndices(indexName)
-                .setTypes(typeName)
+                .setIndices(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(fuzzyQuery("name", "adid").fuzziness(Fuzziness.TWO));
 
@@ -133,8 +133,8 @@ public class TermQueryTest extends BaseTest {
     @Test
     public void _09_Ids_문서_검색() throws Exception {
         SearchRequestBuilder builder = esClient.prepareSearch()
-                .setIndices(indexName)
-                .setTypes(typeName)
+                .setIndices(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(idsQuery().addIds("1", "2", "3"));
 

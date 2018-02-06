@@ -32,15 +32,15 @@ public class _3_MappingTest extends BaseTest {
     @Test
     public void _01_인덱스_생성() throws Exception {
         try {
-            CreateIndexResponse r = esClient.admin().indices().prepareCreate(indexName).execute().actionGet();
+            CreateIndexResponse r = esClient.admin().indices().prepareCreate(sampleIndexName).execute().actionGet();
 
             if (r.isAcknowledged() == true) {
-                logger.info("create index {} ", indexName);
+                logger.info("create index {} ", sampleIndexName);
             } else {
                 logger.error("fail to create index ");
             }
         } catch (ResourceAlreadyExistsException e) {
-            logger.info("already exists index {} ", indexName);
+            logger.info("already exists index {} ", sampleIndexName);
         }
     }
 
@@ -55,8 +55,8 @@ public class _3_MappingTest extends BaseTest {
 
         String mappingJson = getResource("MappingTest.json");
 
-        PutMappingRequest request = new PutMappingRequest(indexName);
-        request.type(typeName);
+        PutMappingRequest request = new PutMappingRequest(sampleIndexName);
+        request.type(marketTypeName);
         request.source(mappingJson, XContentType.JSON);
         request.timeout(TimeValue.timeValueMinutes(2));
         PutMappingResponse putMappingResponse = esClient.admin().indices().putMapping(request).actionGet();
@@ -82,8 +82,8 @@ public class _3_MappingTest extends BaseTest {
     @Test
     public void _05_매핑_조회() throws Exception {
 
-        final GetMappingsResponse mappings = esClient.admin().indices().prepareGetMappings(indexName).setTypes(typeName).get();
-        String mappingJson = mappings.getMappings().get(indexName).get(typeName).source().toString();
+        final GetMappingsResponse mappings = esClient.admin().indices().prepareGetMappings(sampleIndexName).setTypes(marketTypeName).get();
+        String mappingJson = mappings.getMappings().get(sampleIndexName).get(marketTypeName).source().toString();
 
         logger.info("mapping size {}", mappings.getMappings().size());
         logger.info("{}", mappingJson);
@@ -91,10 +91,10 @@ public class _3_MappingTest extends BaseTest {
 
     @Test
     public void _06_인덱스_삭제() throws Exception {
-        DeleteIndexResponse r = esClient.admin().indices().prepareDelete(indexName).execute().actionGet();
+        DeleteIndexResponse r = esClient.admin().indices().prepareDelete(sampleIndexName).execute().actionGet();
 
         if (r.isAcknowledged() == true) {
-            logger.info("delete index {} ", indexName);
+            logger.info("delete index {} ", sampleIndexName);
         } else {
             logger.error("fail to delete index ");
         }

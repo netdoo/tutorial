@@ -32,8 +32,8 @@ public class JoiningQueryTest extends BaseTest {
             ScoreMode.Avg
         );
 
-        SearchRequestBuilder builder = esClient.prepareSearch(indexName)
-                .setTypes(typeName)
+        SearchRequestBuilder builder = esClient.prepareSearch(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(queryBuilder);
 
@@ -48,8 +48,8 @@ public class JoiningQueryTest extends BaseTest {
                 ScoreMode.Avg
         );
 
-        SearchRequestBuilder builder = esClient.prepareSearch(indexName)
-                .setTypes(typeName)
+        SearchRequestBuilder builder = esClient.prepareSearch(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(queryBuilder);
 
@@ -74,8 +74,8 @@ public class JoiningQueryTest extends BaseTest {
                 ScoreMode.Avg
         );
 
-        SearchRequestBuilder builder = esClient.prepareSearch(indexName)
-                .setTypes(typeName)
+        SearchRequestBuilder builder = esClient.prepareSearch(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(queryBuilder);
 

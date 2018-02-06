@@ -1,0 +1,14 @@
+{
+    "alphabet": {
+        "properties": {
+            "name": {
+                "type": "keyword",
+                "index": true
+            },
+            "code" : {
+                "type": "integer",
+                "index": true
+            }
+        }
+    }
+}

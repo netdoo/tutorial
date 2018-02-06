@@ -55,15 +55,15 @@ public class _5_DocumentTest extends BaseTest {
     @Test
     public void _01_인덱스_생성() throws Exception {
         try {
-            CreateIndexResponse r = esClient.admin().indices().prepareCreate(indexName).execute().actionGet();
+            CreateIndexResponse r = esClient.admin().indices().prepareCreate(sampleIndexName).execute().actionGet();
 
             if (r.isAcknowledged() == true) {
-                logger.info("create index {} ", indexName);
+                logger.info("create index {} ", sampleIndexName);
             } else {
                 logger.error("fail to create index ");
             }
         } catch (ResourceAlreadyExistsException e) {
-            logger.info("already exists index {} ", indexName);
+            logger.info("already exists index {} ", sampleIndexName);
         }
     }
 
@@ -72,8 +72,8 @@ public class _5_DocumentTest extends BaseTest {
 
         String mappingJson = getResource("MappingTest.json");
 
-        PutMappingRequest request = new PutMappingRequest(indexName);
-        request.type(typeName);
+        PutMappingRequest request = new PutMappingRequest(sampleIndexName);
+        request.type(marketTypeName);
         request.source(mappingJson, XContentType.JSON);
         request.timeout(TimeValue.timeValueMinutes(2));
         PutMappingResponse putMappingResponse = esClient.admin().indices().putMapping(request).actionGet();
@@ -89,7 +89,7 @@ public class _5_DocumentTest extends BaseTest {
     public void _03_문서_추가() throws Exception {
 
         Market market = markets.get(0);
-        IndexRequest indexRequest = new IndexRequest(indexName, typeName, market.getDocId());
+        IndexRequest indexRequest = new IndexRequest(sampleIndexName, marketTypeName, market.getDocId());
         String json = objectMapper.writeValueAsString(market);
 
         indexRequest.source(json, XContentType.JSON);
@@ -112,7 +112,7 @@ public class _5_DocumentTest extends BaseTest {
             String json;
 
             try {
-                bulkRequest.add(esClient.prepareIndex(indexName, typeName)
+                bulkRequest.add(esClient.prepareIndex(sampleIndexName, marketTypeName)
                         .setId(market.getDocId())
                         .setSource(objectMapper.writeValueAsString(market), XContentType.JSON));
                 logger.info("bulk insert request {}", market.getName());
@@ -129,14 +129,14 @@ public class _5_DocumentTest extends BaseTest {
             logger.info("bulk insert !!");
         }
 
-        refreshIndex(esClient, indexName, typeName);
+        refreshIndex(esClient, sampleIndexName, marketTypeName);
     }
 
     @Test
     public void _05_문서_조회() throws Exception {
 
-        SearchRequestBuilder builder = esClient.prepareSearch(indexName)
-                .setTypes(typeName)
+        SearchRequestBuilder builder = esClient.prepareSearch(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(QueryBuilders.matchAllQuery());
 
@@ -151,10 +151,10 @@ public class _5_DocumentTest extends BaseTest {
     @Test
     public void _06_벌크_문서_조회() throws Exception {
 
-        IdsQueryBuilder idsQueryBuilder = QueryBuilders.idsQuery(typeName).addIds("1", "2");
+        IdsQueryBuilder idsQueryBuilder = QueryBuilders.idsQuery(marketTypeName).addIds("1", "2");
 
-        SearchRequestBuilder builder = esClient.prepareSearch(indexName)
-                .setTypes(typeName)
+        SearchRequestBuilder builder = esClient.prepareSearch(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(idsQueryBuilder);
 
@@ -172,8 +172,8 @@ public class _5_DocumentTest extends BaseTest {
         market.setPrice(90_000);
 
         UpdateRequest updateRequest = new UpdateRequest();
-        updateRequest.index(indexName);
-        updateRequest.type(typeName);
+        updateRequest.index(sampleIndexName);
+        updateRequest.type(marketTypeName);
         updateRequest.id(market.getDocId());
         updateRequest.doc(objectMapper.writeValueAsString(market), XContentType.JSON);
         UpdateResponse updateResponse = esClient.update(updateRequest).get();
@@ -193,8 +193,8 @@ public class _5_DocumentTest extends BaseTest {
                 market.setPrice(market.getPrice() + 1);
 
                 bulkRequest.add(esClient.prepareUpdate()
-                        .setIndex(indexName)
-                        .setType(typeName)
+                        .setIndex(sampleIndexName)
+                        .setType(marketTypeName)
                         .setId(market.getDocId())
                         .setDoc(objectMapper.writeValueAsString(market), XContentType.JSON));
                 logger.info("bulk update request {}", market.getName());
@@ -218,7 +218,7 @@ public class _5_DocumentTest extends BaseTest {
         _04_벌크_문서_추가();
 
         Market market = markets.get(0);
-        DeleteRequest deleteRequest = new DeleteRequest(indexName, typeName, market.getDocId());
+        DeleteRequest deleteRequest = new DeleteRequest(sampleIndexName, marketTypeName, market.getDocId());
         DeleteResponse r = esClient.delete(deleteRequest).actionGet();
 
         if (r.status() == RestStatus.NOT_FOUND) {
@@ -233,7 +233,7 @@ public class _5_DocumentTest extends BaseTest {
 
         _04_벌크_문서_추가();
 
-        logger.info("refresh index {}", refreshIndex(esClient, indexName, typeName));
+        logger.info("refresh index {}", refreshIndex(esClient, sampleIndexName, marketTypeName));
 
         Thread.sleep(2_000);
 
@@ -241,7 +241,7 @@ public class _5_DocumentTest extends BaseTest {
 
         markets.forEach(market -> {
             try {
-                bulkRequest.add(esClient.prepareDelete(indexName, typeName, market.getDocId()));
+                bulkRequest.add(esClient.prepareDelete(sampleIndexName, marketTypeName, market.getDocId()));
                 logger.info("bulk delete request {}", market.getName());
             } catch (Exception e) {
                 logger.error("fail to bulk delete request ", e);
@@ -262,12 +262,12 @@ public class _5_DocumentTest extends BaseTest {
 
         _04_벌크_문서_추가();
 
-        logger.info("refresh index {}", refreshIndex(esClient, indexName, typeName));
+        logger.info("refresh index {}", refreshIndex(esClient, sampleIndexName, marketTypeName));
 
         Thread.sleep(2_000);
 
         DeleteByQueryRequestBuilder deleteByQueryRequestBuilder = DeleteByQueryAction.INSTANCE.newRequestBuilder(esClient);
-        deleteByQueryRequestBuilder.source().setIndices(indexName).setTypes(typeName);
+        deleteByQueryRequestBuilder.source().setIndices(sampleIndexName).setTypes(marketTypeName);
         BulkByScrollResponse response = deleteByQueryRequestBuilder.filter(QueryBuilders.matchAllQuery()).get();
 
         long deleted = response.getDeleted();

@@ -35,8 +35,8 @@ public class CompoundQueryTest extends Serializers.Base {
     @Test
     public void _01_ConstantScoreQuery_문서_검색() throws Exception {
         SearchRequestBuilder builder = esClient.prepareSearch()
-                .setIndices(indexName)
-                .setTypes(typeName)
+                .setIndices(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(constantScoreQuery(termQuery("name","nike")).boost(2.0f));
 
@@ -57,8 +57,8 @@ public class CompoundQueryTest extends Serializers.Base {
                 .should(termQuery("products.label", "jordan"));
 
         SearchRequestBuilder builder = esClient.prepareSearch()
-                .setIndices(indexName)
-                .setTypes(typeName)
+                .setIndices(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(qb);
 
@@ -73,8 +73,8 @@ public class CompoundQueryTest extends Serializers.Base {
                 .add(termQuery("name", "adidas").boost(1.0f));
 
         SearchRequestBuilder builder = esClient.prepareSearch()
-                .setIndices(indexName)
-                .setTypes(typeName)
+                .setIndices(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(qb);
 
@@ -101,8 +101,8 @@ public class CompoundQueryTest extends Serializers.Base {
                 .maxBoost(100);
 
         SearchRequestBuilder builder = esClient.prepareSearch()
-                .setIndices(indexName)
-                .setTypes(typeName)
+                .setIndices(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(qb);
 

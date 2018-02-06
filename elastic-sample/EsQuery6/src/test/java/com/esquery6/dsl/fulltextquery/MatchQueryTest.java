@@ -41,8 +41,8 @@ public class MatchQueryTest extends BaseTest {
         String exclude[] = new String[]{"products"};
 
         SearchRequestBuilder builder = esClient.prepareSearch()
-                .setIndices(indexName)
-                .setTypes(typeName)
+                .setIndices(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setFetchSource(include, exclude)
                 .setQuery(QueryBuilders.matchAllQuery());
@@ -57,8 +57,8 @@ public class MatchQueryTest extends BaseTest {
         // 검색어에 공백이 들어간 경우, OR로 검색됨.
         // 다음과 같은 경우, America 또는 Korea가 포함된 문서중, 최소 1개 이상 매칭되면 검색결과에 포함됨.
         SearchRequestBuilder builder = esClient.prepareSearch()
-                .setIndices(indexName)
-                .setTypes(typeName)
+                .setIndices(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(matchQuery("country", "America korea").minimumShouldMatch("1"));
 
@@ -70,8 +70,8 @@ public class MatchQueryTest extends BaseTest {
         // match 쿼리는 용어 사이에 띄어쓰기를 하면 bool-should 쿼리로 처리된다.
         // 띄어쓰기까지 모두 포함해 정확한 구(phrase)를 검색하고 싶다면 match_phrase 쿼리를 사용한다.
         SearchRequestBuilder builder = esClient.prepareSearch()
-                .setIndices(indexName)
-                .setTypes(typeName)
+                .setIndices(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(matchPhraseQuery("country", "America korea"));
 
@@ -88,8 +88,8 @@ public class MatchQueryTest extends BaseTest {
         ).minimumShouldMatch("1");
 
         SearchRequestBuilder builder = esClient.prepareSearch()
-                .setIndices(indexName)
-                .setTypes(typeName)
+                .setIndices(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(qb);
 
@@ -104,8 +104,8 @@ public class MatchQueryTest extends BaseTest {
                 .cutoffFrequency(0.001f);
 
         SearchRequestBuilder builder = esClient.prepareSearch()
-                .setIndices(indexName)
-                .setTypes(typeName)
+                .setIndices(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(qb);
 
@@ -121,8 +121,8 @@ public class MatchQueryTest extends BaseTest {
                             .defaultField("country");
 
         SearchRequestBuilder builder = esClient.prepareSearch()
-                .setIndices(indexName)
-                .setTypes(typeName)
+                .setIndices(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(qb);
 
@@ -139,8 +139,8 @@ public class MatchQueryTest extends BaseTest {
                 .defaultOperator(Operator.AND);
 
         SearchRequestBuilder builder = esClient.prepareSearch()
-                .setIndices(indexName)
-                .setTypes(typeName)
+                .setIndices(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(qb);
 

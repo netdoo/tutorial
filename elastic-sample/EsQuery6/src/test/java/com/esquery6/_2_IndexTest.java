@@ -27,15 +27,15 @@ public class _2_IndexTest extends BaseTest {
     @Test
     public void _01_인덱스_생성() throws Exception {
         try {
-            CreateIndexResponse r = esClient.admin().indices().prepareCreate(indexName).execute().actionGet();
+            CreateIndexResponse r = esClient.admin().indices().prepareCreate(sampleIndexName).execute().actionGet();
 
             if (r.isAcknowledged() == true) {
-                logger.info("create index {} ", indexName);
+                logger.info("create index {} ", sampleIndexName);
             } else {
                 logger.error("fail to create index ");
             }
         } catch (ResourceAlreadyExistsException e) {
-            logger.info("already exists index {} ", indexName);
+            logger.info("already exists index {} ", sampleIndexName);
         }
     }
 
@@ -47,10 +47,10 @@ public class _2_IndexTest extends BaseTest {
 
     @Test
     public void _03_인덱스_삭제() throws Exception {
-        DeleteIndexResponse r = esClient.admin().indices().prepareDelete(indexName).execute().actionGet();
+        DeleteIndexResponse r = esClient.admin().indices().prepareDelete(sampleIndexName).execute().actionGet();
 
         if (r.isAcknowledged() == true) {
-            logger.info("delete index {} ", indexName);
+            logger.info("delete index {} ", sampleIndexName);
         } else {
             logger.error("fail to delete index ");
         }

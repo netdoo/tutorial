@@ -38,7 +38,7 @@ public class MetricAggQueryTest extends BaseTest {
     @BeforeClass
     public static void 테스트_준비() throws Exception {
         printNodes(logger);
-//        initSearchTest(logger);
+        initSearchTest(logger);
     }
 
     @Test
@@ -46,13 +46,13 @@ public class MetricAggQueryTest extends BaseTest {
         QueryBuilder queryBuilder = QueryBuilders.matchAllQuery();
         AggregationBuilder aggregationBuilder = AggregationBuilders.terms("product_count").field("name");
 
-        SearchRequestBuilder builder = esClient.prepareSearch(indexName)
-                .setTypes(typeName)
+        SearchRequestBuilder builder = esClient.prepareSearch(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(queryBuilder)
                 .addAggregation(aggregationBuilder);
 
-        logger.info("GET {}/{}/_search \n{}", indexName, typeName, builder.toString());
+        logger.info("GET {}/{}/_search \n{}", sampleIndexName, marketTypeName, builder.toString());
         SearchResponse r = builder.get();
         Aggregations aggregations = r.getAggregations();
 
@@ -69,13 +69,13 @@ public class MetricAggQueryTest extends BaseTest {
         QueryBuilder queryBuilder = QueryBuilders.matchAllQuery();
         AggregationBuilder aggregationBuilder = AggregationBuilders.sum("sum_of_price").field("price");
 
-        SearchRequestBuilder builder = esClient.prepareSearch(indexName)
-                .setTypes(typeName)
+        SearchRequestBuilder builder = esClient.prepareSearch(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(queryBuilder)
                 .addAggregation(aggregationBuilder);
 
-        logger.info("GET {}/{}/_search \n{}", indexName, typeName, builder.toString());
+        logger.info("GET {}/{}/_search \n{}", sampleIndexName, marketTypeName, builder.toString());
         SearchResponse sr = builder.get();
 
         // sr is here your SearchResponse object
@@ -90,13 +90,13 @@ public class MetricAggQueryTest extends BaseTest {
         QueryBuilder queryBuilder = QueryBuilders.matchAllQuery();
         AggregationBuilder aggregationBuilder = AggregationBuilders.min("min_of_price").field("price");
 
-        SearchRequestBuilder builder = esClient.prepareSearch(indexName)
-                .setTypes(typeName)
+        SearchRequestBuilder builder = esClient.prepareSearch(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(queryBuilder)
                 .addAggregation(aggregationBuilder);
 
-        logger.info("GET {}/{}/_search \n{}", indexName, typeName, builder.toString());
+        logger.info("GET {}/{}/_search \n{}", sampleIndexName, marketTypeName, builder.toString());
         SearchResponse sr = builder.get();
 
         // sr is here your SearchResponse object
@@ -111,13 +111,13 @@ public class MetricAggQueryTest extends BaseTest {
         QueryBuilder queryBuilder = QueryBuilders.matchAllQuery();
         AggregationBuilder aggregationBuilder = AggregationBuilders.max("max_of_price").field("price");
 
-        SearchRequestBuilder builder = esClient.prepareSearch(indexName)
-                .setTypes(typeName)
+        SearchRequestBuilder builder = esClient.prepareSearch(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(queryBuilder)
                 .addAggregation(aggregationBuilder);
 
-        logger.info("GET {}/{}/_search \n{}", indexName, typeName, builder.toString());
+        logger.info("GET {}/{}/_search \n{}", sampleIndexName, marketTypeName, builder.toString());
         SearchResponse sr = builder.get();
 
         // sr is here your SearchResponse object
@@ -132,13 +132,13 @@ public class MetricAggQueryTest extends BaseTest {
         QueryBuilder queryBuilder = QueryBuilders.matchAllQuery();
         AggregationBuilder aggregationBuilder = AggregationBuilders.avg("avg_of_price").field("price");
 
-        SearchRequestBuilder builder = esClient.prepareSearch(indexName)
-                .setTypes(typeName)
+        SearchRequestBuilder builder = esClient.prepareSearch(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(queryBuilder)
                 .addAggregation(aggregationBuilder);
 
-        logger.info("GET {}/{}/_search \n{}", indexName, typeName, builder.toString());
+        logger.info("GET {}/{}/_search \n{}", sampleIndexName, marketTypeName, builder.toString());
         SearchResponse sr = builder.get();
 
         // sr is here your SearchResponse object
@@ -153,13 +153,13 @@ public class MetricAggQueryTest extends BaseTest {
         QueryBuilder queryBuilder = QueryBuilders.matchAllQuery();
         AggregationBuilder aggregationBuilder = AggregationBuilders.count("count_of_price").field("price");
 
-        SearchRequestBuilder builder = esClient.prepareSearch(indexName)
-                .setTypes(typeName)
+        SearchRequestBuilder builder = esClient.prepareSearch(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(queryBuilder)
                 .addAggregation(aggregationBuilder);
 
-        logger.info("GET {}/{}/_search \n{}", indexName, typeName, builder.toString());
+        logger.info("GET {}/{}/_search \n{}", sampleIndexName, marketTypeName, builder.toString());
         SearchResponse sr = builder.get();
 
         // sr is here your SearchResponse object
@@ -176,13 +176,13 @@ public class MetricAggQueryTest extends BaseTest {
                 new FiltersAggregator.KeyedFilter("nike", matchQuery("name", "nike") ),
                 new FiltersAggregator.KeyedFilter("adidas", matchQuery("name", "nike")));
 
-        SearchRequestBuilder builder = esClient.prepareSearch(indexName)
-                .setTypes(typeName)
+        SearchRequestBuilder builder = esClient.prepareSearch(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(matchAllQuery())
                 .addAggregation(aggregationBuilder);
 
-        logger.info("GET {}/{}/_search \n{}", indexName, typeName, builder.toString());
+        logger.info("GET {}/{}/_search \n{}", sampleIndexName, marketTypeName, builder.toString());
         SearchResponse sr = builder.get();
         Aggregations aggregations = sr.getAggregations();
         Filters filters = aggregations.get("agg");
@@ -202,13 +202,13 @@ public class MetricAggQueryTest extends BaseTest {
                     .terms("name").field("products.label")
                 );
 
-        SearchRequestBuilder builder = esClient.prepareSearch(indexName)
-                .setTypes(typeName)
+        SearchRequestBuilder builder = esClient.prepareSearch(sampleIndexName)
+                .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setQuery(matchAllQuery())
                 .addAggregation(aggregationBuilder);
 
-        logger.info("GET {}/{}/_search \n{}", indexName, typeName, builder.toString());
+        logger.info("GET {}/{}/_search \n{}", sampleIndexName, marketTypeName, builder.toString());
         SearchResponse sr = builder.get();
         Aggregations aggregations = sr.getAggregations();
 

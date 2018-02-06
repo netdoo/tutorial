@@ -22,6 +22,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
@@ -39,8 +40,8 @@ import java.util.stream.Collectors;
 
 public class BaseTest {
 
-    public static String indexName = "sample";
-    public static String typeName = "market";
+    public static String sampleIndexName = "sample";
+    public static String marketTypeName = "market";
     public static TransportClient esClient = connect();
     public static ObjectMapper objectMapper = createObjectMapper();
 
@@ -111,33 +112,35 @@ public class BaseTest {
     public static void initSearchTest(Logger logger) throws Exception {
 
         // 기존 색인을 삭제하고
-        DeleteIndexResponse deleteIndexResponse = esClient.admin().indices().prepareDelete(indexName).execute().actionGet();
+        try {
+            DeleteIndexResponse deleteIndexResponse = esClient.admin().indices().prepareDelete(sampleIndexName).execute().actionGet();
 
-        if (deleteIndexResponse.isAcknowledged() == true) {
-            logger.info("delete index {} ", indexName);
-        } else {
-            logger.error("fail to delete index ");
-        }
+            if (deleteIndexResponse.isAcknowledged() == true) {
+                logger.info("delete index {} ", sampleIndexName);
+            } else {
+                logger.error("fail to delete index ");
+            }
+        } catch (IndexNotFoundException e) {}
 
         // 샘플 데이터를 입력함.
         try {
-            CreateIndexResponse createIndexResponse = esClient.admin().indices().prepareCreate(indexName).execute().actionGet();
+            CreateIndexResponse createIndexResponse = esClient.admin().indices().prepareCreate(sampleIndexName).execute().actionGet();
 
             if (createIndexResponse.isAcknowledged() == true) {
-                logger.info("create index {} ", indexName);
+                logger.info("create index {} ", sampleIndexName);
             } else {
                 logger.error("fail to create index ");
             }
         } catch (ResourceAlreadyExistsException e) {
-            logger.info("already exists index {} ", indexName);
+            logger.info("already exists index {} ", sampleIndexName);
         }
 
 
         // 매핑 생성
         String mappingJson = getResource("MappingTest.json");
 
-        PutMappingRequest request = new PutMappingRequest(indexName);
-        request.type(typeName);
+        PutMappingRequest request = new PutMappingRequest(sampleIndexName);
+        request.type(marketTypeName);
         request.source(mappingJson, XContentType.JSON);
         request.timeout(TimeValue.timeValueMinutes(2));
         PutMappingResponse putMappingResponse = esClient.admin().indices().putMapping(request).actionGet();
@@ -156,7 +159,7 @@ public class BaseTest {
             String json;
 
             try {
-                bulkRequest.add(esClient.prepareIndex(indexName, typeName)
+                bulkRequest.add(esClient.prepareIndex(sampleIndexName, marketTypeName)
                         .setId(market.getDocId())
                         .setSource(objectMapper.writeValueAsString(market), XContentType.JSON));
                 logger.info("bulk insert request {}", market.getName());
@@ -173,7 +176,7 @@ public class BaseTest {
             logger.info("bulk insert !!");
         }
 
-        refreshIndex(esClient, indexName, typeName);
+        refreshIndex(esClient, sampleIndexName, marketTypeName);
     }
 
     public static RestStatus refreshIndex(TransportClient esClient, String index, String type) throws Exception {
@@ -193,7 +196,7 @@ public class BaseTest {
     }
 
     public static void debugReqRes(SearchRequestBuilder builder, Logger logger) {
-        logger.info("Request Query\nGET {}/{}/_search\n{}", indexName, typeName, builder.toString());
+        logger.info("Request Query\nGET {}/{}/_search\n{}", sampleIndexName, marketTypeName, builder.toString());
 
         SearchResponse r = builder.execute().actionGet();
 
