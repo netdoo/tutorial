@@ -25,8 +25,12 @@ import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.aggregations.metrics.sum.Sum;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import sun.rmi.runtime.Log;
 
@@ -219,5 +223,15 @@ public class BaseTest {
 
             logger.info("score : {}, name : {}, price : {}, country : {}, location : {}", hit.getScore(), name, price, country, location);
         }
+    }
+
+    public static void printTermsAgg(Terms terms, Logger logger) throws Exception {
+        for (Terms.Bucket bucket : terms.getBuckets()) {
+            logger.info("{} : {} ", bucket.getKeyAsString(), bucket.getDocCount());
+        }
+    }
+
+    public static void printSumAgg(Sum sum, Logger logger) throws Exception {
+        logger.info("sum {}", sum.getValue());
     }
 }

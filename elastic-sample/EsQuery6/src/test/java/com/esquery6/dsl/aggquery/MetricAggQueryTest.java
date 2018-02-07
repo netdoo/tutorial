@@ -22,7 +22,9 @@ import org.elasticsearch.search.aggregations.metrics.min.Min;
 import org.elasticsearch.search.aggregations.metrics.sum.Sum;
 import org.elasticsearch.search.aggregations.metrics.valuecount.ValueCount;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +33,9 @@ import java.util.List;
 
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MetricAggQueryTest extends BaseTest {
     final static Logger logger = LoggerFactory.getLogger(MetricAggQueryTest.class);
 
@@ -192,31 +196,5 @@ public class MetricAggQueryTest extends BaseTest {
         buckets.forEach(bucket -> {
             logger.info("{} : {} ", bucket.getKeyAsString(), bucket.getDocCount());
         });
-    }
-
-    @Test
-    public void _08_NestedAggQueryTest() throws Exception {
-        AggregationBuilder aggregationBuilder = AggregationBuilders
-                .nested("agg", "products")
-                .subAggregation(AggregationBuilders
-                    .terms("name").field("products.label")
-                );
-
-        SearchRequestBuilder builder = esClient.prepareSearch(sampleIndexName)
-                .setTypes(marketTypeName)
-                .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-                .setQuery(matchAllQuery())
-                .addAggregation(aggregationBuilder);
-
-        logger.info("GET {}/{}/_search \n{}", sampleIndexName, marketTypeName, builder.toString());
-        SearchResponse sr = builder.get();
-        Aggregations aggregations = sr.getAggregations();
-
-        Nested agg = aggregations.get("agg");
-        Terms name = agg.getAggregations().get("name");
-
-        for (Terms.Bucket bucket : name.getBuckets()) {
-            logger.info("{} : {} ", bucket.getKeyAsString(), bucket.getDocCount());
-        }
     }
 }

@@ -16,7 +16,7 @@
             "products" : {
                 "type" : "nested",
                 "properties" : {
-                    "label" : {"type" : "text", "index" : true, "fielddata" : true},
+                    "label" : {"type" : "keyword", "index" : true},
                     "price" : {"type" : "long"},
                     "count" : {"type" : "integer"},
                     "review"  : {
