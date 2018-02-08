@@ -1,0 +1,14 @@
+{
+    "diary": {
+        "properties": {
+            "title": {
+                "type": "text",
+                "index": true
+            },
+            "create_date" : {
+                "type": "date",
+                "index": true
+            }
+        }
+    }
+}

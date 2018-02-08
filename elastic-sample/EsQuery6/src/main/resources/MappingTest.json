@@ -13,6 +13,10 @@
                 "type" : "text",
                 "index" : true
             },
+            "createDate" : {
+                "type" : "date",
+                "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+            },
             "products" : {
                 "type" : "nested",
                 "properties" : {

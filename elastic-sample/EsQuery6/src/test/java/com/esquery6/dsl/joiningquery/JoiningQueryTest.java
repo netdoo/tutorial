@@ -1,7 +1,6 @@
 package com.esquery6.dsl.joiningquery;
 
 import com.esquery6.BaseTest;
-import com.esquery6.dsl.termquery.TermQueryTest;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchType;

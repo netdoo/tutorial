@@ -105,10 +105,10 @@ public class BaseTest {
         newBalanceProducts.add(new Product("White Down", 216700, 1, new Review(5, "nice", true)));
         newBalanceProducts.add(new Product("Shoes", 155980, 8, new Review(3, "very good", false)));
 
-        markets.add(new Market("1", "nike", 50_000, "America", "America", nikeProducts));
-        markets.add(new Market("2", "nike", 150_000, "china", "America china", nikeProducts));
-        markets.add(new Market("3", "adidas", 20_000,  "America Korea", "America", adidasProducts));
-        markets.add(new Market("4", "newbalance", 20_000, "Korea", "china", newBalanceProducts));
+        markets.add(new Market("1", "nike", 50_000, "America", "America", "2015-01-01 00:00:00", nikeProducts));
+        markets.add(new Market("2", "nike", 150_000, "china", "America china", "2015-01-02 00:00:00", nikeProducts));
+        markets.add(new Market("3", "adidas", 20_000,  "America Korea", "America", "2015-01-03 00:00:00", adidasProducts));
+        markets.add(new Market("4", "newbalance", 20_000, "Korea", "china", "2015-01-04 00:00:00", newBalanceProducts));
 
         return markets;
     }

@@ -23,8 +23,8 @@ These queries are usually used for structured data like numbers, dates, and enum
 rather than full text fields. Alternatively, they allow you to craft low-level queries, foregoing the analysis process.
 */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class TermQueryTest extends BaseTest {
-    final static Logger logger = LoggerFactory.getLogger(TermQueryTest.class);
+public class _1_TermQueryTest extends BaseTest {
+    final static Logger logger = LoggerFactory.getLogger(_1_TermQueryTest.class);
 
     @BeforeClass
     public static void 테스트_준비() throws Exception {
@@ -55,23 +55,6 @@ public class TermQueryTest extends BaseTest {
         debugReqRes(builder, logger);
     }
 
-    @Test
-    public void _03_RangeQuery_문서_검색() throws Exception {
-        QueryBuilder qb = QueryBuilders
-                .rangeQuery("price")
-                .from(20_000)
-                .to(50_000)
-                .includeLower(true)         // lower 조건을 체크함.
-                .includeUpper(false);       // upper 조건을 무시함. (즉, 50_000 이란 값이 무시됨.)
-
-        SearchRequestBuilder builder = esClient.prepareSearch()
-                .setIndices(sampleIndexName)
-                .setTypes(marketTypeName)
-                .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-                .setQuery(qb);
-
-        debugReqRes(builder, logger);
-    }
 
     @Test
     public void _04_ExistQuery_문서_검색() throws Exception {

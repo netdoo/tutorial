@@ -14,11 +14,11 @@ public class Market {
     long price;
     String country;
     String location;
+    String createDate;
     List<Product> products;
 
     @JsonIgnore
     String docId;
-
 
     public Market(String name, long price) {
         this.name = name;
@@ -32,12 +32,13 @@ public class Market {
         this.country = country;
     }
 
-    public Market(String docId, String name, long price, String country, String location, List<Product> products) {
+    public Market(String docId, String name, long price, String country, String location, String createDate, List<Product> products) {
         this.docId = docId;
         this.name = name;
         this.price = price;
         this.country = country;
         this.location = location;
+        this.createDate = createDate;
         this.products = products;
     }
 
@@ -79,6 +80,14 @@ public class Market {
 
     public String getLocation() {
         return this.location;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getCreateDate() {
+        return this.createDate;
     }
 
     public void setProducts(List<Product> products) {

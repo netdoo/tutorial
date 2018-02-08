@@ -4,7 +4,7 @@
 
 # install elastic search 6.x 
 
-```
+```concept
 $ curl -L -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.1.3.tar.gz
 $ tar xvfz elasticsearch-6.1.3.tar.gz
 ```
@@ -256,16 +256,16 @@ GET cafe/_search
 
 # Reference
 
-```
+```concept
 http://essql.nlpcn.org/
 ```
 
-```
+```concept
 SELECT count(*),avg(balance) FROM bank
 ```
 
 
-```
+```concept
 {
 	"from": 0,
 	"size": 0,
@@ -307,7 +307,7 @@ SELECT count(*),avg(balance) FROM bank
 
 ## 나이가 40세이지만 ID(아이다호)에 살고 있지 않은 사람의 모든 계정을 반환합니다.
 
-```
+```concept
 GET /bank/_search
 {
   "query": {
@@ -320,5 +320,37 @@ GET /bank/_search
       ]
     }
   }
+}
+```
+
+# Elasticsearch date type 
+
+```concept
+PUT my_index
+{
+  "mappings": {
+    "_doc": {
+      "properties": {
+        "date": {
+          "type":   "date",
+          "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+        }
+      }
+    }
+  }
+}
+
+PUT my_index/_doc/1
+{ "date": "2015-01-01" } 
+
+PUT my_index/_doc/2
+{ "date": "2015-01-01T12:10:30Z" } 
+
+PUT my_index/_doc/3
+{ "date": 1420070400001 } 
+
+GET my_index/_search
+{
+  "sort": { "date": "asc"} 
 }
 ```
