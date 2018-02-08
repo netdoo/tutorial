@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bootstrap Dropdown Menu</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('.dropdown').hover(function() {
+            //$(this).find('.dropdown-menu').show();
+            $(this).find('.dropdown-menu').stop(true, true).delay(0).fadeIn(100);
+        }, function() {
+            //$(this).find('.dropdown-menu').hide();
+            $(this).find('.dropdown-menu').stop(true, true).delay(0).fadeOut(100);
+        });
+    });
+
+</script>
+
+</head>
+<body>
+    <div class='container'>
+    <li class="dropdown" id='portal'>
+        <a class="dropdown-toggle" data-toggle="dropdown" href="/searchStatistics">포털사이트<span class="caret"></span></a>
+        <ul class="dropdown-menu">
+            <li><a href="http://www.naver.com">네이버</a></li>
+            <li><a href="http://www.daum.net">다음</a></li>
+        </ul>
+    </li>
+    </div>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <div class='container'>
+    <li class="dropdown" id='search'>
+        <a class="dropdown-toggle" data-toggle="dropdown" href="/searchStatistics">검색사이트<span class="caret"></span></a>
+        <ul class="dropdown-menu">
+            <li><a href="http://www.google.co.kr">google</a></li>        
+        </ul>
+    </li>
+    </div>
+</body>
+</html>
+
