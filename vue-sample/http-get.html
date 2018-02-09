@@ -1,0 +1,41 @@
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+[v-cloak] {
+  display: none;
+}
+</style>
+</head>
+<body>
+  <div id="app" v-cloak>
+    <span>{{myip}} </span>
+    <button @click="onClickIP">IP 조회</button>
+  </div>
+
+  <script src="static/moment.min.js"></script>
+  <script src="static/vue.min.js"></script>
+
+  <!-- vue 확장 js 는 vue 다음에 위치해야 함. -->
+  <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
+  <script>
+  var app = new Vue({
+    el: "#app",
+    data: {
+      myip: ''
+    },
+    methods: {
+      onClickIP: function() {
+        this.myip = 'request http get..';
+        this.$http.get('https://httpbin.org/ip').then(response => {
+          this.myip = response.body.origin;
+        }, response => {
+          alert('fail to get my ip');
+        });
+      }
+    }
+  });
+  </script>
+</body>
+</html>
+
