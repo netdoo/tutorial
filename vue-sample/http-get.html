@@ -25,9 +25,9 @@
       myip: ''
     },
     methods: {
+    
       onClickIP: function() {
-        this.myip = 'request http get..';
-        this.$http.get('https://httpbin.org/ip').then(response => {
+        return this.$http.get('https://httpbin.org/ip').then(response => {
           this.myip = response.body.origin;
         }, response => {
           alert('fail to get my ip');
