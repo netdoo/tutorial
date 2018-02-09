@@ -1,0 +1,54 @@
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+[v-cloak] {
+  display: none;
+}
+
+.mytable, tr, th, td {
+  padding: 5px;
+  border-collapse: collapse; 
+  border:1px solid black;
+}
+
+</style>
+</head>
+<body>
+  <div id="app" v-cloak>
+  <table class="mytable">
+    <tr>
+      <th>index</td><th>name</td>
+    </tr>
+    <!--
+      v-for 블록 안에서
+      현재 항목의 인덱스에 대한 두 번째 전달인자 옵션을 제공합니다.
+     -->
+    <tr v-for="(bbs, index) in bbsList">
+      <td>{{index}}</td><td>{{bbs.name}}</td>
+    </tr>
+  </table>
+  </div>
+
+  <script src="static/vue.min.js"></script>
+
+  <script>
+  var app = new Vue({
+    el: "#app",
+    data: {
+      bbsList: [
+        {name:"MBC"},
+        {name:"KBS"},
+        {name:"SBS"}
+      ]
+    },
+    methods: {
+      onClick: function() {
+        alert(this.hello);
+      }
+    }
+  });
+  </script>
+</body>
+</html>
+
