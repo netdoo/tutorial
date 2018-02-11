@@ -7,19 +7,19 @@
 <script src="static/axios.min.js"></script>
 
 <script type="text/javascript">
-    function onSuccessGetIP(response) {
-        $("#debug").append(JSON.stringify(response.data)+"<br/>"); 
-        console.log('first : ' + JSON.stringify(response.data));
+    function onSuccessPost(response) {
+        $("#debug").append(JSON.stringify(response.data.data)+"<br/>"); 
+        console.log('first : ' + JSON.stringify(response.data.data));
         return axios.get('https://httpbin.org/uuid');
     }
 
-    function onErrorGetIP(response) {
+    function onErrorPost(response) {
         console.log('fail to get my ip' + JSON.stringify(response));
     }
 
     function onSuccessGetUUID(response) {
         console.log('second : ' + JSON.stringify(response.data));
-        $("#debug").append(JSON.stringify(response.data)+"<br/>"); 
+        $("#debug").append(JSON.stringify(response.data) + "<br/>"); 
     }
 
     function onErrorGetUUID (response){
@@ -27,8 +27,11 @@
     }
 
     function onClickIP() {
-        axios.get('https://httpbin.org/ip')
-        .then(this.onSuccessGetIP, this.onErrorGetIP)
+        axios.post('https://httpbin.org/post', {
+            firstArg : 'hello',
+            secondArg : 'world'
+        })
+        .then(this.onSuccessPost, this.onErrorPost)
         .then(this.onSuccessGetUUID, this.onErrorGetUUID);
     }
     
