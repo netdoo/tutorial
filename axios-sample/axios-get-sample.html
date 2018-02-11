@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="static/jquery.min.js"></script>
+<script src="static/bluebird.js"></script>
+<script src="static/axios.min.js"></script>
+
+<script type="text/javascript">
+    function onSuccessGetIP(response) {
+        $("#debug").append(JSON.stringify(response.data)); 
+        console.log('first : ' + JSON.stringify(response.data));
+        return axios.get('https://httpbin.org/uuid');
+    }
+
+    function onErrorGetIP(response) {
+        console.log('fail to get my ip' + JSON.stringify(response));
+    }
+
+    function onSuccessGetUUID(response) {
+        console.log('second : ' + JSON.stringify(response.data));
+        $("#debug").append(JSON.stringify(response.data)); 
+    }
+
+    function onErrorGetUUID (response){
+        console.log('fail to get uuid' + JSON.stringify(response));
+    }
+
+    function onClickIP() {
+        axios.get('https://httpbin.org/ip')
+        .then(this.onSuccessGetIP, this.onErrorGetIP)
+        .then(this.onSuccessGetUUID, this.onErrorGetUUID);
+    }
+    
+    $(document).ready(function() {
+        /// javascript 의 DOM 트리 로딩이 완료되었을때를 발생한다.
+        console.log('onReady');
+    });
+    
+    $(window).on('load', function() {
+        /// 페이지의 모든 엘리먼트들이 모두 브라우저로 다운되고
+        /// 스크립트가 모든 엘리먼트에 접근가능하게 될 때 발생한다.
+        console.log('onLoad');
+        onClickIP();
+    });
+</script>
+
+</head>
+<body>
+    <button onclick="onClickIP()">IP 조회</button>
+    <div id="debug"></div>
+</body>
+</html>
