@@ -9,15 +9,7 @@ import io.searchbox.client.JestClientFactory;
 import io.searchbox.client.JestResult;
 import io.searchbox.client.config.HttpClientConfig;
 import io.searchbox.core.Search;
-import org.elasticsearch.action.search.*;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
 import javax.management.Query;
-import static org.elasticsearch.index.query.QueryBuilders.*;
-
-import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,14 +19,11 @@ public class App {
     public static void main( String[] args ) throws Exception {
 
         JestClient jestClient = AppConfig.create();
-        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        //searchSourceBuilder.query(QueryBuilders.matchAllQuery());
-        searchSourceBuilder.query(QueryBuilders.matchQuery("brand", "KIA"));
 
-        Search search = new Search.Builder(searchSourceBuilder.toString()).addIndex(AppConfig.INDEX)
+        String query = "";
+        Search search = new Search.Builder(query)
+                .addIndex(AppConfig.INDEX)
                 .addType(AppConfig.TYPE).build();
-
-        logger.info("{}/{}\n{}", AppConfig.INDEX, AppConfig.TYPE, searchSourceBuilder.toString());
 
         JestResult result = jestClient.execute(search);
         JsonObject hits = (JsonObject)result.getJsonObject().get("hits");

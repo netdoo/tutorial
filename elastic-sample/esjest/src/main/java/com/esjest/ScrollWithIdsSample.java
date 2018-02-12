@@ -8,8 +8,6 @@ import io.searchbox.core.Search;
 import io.searchbox.core.SearchScroll;
 import io.searchbox.params.Parameters;
 import io.searchbox.params.SearchType;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,17 +18,19 @@ public class ScrollWithIdsSample {
 
         String scroll = "5m";
         JestClient jestClient = AppConfig.create();
-        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        searchSourceBuilder.query(QueryBuilders.idsQuery().addIds("1", "2", "3", "4", "5"));
+        String query = "";
+//        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+//        searchSourceBuilder.query(QueryBuilders.idsQuery().addIds("1", "2", "3", "4", "5"));
 
-        Search search = new Search.Builder(searchSourceBuilder.toString()).addIndex(AppConfig.INDEX)
+        Search search = new Search.Builder(query)
+                .addIndex(AppConfig.INDEX)
                 .addType(AppConfig.TYPE)
                 .setParameter(Parameters.SEARCH_TYPE, SearchType.DFS_QUERY_THEN_FETCH)
                 .setParameter(Parameters.SIZE, 3)
                 .setParameter(Parameters.SCROLL, scroll)
                 .build();
 
-        logger.info("{}/{}\n{}", AppConfig.INDEX, AppConfig.TYPE, searchSourceBuilder.toString());
+
 
         JestResult result = jestClient.execute(search);
         JsonObject hits = (JsonObject)result.getJsonObject().get("hits");
