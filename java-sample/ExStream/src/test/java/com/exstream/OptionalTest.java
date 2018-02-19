@@ -25,12 +25,16 @@ public class OptionalTest {
     @Test
     public void _01_NullTest() {
         // OptionalTest:27 - empty
-        logger.info("{}", Optional.ofNullable(getNullText()).map(String::toUpperCase).orElse("empty"));
+        logger.info("{}", Optional.ofNullable(getNullText()).map(s -> {
+            return s.toUpperCase();
+        }).orElse("empty"));
     }
 
     @Test
     public void _02_NotNullTest() {
         // OptionalTest:32 - HELLO
-        logger.info("{}", Optional.ofNullable(getNotNullText()).map(String::toUpperCase).orElse("empty"));
+        logger.info("{}", Optional.ofNullable(getNotNullText()).map(s -> {
+            return s.toUpperCase();
+        }).orElse("empty"));
     }
 }
