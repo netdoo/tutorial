@@ -23,12 +23,14 @@ public class OptionalTest {
     }
 
     @Test
-    public void caseNullTest() {
+    public void _01_NullTest() {
+        // OptionalTest:27 - empty
         logger.info("{}", Optional.ofNullable(getNullText()).map(String::toUpperCase).orElse("empty"));
     }
 
     @Test
-    public void caseNotNullTest() {
+    public void _02_NotNullTest() {
+        // OptionalTest:32 - HELLO
         logger.info("{}", Optional.ofNullable(getNotNullText()).map(String::toUpperCase).orElse("empty"));
     }
 }
