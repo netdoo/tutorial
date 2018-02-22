@@ -21,7 +21,11 @@ public class AppTest {
 
     @Autowired
     @Qualifier("testBatchJob")
-    Job job;
+    Job testBatchJob;
+
+    @Autowired
+    @Qualifier("myBatchJob")
+    Job myBatchJob;
 
     @Test
     public void testBatchJob() throws Exception {
@@ -29,6 +33,15 @@ public class AppTest {
                 .addString("key", "value")
                 .toJobParameters();
 
-        jobLauncher.run(job, jobParameters);
+        jobLauncher.run(testBatchJob, jobParameters);
+    }
+
+    @Test
+    public void testMyBatchJob() throws Exception {
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addString("key", "value")
+                .toJobParameters();
+
+        jobLauncher.run(myBatchJob, jobParameters);
     }
 }

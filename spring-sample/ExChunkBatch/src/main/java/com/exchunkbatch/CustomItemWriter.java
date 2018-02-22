@@ -8,7 +8,7 @@ import org.springframework.batch.item.ItemWriter;
 
 public class CustomItemWriter implements ItemWriter<String> {
 
-    static final Logger logger = LoggerFactory.getLogger(App.class);
+    Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public void write(List<? extends String> alphabet) throws Exception {
