@@ -17,11 +17,13 @@ public class CustomItemProcessor implements ItemProcessor<String, String> {
             // Writer에서 size가 0인 List가 생성되고,
             // 배치는 계속 이어서 실행됨.
             once = true;
+            logger.info("return fake null");
             return null;
         }
 
-        logger.info("{}", alphabet);
-        return alphabet.toUpperCase();
+        String processData = alphabet.toUpperCase();
+        logger.info("process {} => {}", alphabet, processData);
+        return processData;
     }
 }
 

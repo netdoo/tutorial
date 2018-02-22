@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:batch="http://www.springframework.org/schema/batch"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+      http://www.springframework.org/schema/context
+      http://www.springframework.org/schema/context/spring-context-3.2.xsd
+      http://www.springframework.org/schema/batch
+      http://www.springframework.org/schema/batch/spring-batch.xsd">
+
+    <import resource="../applicationContext.xml"/>
+
+    <batch:job id="testCompositeBatchJob" job-repository="jobRepository" parent="simpleJob">
+        <batch:step id="testCompositeStep">
+            <batch:tasklet transaction-manager="transactionManager">
+                <batch:chunk reader="customReader" processor="compositeProcessor" writer="compositeWriter" commit-interval="1"/>
+            </batch:tasklet>
+        </batch:step>
+    </batch:job>
+
+    <bean id="compositeProcessor" class="org.springframework.batch.item.support.CompositeItemProcessor">
+        <property name="delegates">
+            <list>
+                <bean class="com.exchunkbatch.CustomItemProcessor"/>
+                <bean class="com.exchunkbatch.CustomItemProcessor2"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="compositeWriter" class="org.springframework.batch.item.support.CompositeItemWriter">
+        <property name="delegates">
+            <list>
+                <bean class="com.exchunkbatch.CustomItemWriter"/>
+                <bean class="com.exchunkbatch.CustomItemWriter2"/>
+            </list>
+        </property>
+    </bean>
+
+</beans>

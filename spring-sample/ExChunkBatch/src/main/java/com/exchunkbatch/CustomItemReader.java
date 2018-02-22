@@ -2,6 +2,8 @@ package com.exchunkbatch;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
@@ -15,11 +17,14 @@ public class CustomItemReader implements ItemReader<String>, StepExecutionListen
 
     private List<String> alphabetList;
     private int count = 0;
+    Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public String read() throws Exception, UnexpectedInputException, ParseException {
-        if(count < alphabetList.size()){
-            return alphabetList.get(count++);
+        if (count < alphabetList.size()) {
+            String data = alphabetList.get(count++);
+            logger.info("{}", data);
+            return data;
         } else {
             return null;
         }

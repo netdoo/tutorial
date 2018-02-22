@@ -21,4 +21,13 @@ http://www.springframework.org/schema/context/spring-context-3.2.xsd">
         <property name="jobRepository" ref="jobRepository" />
     </bean>
 
+    <bean id="customReader" class="com.exchunkbatch.CustomItemReader" >
+        <property name="alphabetList">
+            <list>
+                <value>aaa</value>
+                <value>bbb</value>
+                <value>ccc</value>
+            </list>
+        </property>
+    </bean>
 </beans>
