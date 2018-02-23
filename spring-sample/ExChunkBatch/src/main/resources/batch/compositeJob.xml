@@ -12,11 +12,17 @@
 
     <import resource="../applicationContext.xml"/>
 
+
+
     <batch:job id="testCompositeBatchJob" job-repository="jobRepository" parent="simpleJob">
         <batch:step id="testCompositeStep">
             <batch:tasklet transaction-manager="transactionManager">
                 <batch:chunk reader="customReader" processor="compositeProcessor" writer="compositeWriter" commit-interval="1"/>
+                <batch:listeners>
+                    <batch:listener ref="customStepListener"/>
+                </batch:listeners>
             </batch:tasklet>
+
         </batch:step>
     </batch:job>
 

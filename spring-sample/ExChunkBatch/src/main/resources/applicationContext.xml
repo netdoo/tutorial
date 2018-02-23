@@ -30,4 +30,6 @@ http://www.springframework.org/schema/context/spring-context-3.2.xsd">
             </list>
         </property>
     </bean>
+
+    <bean id="customStepListener" class="com.exchunkbatch.CustomStepListener"/>
 </beans>
