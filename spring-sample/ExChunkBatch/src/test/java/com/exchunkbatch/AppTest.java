@@ -1,18 +1,22 @@
 package com.exchunkbatch;
 
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.listener.CompositeItemProcessListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@ContextConfiguration(locations = {"classpath:applicationContext.xml", "classpath:batch/job.xml"})
+@ContextConfiguration(locations = {
+        "classpath:applicationContext.xml",
+        "classpath:batch/job.xml",
+        "classpath:batch/compositeJob.xml"
+})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class AppTest {
 
@@ -21,7 +25,15 @@ public class AppTest {
 
     @Autowired
     @Qualifier("testBatchJob")
-    Job job;
+    Job testBatchJob;
+
+    @Autowired
+    @Qualifier("myBatchJob")
+    Job myBatchJob;
+
+    @Autowired
+    @Qualifier("testCompositeBatchJob")
+    Job testCompositeBatchJob;
 
     @Test
     public void testBatchJob() throws Exception {
@@ -29,6 +41,24 @@ public class AppTest {
                 .addString("key", "value")
                 .toJobParameters();
 
-        jobLauncher.run(job, jobParameters);
+        jobLauncher.run(testBatchJob, jobParameters);
+    }
+
+    @Test
+    public void testMyBatchJob() throws Exception {
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addString("key", "value")
+                .toJobParameters();
+
+        jobLauncher.run(myBatchJob, jobParameters);
+    }
+
+    @Test
+    public void testCompositeBatchJob() throws Exception {
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addString("key", "value")
+                .toJobParameters();
+
+        jobLauncher.run(testCompositeBatchJob, jobParameters);
     }
 }
