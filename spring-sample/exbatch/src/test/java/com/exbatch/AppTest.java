@@ -1,38 +1,44 @@
 package com.exbatch;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import com.exbatch.config.AppConfig;
+import org.junit.Assert;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
+import org.springframework.batch.core.ExitStatus;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-/**
- * Unit test for simple App.
- */
-public class AppTest 
-    extends TestCase
-{
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public AppTest( String testName )
-    {
-        super( testName );
-    }
+@RunWith(SpringJUnit4ClassRunner.class)
+@ActiveProfiles("test")
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@ContextConfiguration(classes = {
+    AppConfig.class
+},
+loader = AnnotationConfigContextLoader.class)
+public class AppTest {
+    @Autowired
+    private JobLauncher jobLauncher;
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( AppTest.class );
-    }
+    @Autowired
+    @Qualifier("sampleJob")
+    Job sampleJob;
 
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
+    @Test
+    public void testApp() throws Exception {
+        JobParametersBuilder parametersBuilder = new JobParametersBuilder();
+        parametersBuilder.addString("testData", "erosian mbc sbs");
+        JobExecution jobExecution = jobLauncher.run(sampleJob, parametersBuilder.toJobParameters());
+        Assert.assertEquals(ExitStatus.COMPLETED, jobExecution.getExitStatus());
     }
 }
