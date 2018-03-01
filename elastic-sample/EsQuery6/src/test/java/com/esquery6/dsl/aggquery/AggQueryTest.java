@@ -18,6 +18,7 @@ import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
@@ -32,7 +33,21 @@ public class AggQueryTest extends BaseTest {
     }
 
     @Test
-    public void _01_MultiAggTest() throws Exception {
+    public void _01_AggTest() throws Exception {
+        SearchRequestBuilder builder = esClient.prepareSearch(sampleIndexName)
+                .setTypes(marketTypeName)
+                .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+                .setQuery(boolQuery().mustNot(termQuery("name", "newbalance")))
+                .addAggregation(AggregationBuilders.terms("term_of_name").field("name"));
+
+        logger.info("GET {}/{}/_search \n{}", sampleIndexName, marketTypeName, builder.toString());
+        SearchResponse sr = builder.get();
+        Aggregations aggregation = sr.getAggregations();
+        printTermsAgg(aggregation.get("term_of_name"), logger);
+    }
+
+    @Test
+    public void _02_MultiAggTest() throws Exception {
         SearchRequestBuilder builder = esClient.prepareSearch(sampleIndexName)
                 .setTypes(marketTypeName)
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
@@ -53,7 +68,7 @@ public class AggQueryTest extends BaseTest {
     }
 
     @Test
-    public void _02_NestedAggQueryTest() throws Exception {
+    public void _03_NestedAggQueryTest() throws Exception {
         AggregationBuilder productsAggregationBuilder = AggregationBuilders
                 .nested("agg_products", "products")
                 .subAggregation(AggregationBuilders.terms("term_of_products_label").field("products.label"))
