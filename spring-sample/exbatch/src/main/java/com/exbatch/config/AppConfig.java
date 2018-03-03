@@ -51,8 +51,8 @@ public class AppConfig {
 	@Autowired
 	Environment environment;
 
-	@Value("${mybatis.url}")
-	String mybatisUrl;
+	@Value("${db.url}")
+	String dbUrl;
 
 	@Autowired
 	private JobBuilderFactory jobs;
@@ -92,10 +92,10 @@ public class AppConfig {
 	public BasicDataSource dataSource() {
 		BasicDataSource dataSource = new BasicDataSource();
 
-		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-		dataSource.setUrl("jdbc:mysql://127.0.0.1:3306/db_test?useUnicode=yes&amp;characterEncoding=utf8");
-		dataSource.setUsername("root");
-		dataSource.setPassword("1111");
+		dataSource.setDriverClassName(environment.getProperty("db.driver.class"));
+		dataSource.setUrl(environment.getProperty("db.url"));// "jdbc:mysql://127.0.0.1:3306/db_test?useUnicode=yes&amp;characterEncoding=utf8");
+		dataSource.setUsername(environment.getProperty("db.username"));// "root");
+		dataSource.setPassword(environment.getProperty("db.password"));// "1111");
 
 		return dataSource;
 	}
