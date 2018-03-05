@@ -9,14 +9,21 @@ import org.slf4j.LoggerFactory;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class LogTest {
 
-    final static Logger logger = LoggerFactory.getLogger(LogTest.class);
+    Logger logger = LoggerFactory.getLogger(getClass());
 
-    double getLogWeight(double qcNow, double qcPrev) {
-        return qcNow + (qcNow * ((Math.log10(qcNow) - Math.log10(qcPrev))/2));
+    String getLogWeight(Long qcNow, Long qcPrev) {
+        if (qcPrev == 0) {
+            qcPrev = 1L;
+        }
+
+        double result = qcNow + (qcNow * ((Math.log10(qcNow) - Math.log10(qcPrev))/2));
+        return String.format("%.2f" , result);
     }
 
     @Test
     public void _0_테스트_준비() throws Exception {
-        logger.info("weight {}", getLogWeight(200, 100));
+        logger.info("weight {}", getLogWeight(200L, 100L));
+        logger.info("weight {}", getLogWeight(200L, 0L));
+        logger.info("weight {}", getLogWeight(30L, 0L));
     }
 }
