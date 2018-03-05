@@ -1,0 +1,18 @@
+{
+    "doc": {
+        "properties": {
+            "isbn": {
+                "type": "long",
+                "index": true
+            },
+            "author" : {
+                "type" : "nested",
+                "properties" : {
+                    "name" : {"type" : "keyword", "index" : true},
+                    "age" : {"type" : "keyword", "index" : true}
+                }
+            }
+        }
+    }
+}
+
