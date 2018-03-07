@@ -16,7 +16,7 @@ public class LogTest {
             qcPrev = 1L;
         }
 
-        double result = qcNow + (qcNow * ((Math.log10(qcNow) - Math.log10(qcPrev))/2));
+        double result = (qcNow * ((Math.log10(qcNow) - Math.log10(qcPrev))/2));
         return String.format("%.2f" , result);
     }
 
