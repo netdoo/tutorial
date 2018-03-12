@@ -21,3 +21,8 @@ mvn clean package -P real
 mvn exec:java -Dexec.mainClass="com.sample.App" -Dexec.args="arg0 arg1 arg2"
 ```
 
+# reference
+
+```
+https://printf.kr/archives/373
+```
