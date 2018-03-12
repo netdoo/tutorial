@@ -13,7 +13,7 @@ import static junit.framework.TestCase.assertTrue;
 
 public class AppTest {
 
-    final static Logger logger = LoggerFactory.getLogger(AppTest.class);
+    static Logger logger = LoggerFactory.getLogger(AppTest.class);
 
     @Test
     public void AppTest() {
