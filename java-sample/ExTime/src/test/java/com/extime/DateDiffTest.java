@@ -1,7 +1,9 @@
 package com.extime;
 
 
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,12 +15,13 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DateDiffTest {
 
-    final static Logger logger = LoggerFactory.getLogger(DateDiffTest.class);
+    Logger logger = LoggerFactory.getLogger(getClass());
 
     @Test
-    public void _1_날짜_차이_비교() {
+    public void _01_날짜_차이_비교() {
         LocalDate oldDate = LocalDate.of(2017, 12, 12);
         LocalDate newDate = LocalDate.of(2017, 12, 20);
 
@@ -30,7 +33,7 @@ public class DateDiffTest {
     }
 
     @Test
-    public void _2_날짜_시간_차이_비교() {
+    public void _02_날짜_시간_차이_비교() {
         LocalDateTime oldDateTime = LocalDateTime.of(2017, 12, 12, 10, 10, 10);
         LocalDateTime newDateTime = LocalDateTime.of(2017, 12, 12, 10, 12, 10);
 
