@@ -12,6 +12,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,13 +35,20 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         resolver.setViewResolvers(resolvers);
         return resolver;
     }
-//
-//    @Override
-//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//        registry
-//                .addResourceHandler("/resources/**")
-//                .addResourceLocations("/resources/");
-//    }
+
+    @Bean
+    public InternalResourceViewResolver internalResourceViewResolver() {
+        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
+        resolver.setPrefix("/jsp/");
+        resolver.setSuffix(".jsp");
+        return resolver;
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/pages/**").addResourceLocations("/WEB-INF/pages/");
+        registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
+    }
 
     @Bean
     public ViewResolver jsonViewResolver() {

@@ -1,10 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <style>
+[v-cloak] {
+  display: none;
+}
+</style>
 </head>
 <body>
-test html page
+<div id="app" v-cloak>
+    <button @click="onClickIP">IP 조회</button>
+    <br/>
+    <span>{{myip}}</span>
+    <br/>
+    <span>{{uuid}}</span>
+</div>
+
+<script src="static/bluebird.js"></script>
+<script src="static/moment.min.js"></script>
+<script src="static/vue.min.js"></script>
+<script src="static/qs.js"></script>
+<!-- vue 확장 js 는 vue 다음에 위치해야 함. -->
+<script src="static/axios.min.js"></script>
+<script>
+  var app = new Vue({
+    el: "#app",
+    data: {
+      myip: '',
+      uuid: ''
+    },
+    methods: {
+      onClickIP: function() {
+        axios.post('/save2',
+            "result=mbc&name=test"
+        , {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          }
+          })
+        .then(res => {
+            console.log(res);
+        }).catch(err => {
+            console.log(err);
+        });
+      }
+    }
+  });
+  </script>
 </body>
 </html>
+

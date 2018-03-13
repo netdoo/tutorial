@@ -63,3 +63,4 @@ mvn clean install sonar:sonar
 ```
 
 
+clean install -Dmaven.test.skip=true -Djetty.http.port=8080 jetty:run-war

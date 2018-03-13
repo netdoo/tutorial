@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NON_PRIVATE)
 public class Hello {
     String result;
+    String name;
 
     public Hello() {
         /// 기본 생성자 for ObjectMapper
@@ -23,5 +24,13 @@ public class Hello {
 
     public String getResult() {
         return this.result;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return this.name;
     }
 }

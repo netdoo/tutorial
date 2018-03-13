@@ -9,11 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -51,6 +49,20 @@ public class MainController {
     public String site2(@PathVariable("q") String q) {
         logger.info("Site2 : query : {}", q);
         return q;
+    }
+
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @ResponseBody
+    public String save(HttpServletRequest request) {
+        logger.info("name : {}", request.getParameter("name"));
+        return "ok";
+    }
+
+    @RequestMapping(value = "/save2", method = RequestMethod.POST)
+    @ResponseBody
+    public String save2(Hello hello) {
+        logger.info("name : {}", hello.getResult());
+        return "ok2";
     }
 
     @RequestMapping(value = "/myservice", method = RequestMethod.GET, produces = "application/json")
