@@ -19,7 +19,7 @@ public class AppTest {
     Logger logger = LoggerFactory.getLogger(getClass());
 
     @Test
-    public void AppTest() {
+    public void _01_ParseTest() {
         LocalDate oldDate = LocalDate.of(2017, 12, 12);
         LocalDate newDate = LocalDate.of(2017, 12, 20);
 
@@ -32,6 +32,16 @@ public class AppTest {
         assertTrue(newDate.isEqual(LocalDate.parse("20171220", DateTimeFormatter.ofPattern("yyyyMMdd"))));
         assertTrue(newDate.isEqual(LocalDate.parse("2017/12/20", DateTimeFormatter.ofPattern("yyyy/MM/dd"))));
         assertTrue(newDate.isEqual(LocalDate.parse("2017-12-20")));
+    }
+
+    @Test
+    public void _02_PlusTest() {
+        LocalDateTime now = LocalDateTime.of(2018, 3, 13, 23,59,59);
+        LocalDateTime result = now.plusSeconds(1);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+
+        logger.info("{} + 1sec => {}", now.format(formatter), result.format(formatter));
     }
 }
 
