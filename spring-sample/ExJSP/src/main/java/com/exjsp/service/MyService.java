@@ -1,4 +1,4 @@
-package com.exsimpleweb2.service;
+package com.exjsp.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

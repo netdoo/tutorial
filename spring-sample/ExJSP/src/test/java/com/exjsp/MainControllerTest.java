@@ -1,7 +1,7 @@
-package com.exsimpleweb2;
+package com.exjsp;
 
-import com.exsimpleweb2.controller.MainController;
-import com.exsimpleweb2.domain.Hello;
+import com.exjsp.controller.MainController;
+import com.exjsp.domain.Hello;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;

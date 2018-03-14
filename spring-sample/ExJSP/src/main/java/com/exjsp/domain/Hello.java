@@ -1,4 +1,4 @@
-package com.exsimpleweb2.domain;
+package com.exjsp.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;

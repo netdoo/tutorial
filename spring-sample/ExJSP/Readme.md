@@ -62,5 +62,8 @@ mvn clean install sonar:sonar
 대쉬보드 접속 :  http://localhost:9000/dashboard/index/com.exsimpleweb2:exsimpleweb2
 ```
 
+# Jetty 실행
 
+```
 clean install -Dmaven.test.skip=true -Djetty.http.port=8080 jetty:run-war
+```

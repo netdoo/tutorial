@@ -1,4 +1,4 @@
-package com.exsimpleweb2;
+package com.exjsp;
 
 
 import org.junit.Test;

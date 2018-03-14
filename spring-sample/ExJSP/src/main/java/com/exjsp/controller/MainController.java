@@ -1,8 +1,8 @@
-package com.exsimpleweb2.controller;
+package com.exjsp.controller;
 
-import com.exsimpleweb2.domain.Hello;
-import com.exsimpleweb2.model.MainParam;
-import com.exsimpleweb2.service.MyService;
+import com.exjsp.domain.Hello;
+import com.exjsp.model.MainParam;
+import com.exjsp.service.MyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

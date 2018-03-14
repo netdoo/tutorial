@@ -1,4 +1,4 @@
-package com.exsimpleweb2.viewresolver;
+package com.exjsp.viewresolver;
 
 import java.util.Locale;
 

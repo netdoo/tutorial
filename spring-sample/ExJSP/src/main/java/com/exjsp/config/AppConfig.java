@@ -1,6 +1,6 @@
-package com.exsimpleweb2.config;
+package com.exjsp.config;
 
-import com.exsimpleweb2.viewresolver.JsonViewResolver;
+import com.exjsp.viewresolver.JsonViewResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +29,7 @@ public class AppConfig extends WebMvcConfigurerAdapter {
     public ViewResolver contentNegotiatingViewResolver(ContentNegotiationManager manager) {
         ContentNegotiatingViewResolver resolver = new ContentNegotiatingViewResolver();
         resolver.setContentNegotiationManager(manager);
-        List<ViewResolver> resolvers = new ArrayList<ViewResolver>();
+        List<ViewResolver> resolvers = new ArrayList<>();
 
         resolvers.add(jsonViewResolver());
         resolver.setViewResolvers(resolvers);
