@@ -20,23 +20,14 @@ import java.util.concurrent.CompletableFuture;
 @Controller
 public class MainController {
 
+    /*
     final static Logger logger = LoggerFactory.getLogger(MainController.class);
 
     @Autowired
     MyService myService;
 
 
-    @RequestMapping(value = "/home")
-    public String home() {
-        return "home";
-    }
 
-    @RequestMapping(value = "/home2")
-    public ModelAndView home2() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("home");
-        return modelAndView;
-    }
 
     @RequestMapping(value = "/hello", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
@@ -98,7 +89,7 @@ public class MainController {
 
         return new ResponseEntity<Object>(response, HttpStatus.OK);
     }
-
+    */
 
 }
 
