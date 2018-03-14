@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -24,6 +25,19 @@ public class MainController {
     @Autowired
     MyService myService;
 
+
+    @RequestMapping(value = "/home")
+    public String home() {
+        return "home";
+    }
+
+    @RequestMapping(value = "/home2")
+    public ModelAndView home2() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("home");
+        return modelAndView;
+    }
+
     @RequestMapping(value = "/hello", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public Hello hello() {
@@ -36,6 +50,8 @@ public class MainController {
         logger.info("Param {}", mainParam);
         return mainParam.getName();
     }
+
+
 
     @RequestMapping(value = "/site1/{q}", method = RequestMethod.GET)
     @ResponseBody
@@ -82,6 +98,8 @@ public class MainController {
 
         return new ResponseEntity<Object>(response, HttpStatus.OK);
     }
+
+
 }
 
 

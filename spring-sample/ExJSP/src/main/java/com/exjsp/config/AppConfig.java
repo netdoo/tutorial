@@ -31,6 +31,8 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         resolver.setContentNegotiationManager(manager);
         List<ViewResolver> resolvers = new ArrayList<>();
 
+
+        resolvers.add(internalResourceViewResolver());
         resolvers.add(jsonViewResolver());
         resolver.setViewResolvers(resolvers);
         return resolver;
@@ -38,16 +40,21 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public InternalResourceViewResolver internalResourceViewResolver() {
+
+        // 뷰 이름으로 "home"을 리턴하면, "/WEB-INF/view/home.jsp" 파일이 사용됩니다.
         InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-        resolver.setPrefix("/jsp/");
+        resolver.setPrefix("/WEB-INF/view/");
         resolver.setSuffix(".jsp");
+        resolver.setOrder(0);
+
         return resolver;
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/pages/**").addResourceLocations("/WEB-INF/pages/");
-        registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
+        registry.addResourceHandler("/disk/**").addResourceLocations("/disk/");
+        registry.addResourceHandler("/**").addResourceLocations("/");
     }
 
     @Bean

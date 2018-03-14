@@ -5,8 +5,7 @@
 <html>
 <body>
 <h2>${email} </h2>
-page error
-<spring:message code="greeting.msg" text="default"/>
-
+sample foo
+this is jsp page
 </body>
 </html>
