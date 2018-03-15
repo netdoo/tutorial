@@ -7,15 +7,65 @@
   display: none;
 }
 </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
 <div id="app" v-cloak>
-    <button @click="onClickIP">IP 조회</button>
+    <button @click="onPostJsonFormat">POST JSON Format</button>
+    <button @click="onPostFormDataFormat">POST Form Format</button>
     <br/>
     <span>{{myip}}</span>
     <br/>
     <span>{{uuid}}</span>
 </div>
+
+<form id="article-form">
+    <pre>
+         id: <input type="text" name="name">
+    content: <input type="number" name="age">
+                  <input type="submit" value="Submit">
+    </pre>
+</form>
+<br/>
+<div id="result"></div>
+
+
+<form method="POST" action="/uploadFile" enctype="multipart/form-data">
+
+
+    Name1: <input type="text" name="name">
+    age: <input type="number" name="age">
+
+    <input type="submit" value="/uploadFile"> Press here to upload the file!
+</form>
+
+
+
+<script>
+ $("#article-form").submit(function(event){
+            event.preventDefault();
+            var form = $(this);
+            var nameVal = form.find('input[name="name"]').val();
+            var ageVal = form.find('input[name="age"]').val();
+            var url = 'http://localhost:8080/save2';
+            var jsonString = JSON.stringify({name: nameVal, age: ageVal});
+            console.log(jsonString);
+            $.ajax({
+                type : 'POST',
+                url : url,
+                contentType: 'application/json',
+                data : jsonString,
+                success : function(data, status, xhr){
+                   $("#result").html(data+
+                   " link: <a href='"+url+"'>"+url+"</a>");
+                },
+                error: function(xhr, status, error){
+                  alert(error);
+                }
+            });
+        });
+</script>
 
 <script src="static/bluebird.js"></script>
 <script src="static/moment.min.js"></script>
@@ -31,12 +81,37 @@
       uuid: ''
     },
     methods: {
-      onClickIP: function() {
-        axios.post('/put',
-            "name=mbc&age=123"
+        onPostFormDataFormat: function() {
+
+        var formData = new FormData();
+formData.append('name', 'zerocho');
+formData.append('age', 1111);
+
+        var jsonString = JSON.stringify({name: 'james', age: 7});
+
+            axios.post('/uploadFile', formData)
+             .then(response => {
+                    if (response.data.result === true) {
+                        console.log(this.create.name + " added successfully");
+                    } else {
+                        console.log("Failed to create new company");
+                    }
+                })
+                .catch(response => {
+                    console.log(response);
+                });
+
+        // https://laracasts.com/discuss/channels/laravel/laravel-54-upload-files-with-axios?page=0
+    },
+      onPostJsonFormat: function() {
+
+        var jsonString = JSON.stringify({name: 'james', age: 7});
+
+        axios.post('/save2',
+            jsonString
         , {
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json',
           }
           })
         .then(res => {

@@ -15,7 +15,13 @@
     <mvc:annotation-driven />
 
 
+    <!-- multipart form data를 처리하기 위해서 필요함. -->
+    <beans:bean id="multipartResolver"       class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 
+        <!-- setting maximum upload size -->
+        <beans:property name="maxUploadSize" value="100000" />
+
+    </beans:bean>
 
 
 </beans:beans>
