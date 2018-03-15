@@ -3,70 +3,40 @@
 <head>
     <meta charset="utf-8">
     <style>
-[v-cloak] {
-  display: none;
-}
-</style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
 <div id="app" v-cloak>
-    <button @click="onPostJsonFormat">POST JSON Format</button>
-    <button @click="onPostFormDataFormat">POST Form Format</button>
-    <br/>
-    <span>{{myip}}</span>
-    <br/>
-    <span>{{uuid}}</span>
+    <button @click="onPostForm">POST Form</button>
+    <button @click="onPostJson">POST Json</button>
 </div>
 
-<form id="article-form">
-    <pre>
-         id: <input type="text" name="name">
-    content: <input type="number" name="age">
-                  <input type="submit" value="Submit">
-    </pre>
+<hr/>
+<form method="POST" action="/uploadFile" enctype="multipart/form-data">
+    Name : <input type="text" name="name">
+    age : <input type="number" name="age">
+    File : <input type="file" name="file">
+    <br/>
+    <input type="submit" value="Upload">
 </form>
 <br/>
-<div id="result"></div>
-
-
-<form method="POST" action="/uploadFile" enctype="multipart/form-data">
-
-
+<hr/>
+<br/>
+<form method="POST" action="/uploadMultipleFile" enctype="multipart/form-data">
     Name1: <input type="text" name="name">
-    age: <input type="number" name="age">
-
-    <input type="submit" value="/uploadFile"> Press here to upload the file!
+    File1: <input type="file" name="file">
+    <br/>
+    Name2: <input type="text" name="name">
+    File2: <input type="file" name="file">
+    <br/>
+    <input type="submit" value="Upload Multiple Files">
 </form>
-
-
-
-<script>
- $("#article-form").submit(function(event){
-            event.preventDefault();
-            var form = $(this);
-            var nameVal = form.find('input[name="name"]').val();
-            var ageVal = form.find('input[name="age"]').val();
-            var url = 'http://localhost:8080/save2';
-            var jsonString = JSON.stringify({name: nameVal, age: ageVal});
-            console.log(jsonString);
-            $.ajax({
-                type : 'POST',
-                url : url,
-                contentType: 'application/json',
-                data : jsonString,
-                success : function(data, status, xhr){
-                   $("#result").html(data+
-                   " link: <a href='"+url+"'>"+url+"</a>");
-                },
-                error: function(xhr, status, error){
-                  alert(error);
-                }
-            });
-        });
-</script>
-
+<hr/>
 <script src="static/bluebird.js"></script>
 <script src="static/moment.min.js"></script>
 <script src="static/vue.min.js"></script>
@@ -74,55 +44,55 @@
 <!-- vue 확장 js 는 vue 다음에 위치해야 함. -->
 <script src="static/axios.min.js"></script>
 <script>
-  var app = new Vue({
+var app = new Vue({
     el: "#app",
     data: {
       myip: '',
       uuid: ''
     },
     methods: {
-        onPostFormDataFormat: function() {
+        onPostForm : function() {
+            var formData = new FormData();
+            formData.append('name', 'postman');
+            formData.append('age', 1234);
 
-        var formData = new FormData();
-formData.append('name', 'zerocho');
-formData.append('age', 1111);
-
-        var jsonString = JSON.stringify({name: 'james', age: 7});
-
-            axios.post('/uploadFile', formData)
-             .then(response => {
-                    if (response.data.result === true) {
-                        console.log(this.create.name + " added successfully");
+            axios.post('/saveForm', formData)
+                .then(response => {
+                    if (response.status === 200) {
+                        alert('Success PostForm');
                     } else {
-                        console.log("Failed to create new company");
+                        alert('Error PostForm');
                     }
                 })
-                .catch(response => {
-                    console.log(response);
+                .catch(err => {
+                    console.log(err);
                 });
+        },
+        onPostJson : function() {
 
-        // https://laracasts.com/discuss/channels/laravel/laravel-54-upload-files-with-axios?page=0
-    },
-      onPostJsonFormat: function() {
+            var jsonData = {
+                'name': 'postman',
+                'age': 1111
+            };
 
-        var jsonString = JSON.stringify({name: 'james', age: 7});
-
-        axios.post('/save2',
-            jsonString
-        , {
-          headers: {
-            'Content-Type': 'application/json',
-          }
-          })
-        .then(res => {
-            console.log(res);
-        }).catch(err => {
-            console.log(err);
-        });
-      }
+            axios.post('/saveJson', JSON.stringify(jsonData), {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => {
+                if (response.status === 200) {
+                    alert('Success PostJson');
+                } else {
+                    alert('Error PostJson');
+                }
+            }).catch(err => {
+                console.log(err);
+            });
+        }
     }
   });
-  </script>
+</script>
 </body>
 </html>
 

@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.Optional;
 
 @Controller
@@ -17,50 +18,49 @@ public class FormController {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
-    @PostMapping(value = "/save", consumes = "application/x-www-form-urlencoded")
+    @RequestMapping(value = "/saveForm", method = RequestMethod.POST)
     @ResponseBody
-    public Member save(@RequestBody Member member) {
-        logger.info("member.name {}", member.getName());
-        return new Member("test", 10);// "home";
+    public Member saveForm(@RequestParam("name") String name,
+                            @RequestParam("age") Integer age) {
+        logger.info("name {}, age {}", name, age);
+        return new Member(name.toUpperCase(), age);
     }
 
-    @PostMapping(value = "/save2", consumes = "application/json")
+    @PostMapping(value = "/saveJson", consumes = "application/json")
     @ResponseBody
-    public Member save2(@RequestBody Member member) {
-        logger.info("member.name {}", member.getName());
-        return new Member("test", 10);// "home";
+    public Member saveJson(@RequestBody Member member) {
+        logger.info("name {}, age {}", member.getName(), member.getAge());
+        return new Member(member.getName().toUpperCase(), member.getAge());
     }
-
-    @PostMapping(value = "/save3")
-    @ResponseBody
-    public Member save3(@RequestBody Member member) {
-        logger.info("member.name {}", member);
-        return new Member("test", 10);// "home";
-    }
-
 
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
-    public @ResponseBody  Member uploadFileHandler(@RequestParam("name") String name,                            @RequestParam("age") Integer age) {
-        logger.info("333 member.name {}", name);
-        return new Member("aaa", 1);
-    }
-
-
-
-
-    @PostMapping(value = "/put", consumes = "application/x-www-form-urlencoded", produces = "application/json")
     @ResponseBody
-    public Member put(HttpServletRequest request) {
-        String name = Optional.ofNullable(request.getParameter("name")).orElse("name is empty");
-        Integer age = Integer.valueOf(Optional.ofNullable(request.getParameter("age")).orElse("0"));
-        logger.info("name {}, age {}", name, age);
-        return new Member(name, age);
+    public Member uploadFile(@RequestParam("name") String name,
+                             @RequestParam("age") Integer age,
+                             @RequestParam("file") MultipartFile file) {
+
+        if (!file.isEmpty()) {
+            logger.info("name {} age {} fileName {}", name, age, file.getOriginalFilename());
+        } else {
+            logger.info("name {} age {} ", name, age);
+        }
+
+        return new Member(name.toUpperCase(), age);
     }
 
-    @GetMapping(value = "/home2")
-    public ModelAndView home2() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("home");
-        return modelAndView;
+    @RequestMapping(value = "/uploadMultipleFile", method = RequestMethod.POST)
+    @ResponseBody
+    public Object uploadMultipleFile(@RequestParam("name") String[] names,
+                                      @RequestParam("file") MultipartFile[] files) {
+
+        for (int i = 0; i < files.length; i++) {
+            MultipartFile file = files[i];
+            String name = names[i];
+            logger.info("name {} fileName {}", name, file.getOriginalFilename());
+        }
+
+        return new HashMap<String, String>() {{
+            put("result", "success");
+        }};
     }
 }
