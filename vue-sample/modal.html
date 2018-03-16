@@ -1,0 +1,48 @@
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+[v-cloak] {
+  display: none;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="static/vue.modal.css">
+</head>
+<body>
+
+<div id="app" v-cloak>
+<button id="show-modal" @click="onClickShowModal()">Show Modal</button>
+<!-- use the modal component, pass in the prop -->
+<modal v-if="showModal" @close="showModal = false">
+    <!--
+      you can use custom content here to overwrite
+      default content
+    -->
+    <h3 slot="header">custom header</h3>
+  </modal>
+
+  </div>
+
+  <script src="static/vue.modal.js"></script>
+  <script src="static/vue.min.js"></script>
+  <script>
+
+  Vue.component('modal', {
+    template: modalTemplate()
+  })
+
+  var app = new Vue({
+    el: "#app",
+    data: {
+      showModal: false
+    },
+    methods: {
+      onClickShowModal: function() {
+        this.showModal = true;
+      }
+    }
+  });
+  </script>
+</body>
+</html>
+
