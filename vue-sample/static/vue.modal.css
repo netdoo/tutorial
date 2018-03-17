@@ -17,14 +17,29 @@
 }
 
 .modal-container {
-  width: 300px;
+  width: 500px;
   margin: 0px auto;
   padding: 20px 30px;
   background-color: #fff;
-  border-radius: 2px;
+  border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
   transition: all .3s ease;
   font-family: Helvetica, Arial, sans-serif;
+}
+
+.modal-default-cancel-button {
+  height: 30px;
+  float: right;
+  margin-right: 10px;
+  border-radius: 5px;
+
+}
+
+.modal-default-save-button {
+  height: 30px;
+  float: right;
+  
+  border-radius: 5px;
 }
 
 .modal-header h3 {

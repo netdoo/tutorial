@@ -20,8 +20,13 @@ function modalTemplate() {
             <div class="modal-footer">
                 <slot name="footer">
                 default footer
-                <button class="modal-default-button" @click="$emit('close')">
-                    OK
+                
+                <button class="modal-default-save-button" @click="$emit('close')">
+                    save
+                </button>
+
+                <button class="modal-default-cancel-button" @click="$emit('close')">
+                    cancel
                 </button>
                 </slot>
             </div>
