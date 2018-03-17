@@ -1,52 +1,61 @@
 <html>
 <head>
 <meta charset="utf-8">
+ 
+ <!--
+ <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+ -->
+  <link href="static/vue.font.face.css" rel="stylesheet">
+  <link href="static/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  
+
 <style>
 [v-cloak] {
   display: none;
 }
 </style>
-<link rel="stylesheet" type="text/css" href="static/vue.modal.css">
+
 </head>
 <body>
 
 <div id="app" v-cloak>
-<button id="show-modal" @click="onClickShowModal()">Show Modal</button>
-<!-- use the modal component, pass in the prop -->
-<modal v-if="showModal" @close="showModal = false">
-    <!--
-      you can use custom content here to overwrite
-      default content
-    -->
-    
-    <h3 slot="header">custom header</h3>
 
-    <form slot="body">
-      
-      <label>min</label> : <input type="number"><br/>
-      <label>name</label>: <input type="text">
-    </form>
-  </modal>
+  <v-layout row>
+    <v-app>
+      <v-btn color="info" @click="dialog = true">Show Modal</v-btn>
+    </v-app>
+  </v-layout>
+  <v-layout row justify-center>
+      <v-dialog v-model="dialog" persistent max-width="290">
+        <v-btn color="primary" dark slot="activator">Open Dialog</v-btn>
+        <v-card>
+          <v-card-title class="headline">Use Google's location service?</v-card-title>
+          <v-card-text>Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.</v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" flat @click.native="dialog = false">Disagree</v-btn>
+            <v-btn color="green darken-1" flat @click.native="dialog = false">Agree</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-layout>
 
-  </div>
+</div>
 
-  <script src="static/vue.modal.js"></script>
-  <script src="static/vue.min.js"></script>
+
+  <script src="static/vue.js"></script>
+  <script src="static/vuetify.js"></script>
   <script>
-
-  Vue.component('modal', {
-    template: modalTemplate()
-  })
-
+  Vue.config.devtools = false;
+  Vue.config.productionTip = false;
   var app = new Vue({
     el: "#app",
     data: {
-      showModal: false
+    dialog : false
     },
     methods: {
-      onClickShowModal: function() {
-        this.showModal = true;
-      }
+      
     }
   });
   </script>
