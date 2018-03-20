@@ -1,2 +1,2 @@
-sample doc local
+sample doc remote
 
