@@ -18,7 +18,7 @@ public class App {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
-        String resource = IOUtils.toString(this.getClass().getResourceAsStream("/sample.js"), "UTF-8");
+        String resource = IOUtils.toString(this.getClass().getResourceAsStream("/sample.json"), "UTF-8");
         Portal portal = mapper.readValue(resource, Portal.class);
 
         logger.info("done {}", portal.getPortalSites().size());
@@ -27,7 +27,7 @@ public class App {
     public void readJsonTree() throws Exception {
 
         ObjectMapper mapper = new ObjectMapper();
-        String resource = IOUtils.toString(this.getClass().getResourceAsStream("/sample.js"), "UTF-8");
+        String resource = IOUtils.toString(this.getClass().getResourceAsStream("/sample.json"), "UTF-8");
         JsonNode root = mapper.readTree(resource);
 
         /// Get Sub Json Node

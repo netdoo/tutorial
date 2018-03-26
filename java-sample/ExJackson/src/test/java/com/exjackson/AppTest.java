@@ -1,38 +1,44 @@
 package com.exjackson;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import org.apache.commons.io.IOUtils;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- * Unit test for simple App.
- */
-public class AppTest 
-    extends TestCase
-{
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public AppTest( String testName )
-    {
-        super( testName );
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class AppTest {
+
+    @Test
+    public void _01_ReadFromJsonFileTest() throws Exception {
+        JsonFactory jfactory = new JsonFactory();
+        String jsonText = IOUtils.toString(this.getClass().getResourceAsStream("/sampleFile.json"), "UTF-8");
+        JsonParser jParser = jfactory.createParser(jsonText.getBytes());
+
+        while (jParser.nextToken() != JsonToken.END_OBJECT) {
+            String fieldName = jParser.getCurrentName();
+
+            if ("name".equals(fieldName)) {
+                jParser.nextToken();
+                logger.info("문자열 : {}", jParser.getText()); // 문자열인 경우
+            } else if ("age".equals(fieldName)) {
+                jParser.nextToken();
+                logger.info("숫자 : {}", jParser.getIntValue()); // 숫자인 경우
+            } else if ("messages".equals(fieldName)) {
+                jParser.nextToken(); // current token is "[", move next
+                // messages is array, loop until token equal to "]"
+                while (jParser.nextToken() != JsonToken.END_ARRAY) {
+                    // 문자열 배열인 경우
+                    logger.info("문자열 배열 {}", jParser.getText());
+                }
+            }
+        }
+        jParser.close();
     }
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( AppTest.class );
-    }
-
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
-    }
+    Logger logger = LoggerFactory.getLogger(getClass());
 }
