@@ -1,16 +1,14 @@
 package com.exstream;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,5 +33,18 @@ public class FlatMapTest {
                 .collect(Collectors.toCollection(TreeSet::new));
 
         logger.info("{}", sortedColors);
+    }
+
+    @Test
+    public void testFlatMap2() throws Exception {
+        List<String> source = Arrays.asList("RED|GREEN", "BLUE");
+
+        List<String> result = source.stream()
+                .flatMap(text -> Arrays.stream(text.split("\\|")))
+                .collect(Collectors.toList());
+
+        String.join(",", result);
+        Strings.join(result, ',');
+        logger.info("결과 {}", result);       // RED GREEN BLUE
     }
 }
