@@ -1,12 +1,16 @@
 package com.exstream;
 
 import com.exstream.domain.Box;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -100,5 +104,14 @@ public class OptionalTest {
             return box;
         }).orElse(defaultBox));
         logger.info("finish _05_Null_orElseDefault_Test");
+    }
+
+    @Test
+    public void _06_Split_Test() {
+        String empty = "";
+        String emptyResult[] = Optional.ofNullable(empty).orElse("").split("\\.");
+        String result = emptyResult[emptyResult.length-1];
+
+        logger.info("result {}", result);
     }
 }
