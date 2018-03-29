@@ -3,6 +3,8 @@ package com.exaop;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.TimeUnit;
+
 public class DummyObject {
 
     final Logger logger = LoggerFactory.getLogger(getClass());
@@ -23,6 +25,12 @@ public class DummyObject {
 
     public void printName(String name) {
         logger.info("DummyObject => name 2 {}", name);
+    }
+
+    @LogExecutionTime
+    public void writeDelayedLog(String text) throws Exception {
+        TimeUnit.SECONDS.sleep(3);
+        logger.info("delayed log");
     }
 
     public void close() {

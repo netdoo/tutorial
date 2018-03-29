@@ -8,7 +8,7 @@ public class App {
 
     final static Logger logger = LoggerFactory.getLogger(App.class);
 
-    public static void main( String[] args ) {
+    public static void main(String[] args) throws Exception {
 
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 
@@ -21,5 +21,8 @@ public class App {
         someObject.doSomething();
         dummyObject.printName();
         dummyObject.printName("james dean");
+        dummyObject.writeDelayedLog("slow log...");
+
+        context.close();
     }
 }
