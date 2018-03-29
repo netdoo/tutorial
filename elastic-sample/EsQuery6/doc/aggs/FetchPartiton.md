@@ -169,6 +169,13 @@ GET partition_sample/data/_search
 - partition : 현재 보고자 하는 파티션 번호
 - num_partitions : 전체 파티션 갯수
 - size : 집계하고자 하는 건수
+- 주의사항
+
+```concept
+num_partitions 의 값은 size 보다 작거나 같아야 함.
+```
+
+
 
 예를 들어 전체 집계하고자 하는 건수가 10 이고, 총 파티션을 3이라고 가정하면, 
 다음과 같이 파티션 번호를 각각 0, 1, 2로 지정하여 조회하면 됩니다.
