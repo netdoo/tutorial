@@ -116,6 +116,9 @@ GET sample/_search
 
 # 공백또는 NULL 을 제거한 결과만 조회
 
+- exists : 지정된 필드에 값이 있는 경우만 검색 대상에 포함.
+- term : 지정된 필드에 지정된 값이 정확히 일치하는 경우를 찾기 위해 사용함.
+
 ```concept
 GET sample/data/_search
 {
