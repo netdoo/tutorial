@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = {
         "classpath:applicationContext.xml",
         "classpath:batch/job.xml",
+        "classpath:batch/readProcessJob.xml",
         "classpath:batch/compositeJob.xml"
 })
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -34,6 +35,10 @@ public class AppTest {
     @Autowired
     @Qualifier("testCompositeBatchJob")
     Job testCompositeBatchJob;
+
+    @Autowired
+    @Qualifier("readProcessJob")
+    Job readProcessJob;
 
     @Test
     public void testBatchJob() throws Exception {
@@ -61,4 +66,14 @@ public class AppTest {
 
         jobLauncher.run(testCompositeBatchJob, jobParameters);
     }
+
+    @Test
+    public void testReadProcessJob() throws Exception {
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addString("key", "value")
+                .toJobParameters();
+
+        jobLauncher.run(readProcessJob, jobParameters);
+    }
+
 }
