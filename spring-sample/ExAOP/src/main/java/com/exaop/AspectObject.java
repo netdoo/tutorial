@@ -120,7 +120,7 @@ public class AspectObject {
         return obj;
     }
 
-    @Around("@annotation(LogExecutionTime)")
+    @Around("@annotation(com.exaop.LogExecutionTime)")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         final long start = System.currentTimeMillis();
         final Object proceed = joinPoint.proceed();
