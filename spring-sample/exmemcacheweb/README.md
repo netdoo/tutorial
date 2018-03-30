@@ -1,6 +1,9 @@
-# memcached 서버 실행 
+
+
+# memcached 서버 실행
 
 ```sh
+$ curl -L -O http://downloads.northscale.com/memcached-win64-1.4.4-14.zip
 $ memcached.exe -vv -p 11211
 ```
 
