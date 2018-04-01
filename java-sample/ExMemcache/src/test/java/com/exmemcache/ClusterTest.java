@@ -1,10 +1,7 @@
 package com.exmemcache;
 
 import com.exmemcache.config.MemcachedConfig;
-import net.spy.memcached.ConnectionFactory;
-import net.spy.memcached.ConnectionFactoryBuilder;
-import net.spy.memcached.DefaultConnectionFactory;
-import net.spy.memcached.MemcachedClient;
+import net.spy.memcached.*;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -16,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
@@ -105,6 +103,70 @@ public class ClusterTest {
         logger.info("clusterClient get {}/{}", key, value);
 
         /// 반면에, firstClient 또는 secondClient 둘 다 데이터 조회가 됨.
+        value = (String)firstClient.get(key);
+        logger.info("firstClient get {}/{}", key, value);
+
+        value = (String)secondClient.get(key);
+        logger.info("secondClient get {}/{}", key, value);
+    }
+
+    @Test
+    public void _03_ClusterFailTest() throws Exception {
+        InetSocketAddress firstServerAddr = new InetSocketAddress("localhost", 11222);
+        InetSocketAddress secondServerAddr = new InetSocketAddress("localhost", 11223);
+
+        List<InetSocketAddress> addressList = new ArrayList<>();
+        addressList.add(firstServerAddr);
+        addressList.add(secondServerAddr);
+
+        ConnectionFactory connectionFactory = new ConnectionFactoryBuilder()
+                .setLocatorType(ConnectionFactoryBuilder.Locator.CONSISTENT).build();
+
+        MemcachedClient clusterClient = new MemcachedClient(connectionFactory, addressList);
+
+        MemcachedClient firstClient = new MemcachedClient(firstServerAddr);
+        MemcachedClient secondClient = new MemcachedClient(secondServerAddr);
+
+        int expireSecs = 5000;
+        String key = String.valueOf(System.currentTimeMillis());
+        String value = "THIS IS TEST VALUE";
+
+        clusterClient.set(key, expireSecs, value);
+        logger.info("clusterClient set {}/{}", key, value);
+
+        value = (String)clusterClient.get(key);
+        logger.info("clusterClient get {}/{}", key, value);
+
+        /// firstClient 또는 secondClient 둘 중 하나만 데이터 조회가 됨.
+        value = (String)firstClient.get(key);
+        logger.info("firstClient get {}/{}", key, value);
+
+        value = (String)secondClient.get(key);
+        logger.info("secondClient get {}/{}", key, value);
+
+
+        // first memcached server가 down 되면..
+        for (int i = 0; i < 10; i++) {
+            TimeUnit.SECONDS.sleep(1);
+            logger.info("{} kill first memcached server", i);
+        }
+
+        // 이후 연산은 모두 다 실패하기 때문에, 그에 따른 대책이 필요함.
+        try {
+            clusterClient.set(key, expireSecs, value);
+            logger.info("clusterClient set {}/{}", key, value);
+        } catch (Exception e) {
+            logger.error("cluster client set fail ", e);
+        }
+
+        clusterClient = new MemcachedClient(connectionFactory, addressList);
+        clusterClient.set(key, expireSecs, value);
+        logger.info("clusterClient set {}/{}", key, value);
+
+        value = (String)clusterClient.get(key);
+        logger.info("clusterClient get {}/{}", key, value);
+
+        /// firstClient 또는 secondClient 둘 중 하나만 데이터 조회가 됨.
         value = (String)firstClient.get(key);
         logger.info("firstClient get {}/{}", key, value);
 
