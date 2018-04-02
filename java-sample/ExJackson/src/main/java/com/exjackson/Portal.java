@@ -10,7 +10,6 @@ import java.util.List;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NON_PRIVATE)
 public class Portal {
 
-    @JsonDeserialize(using = CustomTextDeserializer.class)
     List<String>    customText;
     List<PortalSite> portalSites = new ArrayList<>();
 
