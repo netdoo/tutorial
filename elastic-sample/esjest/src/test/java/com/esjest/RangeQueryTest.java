@@ -22,6 +22,8 @@ import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 import static org.junit.Assert.assertTrue;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -40,7 +42,7 @@ public class RangeQueryTest extends BaseTest {
         JestResult createIndexResult = jestClient.execute(new CreateIndex.Builder(indexName).build());
         assertTrue(createIndexResult.getErrorMessage(), createIndexResult.isSucceeded());
 
-        String mappingJson = getResource("RangeQueryTest.Mapping.json");
+        String mappingJson = getResource("/query/range/RangeDateQueryMapping.json");
 
         PutMapping putMapping = new PutMapping.Builder(indexName, typeName, mappingJson)
                 .build();
@@ -71,7 +73,7 @@ public class RangeQueryTest extends BaseTest {
     @Test
     public void _01_DateRangeQuery_테스트() throws Exception {
 
-        String query = getResource("RangeQueryTest.DateTimeQuery.json");
+        String query = getResource("/query/range/RangeDateQuery.json");
 
         Search search = new Search.Builder(query)
                 .addIndex(indexName)
@@ -79,15 +81,8 @@ public class RangeQueryTest extends BaseTest {
                 .build();
 
         SearchResult result = jestClient.execute(search);
-        JsonObject hits = (JsonObject)result.getJsonObject().get("hits");
 
-        JsonElement total = hits.get("total");
-        JsonArray jsonArray = (JsonArray) hits.get("hits");
-
-        for (int i  = 0; i < jsonArray.size(); i++ ) {
-            JsonObject object = (JsonObject)jsonArray.get(i);
-            JsonObject source = (JsonObject)object.get("_source");
-            logger.info("{}", source.toString());
-        }
+        List<Color> colorList = result.getSourceAsObjectList(Color.class, false);
+        logger.info("{}", colorList);
     }
 }

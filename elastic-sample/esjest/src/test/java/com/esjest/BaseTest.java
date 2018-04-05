@@ -7,6 +7,7 @@ import io.searchbox.client.JestClientFactory;
 import io.searchbox.client.config.HttpClientConfig;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.stream.Collectors;
 
@@ -29,9 +30,7 @@ public class BaseTest {
     }
 
     public static String getResource(String name) {
-        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-
-        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(classloader.getResourceAsStream(name)));) {
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(BaseTest.class.getResourceAsStream(name)));) {
             return bufferedReader.lines().collect(Collectors.joining(System.lineSeparator()));
         } catch (Exception e) {
             return "";
