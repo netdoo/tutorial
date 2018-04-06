@@ -1,6 +1,6 @@
 package com.esjest;
 
-import com.esjest.domain.Alphabet;
+import com.esjest.model.Alphabet;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

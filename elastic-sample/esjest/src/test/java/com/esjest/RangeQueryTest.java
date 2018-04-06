@@ -1,20 +1,8 @@
 package com.esjest;
 
-import com.esjest.domain.Alphabet;
-import com.esjest.domain.Color;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.sun.scenario.Settings;
-import io.searchbox.client.JestResult;
-import io.searchbox.core.Bulk;
-import io.searchbox.core.Index;
+import com.esjest.model.Color;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
-import io.searchbox.indices.CreateIndex;
-import io.searchbox.indices.DeleteIndex;
-import io.searchbox.indices.mapping.PutMapping;
-import io.searchbox.params.Parameters;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -22,9 +10,8 @@ import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.assertTrue;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class RangeQueryTest extends BaseTest {
@@ -36,38 +23,14 @@ public class RangeQueryTest extends BaseTest {
     @BeforeClass
     public static void 테스트_준비() throws Exception {
 
-        JestResult deleteIndexResult = jestClient.execute(new DeleteIndex.Builder(indexName).build());
-        assertTrue(deleteIndexResult.getErrorMessage(), deleteIndexResult.isSucceeded());
+        List<Color> documentList = new ArrayList<>();
 
-        JestResult createIndexResult = jestClient.execute(new CreateIndex.Builder(indexName).build());
-        assertTrue(createIndexResult.getErrorMessage(), createIndexResult.isSucceeded());
+        documentList.add(new Color("1", "red", "2018-03-01 10:10:10.290"));
+        documentList.add(new Color("2", "green", "2018-03-02 10:10:10.290"));
+        documentList.add(new Color("3", "blue", "2018-03-03 10:10:10.290"));
+        documentList.add(new Color("4", "white", "2018-03-03 12:10:10.190"));
 
-        String mappingJson = getResource("/query/range/RangeDateQueryMapping.json");
-
-        PutMapping putMapping = new PutMapping.Builder(indexName, typeName, mappingJson)
-                .build();
-
-        JestResult result = jestClient.execute(putMapping);
-        assertTrue(result.getErrorMessage(), result.isSucceeded());
-
-        Bulk.Builder bulkBuilder = new Bulk.Builder()
-                .defaultIndex(indexName)
-                .defaultType(typeName)
-                .setParameter(Parameters.REFRESH, true);
-
-        Color a = new Color("1", "red", "2018-03-01 10:10:10.290");
-        Color b = new Color("2", "green", "2018-03-02 10:10:10.290");
-        Color c = new Color("3", "blue", "2018-03-03 10:10:10.290");
-        Color d = new Color("4", "white", "2018-03-03 12:10:10.190");
-
-        bulkBuilder.addAction(new Index.Builder(objectMapper.writeValueAsString(a)).index(indexName).type(typeName).id(b.getDocId()).build());
-        bulkBuilder.addAction(new Index.Builder(objectMapper.writeValueAsString(b)).index(indexName).type(typeName).id(b.getDocId()).build());
-        bulkBuilder.addAction(new Index.Builder(objectMapper.writeValueAsString(c)).index(indexName).type(typeName).id(c.getDocId()).build());
-        bulkBuilder.addAction(new Index.Builder(objectMapper.writeValueAsString(d)).index(indexName).type(typeName).id(d.getDocId()).build());
-
-        Bulk bulk = bulkBuilder.build();
-        JestResult bulkResult = jestClient.execute(bulk);
-        logger.info("bulkResult response code {}", bulkResult.getResponseCode());
+        readyForTest(indexName, typeName, "/query/range/RangeDateQueryMapping.json", documentList);
     }
 
     @Test
@@ -81,8 +44,8 @@ public class RangeQueryTest extends BaseTest {
                 .build();
 
         SearchResult result = jestClient.execute(search);
-
         List<Color> colorList = result.getSourceAsObjectList(Color.class, false);
+
         logger.info("{}", colorList);
     }
 }

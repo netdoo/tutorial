@@ -1,4 +1,4 @@
-package com.esjest.domain;
+package com.esjest.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -6,22 +6,27 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NON_PRIVATE)
-public class Color {
-
+public class Alphabet {
     String name;
-    String createDate;
+    int code;
 
     @JsonIgnore
     String docId;
 
-    public Color() {
+    public Alphabet() {
 
     }
 
-    public Color(String docId, String name, String createDate) {
+    public Alphabet(String docId, char c) {
+        this.docId = docId;
+        this.name = String.valueOf(c);
+        this.code = (int)c;
+    }
+
+    public Alphabet(String docId, String name, int code) {
         this.docId = docId;
         this.name = name;
-        this.createDate = createDate;
+        this.code = code;
     }
 
     public void setDocId(String docId) {
@@ -32,7 +37,6 @@ public class Color {
         return this.docId;
     }
 
-
     public void setName(String name) {
         this.name = name;
     }
@@ -41,11 +45,11 @@ public class Color {
         return this.name;
     }
 
-    public void setCreateDate(String createDate) {
-        this.createDate = createDate;
+    public void setCode(int code) {
+        this.code = code;
     }
 
-    public String getCreateDate() {
-        return this.createDate;
+    public int getCode() {
+        return this.code;
     }
 }
