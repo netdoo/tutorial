@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,6 +46,10 @@ public class BaseTest {
         }
     }
 
+    public static void readyForTest(String indexName, String typeName, String mappingResPath) throws Exception {
+        readyForTest(indexName, typeName, mappingResPath, new ArrayList<>());
+    }
+
     public static void readyForTest(String indexName, String typeName, String mappingResPath, List<? extends AbstractDocument> documentList) throws Exception {
         JestResult deleteIndexResult = jestClient.execute(new DeleteIndex.Builder(indexName).build());
         assertTrue(deleteIndexResult.getErrorMessage(), deleteIndexResult.isSucceeded());
@@ -60,18 +65,20 @@ public class BaseTest {
         JestResult result = jestClient.execute(putMapping);
         assertTrue(result.getErrorMessage(), result.isSucceeded());
 
-        Bulk.Builder bulkBuilder = new Bulk.Builder()
-                .defaultIndex(indexName)
-                .defaultType(typeName)
-                .setParameter(Parameters.REFRESH, true);
+        if (!documentList.isEmpty()) {
+            Bulk.Builder bulkBuilder = new Bulk.Builder()
+                    .defaultIndex(indexName)
+                    .defaultType(typeName)
+                    .setParameter(Parameters.REFRESH, true);
 
-        for (AbstractDocument document : documentList) {
-            bulkBuilder.addAction(new Index.Builder(objectMapper.writeValueAsString(document)).index(indexName).type(typeName).id(document.getDocId()).build());
+            for (AbstractDocument document : documentList) {
+                bulkBuilder.addAction(new Index.Builder(objectMapper.writeValueAsString(document)).index(indexName).type(typeName).id(document.getDocId()).build());
+            }
+
+            Bulk bulk = bulkBuilder.build();
+            JestResult bulkResult = jestClient.execute(bulk);
+            logger.info("bulkResult response code {}", bulkResult.getResponseCode());
         }
-
-        Bulk bulk = bulkBuilder.build();
-        JestResult bulkResult = jestClient.execute(bulk);
-        logger.info("bulkResult response code {}", bulkResult.getResponseCode());
     }
 
     public static JestClient jestClient = createJestClient();
