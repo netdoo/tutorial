@@ -1,6 +1,8 @@
 package com.exfile;
 
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,9 +14,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 
-/**
- * Unit test for simple App.
- */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class OpenOptionTest {
 
     final static Logger logger = LoggerFactory.getLogger(OpenOptionTest.class);

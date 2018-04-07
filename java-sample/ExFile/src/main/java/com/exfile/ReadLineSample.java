@@ -9,9 +9,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
-/**
- * Created by jhkwon78 on 2017-11-16.
- */
 public class ReadLineSample {
 
     final static Logger logger = LoggerFactory.getLogger(ReadLineSample.class);

@@ -6,9 +6,6 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-/**
- * Created by jhkwon78 on 2017-11-16.
- */
 public class PathSample {
     final static Logger logger = LoggerFactory.getLogger(PathSample.class);
     public static void main( String[] args ) throws Exception {
