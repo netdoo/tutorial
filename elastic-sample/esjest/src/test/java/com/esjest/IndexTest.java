@@ -1,6 +1,7 @@
 package com.esjest;
 
 import com.esjest.model.Color;
+import com.google.gson.JsonObject;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.Get;
 import io.searchbox.core.Index;
@@ -12,6 +13,9 @@ import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class IndexTest extends BaseTest {
 
@@ -20,7 +24,7 @@ public class IndexTest extends BaseTest {
 
     @BeforeClass
     public static void 테스트_준비() throws Exception {
-        readyForTest(indexName, typeName, "/query/index/PutQueryMapping.json");
+        readyForTest(indexName, typeName, "/query/index/IndexQueryMapping.json");
     }
 
     @Test
@@ -37,9 +41,13 @@ public class IndexTest extends BaseTest {
     public void _02_Update_테스트() throws Exception {
         Color red = new Color();
 
+        red.setDocId("1");
         red.setName("LightRed");
 
-        Update update = new Update.Builder(objectMapper.writeValueAsString(red)).index(indexName).type(typeName).id(red.getDocId()).build();
+        Map<String, Object> doc = new HashMap<>();
+        doc.put("doc", red);
+
+        Update update = new Update.Builder(objectMapper.writeValueAsString(doc)).index(indexName).type(typeName).id(red.getDocId()).refresh(true).build();
         JestResult result = jestClient.execute(update);
 
         logger.info("update response code {}", result.getResponseCode());
@@ -50,7 +58,9 @@ public class IndexTest extends BaseTest {
 
         Get get = new Get.Builder(indexName, "1").build();
         JestResult result = jestClient.execute(get);
-        logger.info("get response code {}", result.getResponseCode());
+
+        Color color = result.getSourceAsObject(Color.class);
+        logger.info("get response code {}, color {}", result.getResponseCode(), color);
     }
 
     Logger logger = LoggerFactory.getLogger(getClass());
