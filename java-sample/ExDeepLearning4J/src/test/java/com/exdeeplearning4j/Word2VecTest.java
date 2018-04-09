@@ -55,12 +55,12 @@ public class Word2VecTest extends BaseTest {
 
         logger.info("Save vectors....");
         WordVectorSerializer.writeWord2VecModel(vec, "pathToSaveModel.txt");
+
         logger.info("Writing word vectors to text file....");
         Word2Vec word2Vec = WordVectorSerializer.readWord2VecModel("pathToSaveModel.txt");
 
         // Prints out the closest 10 words to "day". An example on what to do with these Word Vectors.
         logger.info("Closest Words:");
-        //Collection<String> lst = vec.wordsNearestSum("day", 10);
         Collection<String> lst = word2Vec.wordsNearestSum("day", 10);
         logger.info("10 Words closest to 'day': {}", lst);
     }
