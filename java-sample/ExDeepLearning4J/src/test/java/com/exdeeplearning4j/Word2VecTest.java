@@ -52,7 +52,6 @@ public class Word2VecTest extends BaseTest {
         logger.info("Fitting Word2Vec model....");
         vec.fit();
 
-
         logger.info("Save vectors....");
         WordVectorSerializer.writeWord2VecModel(vec, "pathToSaveModel.txt");
 
