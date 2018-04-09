@@ -34,7 +34,7 @@ public class IdsQueryTest extends BaseTest {
     }
 
     @Test
-    public void _01_DateRangeQuery_테스트() throws Exception {
+    public void _01_IdsQuery_테스트() throws Exception {
 
         String query = getResource("/query/ids/IdsQuery.json");
 
