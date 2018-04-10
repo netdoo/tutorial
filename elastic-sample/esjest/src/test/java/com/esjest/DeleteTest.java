@@ -14,10 +14,12 @@ import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class IndexTest extends BaseTest {
+public class DeleteTest extends BaseTest {
 
     public static String indexName = "color";
     public static String typeName = "data";
@@ -34,43 +36,33 @@ public class IndexTest extends BaseTest {
         documentList.add(new Color("5", "black", "2018-03-04 12:10:10.190"));
         documentList.add(new Color("6", "lemon", "2018-03-05 12:10:10.190"));
 
-        readyForTest(indexName, typeName, "/query/index/IndexQueryMapping.json", documentList);
+        readyForTest(indexName, typeName, "/query/delete/DeleteQueryMapping.json", documentList);
     }
 
     @Test
-    public void _01_PUT_테스트() throws Exception {
-        Color red = new Color("1", "red", "2018-03-01 10:10:10.290");
+    public void _01_Delete_테스트() throws Exception {
+        Delete delete = new Delete.Builder("1")
+                .index(indexName)
+                .type(typeName)
+                .refresh(true)
+                .build();
 
-        Index index = new Index.Builder(objectMapper.writeValueAsString(red)).index(indexName).type(typeName).id(red.getDocId()).build();
-        JestResult result = jestClient.execute(index);
-
-        logger.info("put response code {}", result.getResponseCode());
+        DocumentResult documentResult = jestClient.execute(delete);
+        logger.info("delete response code {}", documentResult.getResponseCode());
     }
 
     @Test
-    public void _02_Update_테스트() throws Exception {
-        Color red = new Color();
+    public void _02_DeleteByQuery_테스트() throws Exception {
 
-        red.setDocId("1");
-        red.setName("LightRed");
+        String query = getResource("/query/delete/DeleteQuery.json");
 
-        Map<String, Object> doc = new HashMap<>();
-        doc.put("doc", red);
+        DeleteByQuery deleteByQuery = new DeleteByQuery.Builder(query)
+                .addIndex(indexName)
+                .addType(typeName)
+                .refresh(true)
+                .build();
 
-        Update update = new Update.Builder(objectMapper.writeValueAsString(doc)).index(indexName).type(typeName).id(red.getDocId()).refresh(true).build();
-        JestResult result = jestClient.execute(update);
-
-        logger.info("update response code {}", result.getResponseCode());
-    }
-
-    @Test
-    public void _03_Get_테스트() throws Exception {
-
-        Get get = new Get.Builder(indexName, "1").build();
-        JestResult result = jestClient.execute(get);
-
-        Color color = result.getSourceAsObject(Color.class);
-        logger.info("get response code {}, color {}", result.getResponseCode(), color);
+        JestResult result = jestClient.execute(deleteByQuery);
     }
 
     @Test
