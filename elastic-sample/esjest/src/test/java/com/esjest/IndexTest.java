@@ -2,11 +2,10 @@ package com.esjest;
 
 import com.esjest.model.Color;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import io.searchbox.client.JestResult;
-import io.searchbox.core.*;
+import io.searchbox.core.Get;
+import io.searchbox.core.Index;
+import io.searchbox.core.Update;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -14,7 +13,10 @@ import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class IndexTest extends BaseTest {
@@ -71,36 +73,6 @@ public class IndexTest extends BaseTest {
 
         Color color = result.getSourceAsObject(Color.class);
         logger.info("get response code {}, color {}", result.getResponseCode(), color);
-    }
-
-    @Test
-    public void _06_MultiGet_테스트() throws Exception {
-
-        List<Doc> docs = Arrays.asList(
-                new Doc(indexName, typeName, "1"),
-                new Doc(indexName, typeName, "2"),
-                new Doc(indexName, typeName, "3"),
-                new Doc(indexName, typeName, "4"),
-                new Doc(indexName, typeName, "5"),
-                new Doc(indexName, typeName, "6")
-        );
-
-        MultiGet multiGet = new MultiGet.Builder.ByDoc(docs).build();
-        JestResult result = jestClient.execute(multiGet);
-        JsonArray actualDocs = result.getJsonObject().getAsJsonArray("docs");
-
-        for (JsonElement element : actualDocs) {
-            JsonObject jsonObject = element.getAsJsonObject();
-            String id = jsonObject.get("_id").toString();
-
-            if (Boolean.valueOf(jsonObject.get("found").toString())) {
-                String source = jsonObject.get("_source").toString();
-                Color color = objectMapper.readValue(source, Color.class);
-                logger.info("id : {}, {}", id, color);
-            } else {
-                logger.info("not found {}", id);
-            }
-        }
     }
 
     ObjectMapper objectMapper = new ObjectMapper();
