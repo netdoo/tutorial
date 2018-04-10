@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class DeleteTest extends BaseTest {
+public class DeleteQueryTest extends BaseTest {
 
     public static String indexName = "color";
     public static String typeName = "data";
